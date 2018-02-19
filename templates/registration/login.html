@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+    {% block body %}
+    <header>
+        <h1>Welcome to <b>djob</b>!</h1>
+    </header>
+    <p>Please, submit this form to login.</p>
+    <form action="" method="post" style="">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" name="login" value="login">
+    </form>
+    {% endblock %}

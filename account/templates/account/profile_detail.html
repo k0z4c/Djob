@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+    {% block body %}
+        <head>
+            {% if profile.img %}
+            <img src="{{profile.img.url}}" alt="">
+            {% if owner %}
+            <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
+            <a href="{% url 'authentication:logout' %}">logout</a>
+            
+            {% endif %}
+            {% endif %}
+        </head>
+        {% if owner %}
+            {{ user.email}}
+            <a href="{% url 'account:profile_edit' user.email %}">edit</a>
+        you are the owner of the page
+        {% else %}
+
+        {% endif %}
+        <section>
+            this is the profile page of {{profile.user.email}}
+            <section>
+                {{profile.description}}
+            </section>
+        </section>
+        <section>
+            {% if friends %}
+            friends:
+            <ul>
+            {% for friend in friends %}
+                <p>{{friend}}</p>
+            {% endfor %}
+            </ul>
+            {% else %}
+            No friends
+            {% endif %}
+        </section>
+    {% endblock %}
