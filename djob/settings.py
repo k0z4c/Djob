@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
+    'guardian',
     'account.apps.AccountConfig',
     'friendship',
 ]
@@ -137,3 +138,12 @@ LOGIN_REDIRECT_URL = '/account/'
 LOGIN_URL = '/login/'
 FILE_UPLOAD_HANDLERS = ["django.core.files.uploadhandler.MemoryFileUploadHandler",
  "django.core.files.uploadhandler.TemporaryFileUploadHandler"]
+
+# user object permissions disabled
+ANONYMOUS_USER = None
+
+GUARDIAN_MONKEY_PATCH = False
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)

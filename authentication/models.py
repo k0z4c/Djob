@@ -7,8 +7,10 @@ from .managers import CustomUserManager
 
 from django.urls import reverse
 from django.core.mail import send_mail
+from guardian.mixins import GuardianUserMixin
+
 # forms to extend or rewrite: UserCreationForm, UserChangeForm
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, GuardianUserMixin):
 
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(_('first name'), max_length=30)

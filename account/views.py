@@ -14,13 +14,8 @@ from .forms import ProfileEditForm
 from django.http import HttpResponseRedirect
 
 from authentication.forms import UserEditForm
-from django.utils.decorators import classonlymethod
-from functools import update_wrapper
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from guardian.mixins import PermissionRequiredMixin, LoginRequiredMixin
 
-from django.http import HttpResponseForbidden
 def index(request):
     '''
     redirects to profile detail view.
@@ -45,10 +40,7 @@ class ProfileDetailView(generic.detail.DetailView):
         return pino.profile
 
     def _is_owner(self):
-        if self.request.user.email == self.kwargs.get('email'):
-            print("is owner!")
-            return True
-        return False
+        return self.request.user.email == self.kwargs.get('email')
 
     def get_context_data(self, **kwargs):
         if self._is_owner():
@@ -59,7 +51,7 @@ class ProfileDetailView(generic.detail.DetailView):
         })
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 
-class EditAccountView(LoginRequiredMixin, generic.base.View, generic.base.TemplateResponseMixin):
+class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.TemplateResponseMixin, generic.base.View):
     '''
     *_keys are form's fields which are used to split
     fields in POST request.
@@ -69,16 +61,23 @@ class EditAccountView(LoginRequiredMixin, generic.base.View, generic.base.Templa
     user_keys = ['email', 'first_name', 'last_name']
     profile_keys = ['description']
 
+    permission_required = 'account.can_change_profile'
+    return_403 = True
+
     @classmethod
     def check_and_save(cls, f1, f2):
         if f1.is_valid() and f2.is_valid():
-            f1.save()
-            f2.save()
+            f1.save() and f2.save()
+
+    def get_permission_object(self):
+        obj = Profile.objects.get(user__email=self.kwargs.get('email'))
+        return obj
 
     def post(self, request, *args, **kwargs):
 
         user_data = { k: request.POST[k] for k in self.user_keys }
         profile_data = { k: request.POST[k] for k in self.profile_keys }
+
         f1 = UserEditForm(user_data, instance=request.user)
         f2 = ProfileEditForm(profile_data, request.FILES, instance=request.user.profile)
         self.check_and_save(f1, f2)
@@ -87,8 +86,6 @@ class EditAccountView(LoginRequiredMixin, generic.base.View, generic.base.Templa
                                             args=[request.user.email]))
 
     def get(self, request, *args, **kwargs):
-        if self.request.user.email != self.kwargs.get('email'):
-            return HttpResponseForbidden('no access')
         f1 = UserEditForm(instance=request.user)
         f2 = ProfileEditForm(instance=request.user.profile)
         return self.render_to_response({'f1': f1, 'f2': f2})
