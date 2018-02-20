@@ -20,6 +20,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
+from django.http import HttpResponseForbidden
 def index(request):
     '''
     redirects to profile detail view.
@@ -58,7 +59,7 @@ class ProfileDetailView(generic.detail.DetailView):
         })
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 
-class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.View, generic.base.TemplateResponseMixin):
+class EditAccountView(LoginRequiredMixin, generic.base.View, generic.base.TemplateResponseMixin):
     '''
     *_keys are form's fields which are used to split
     fields in POST request.
@@ -67,8 +68,6 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
     success_url = 'account:profile_detail'
     user_keys = ['email', 'first_name', 'last_name']
     profile_keys = ['description']
-
-    permission_required = ('can_change_profile')
 
     @classmethod
     def check_and_save(cls, f1, f2):
@@ -88,6 +87,8 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
                                             args=[request.user.email]))
 
     def get(self, request, *args, **kwargs):
+        if self.request.user.email != self.kwargs.get('email'):
+            return HttpResponseForbidden('no access')
         f1 = UserEditForm(instance=request.user)
         f2 = ProfileEditForm(instance=request.user.profile)
         return self.render_to_response({'f1': f1, 'f2': f2})
