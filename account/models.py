@@ -13,6 +13,7 @@ def manage_upload(instance, filename):
         'user_id': instance.user.id,
         'datetime': timezone.now(),
         'file': filename,
+
         }
     return '{user_id}/{datetime:%Y/%m/%d}/{file}'.format(**opts)
 
@@ -30,6 +31,7 @@ class Profile(models.Model):
     img = AvatarImageField(
         default_width=200,
         default_height=200,
+        default='defaultprofile.png',
         upload_to=manage_upload,
         )
     description = models.TextField(max_length=200)

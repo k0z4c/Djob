@@ -23,7 +23,7 @@ def index(request):
     profile = get_object_or_404(Profile, user__email=request.user.email)
     return redirect(profile, permanent=True)
 
-class ProfileDetailView(generic.detail.DetailView):
+class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
     '''
     Renders the profile requested by URL.
     '''
