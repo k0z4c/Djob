@@ -15,7 +15,8 @@ from django.http import HttpResponseRedirect
 
 from authentication.forms import UserEditForm
 from guardian.mixins import PermissionRequiredMixin, LoginRequiredMixin
-
+from friendship.models import FriendshipRequest
+from django.db.models import Q
 def index(request):
     '''
     redirects to profile detail view.
@@ -43,9 +44,19 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
         return self.request.user.email == self.kwargs.get('email')
 
     def get_context_data(self, **kwargs):
+        user_visited = User.objects.get(email=self.kwargs['email'])
+        print("get_context_exe")
         if self._is_owner():
             kwargs.update({'owner': True})
-
+            print('is_owner')
+        elif user_visited in self.request.user.contacts.all():
+            kwargs.update({'friend': True})
+        elif FriendshipRequest.objects.filter(
+            Q(by=self.request.user, to=user_visited) |
+            Q(by=user_visited, to=self.request.user)
+            ).exists():
+            kwargs.update({'hang_request': True})
+        # else they are not friend
         kwargs.update({
             'friends': list(self.request.user.contacts.all())
         })
