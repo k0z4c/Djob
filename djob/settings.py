@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
+    'notifications',
     'guardian',
     'account.apps.AccountConfig',
     'friendship',
@@ -140,7 +141,7 @@ FILE_UPLOAD_HANDLERS = ["django.core.files.uploadhandler.MemoryFileUploadHandler
  "django.core.files.uploadhandler.TemporaryFileUploadHandler"]
 
 # user object permissions disabled
-ANONYMOUS_USER = None
+ANONYMOUS_USER_NAME = None
 
 GUARDIAN_MONKEY_PATCH = False
 AUTHENTICATION_BACKENDS = (

@@ -21,6 +21,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^inbox/notification', include('notifications.urls', namespace='notifications')),
     url(r'^account/', include('account.urls', namespace='account')),
+    url(r'^friendship/', include('friendship.urls', namespace='friendship')),
     url(r'^', include('authentication.urls', namespace='authentication')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT, show_indexes=True)
