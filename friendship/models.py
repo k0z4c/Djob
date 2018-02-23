@@ -16,6 +16,12 @@ class FriendshipRequest(models.Model):
     class Meta:
         unique_together = [('by', 'to')]
 
+    def accept(self):
+        Friendship.objects.create(by=self.by, to=self.to)
+        Friendship.objects.create(by=self.to, to=self.by)
+
+        self.delete()
+
 class Friendship(models.Model):
 
     by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='contacts')
