@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+    {% block body %}
+        {% if not object_list %}
+            No requests received!
+        {% else %}
+        <ul>
+        {% for f in object_list  %}
+            <li><a href="{% url 'friendship:request_detail' f.id %}">{{ f.to }}</a></li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endblock %}

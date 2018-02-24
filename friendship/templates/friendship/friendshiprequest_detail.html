@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+    {% block body %}
+        friendship request by {{friendshiprequest}}
+        what would you do?
+        <a href="{% url 'friendship:request_accept' friendshiprequest.id %}">accept</a>
+        <a href="#">reject</a>
+    {% endblock %}

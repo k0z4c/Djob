@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+    {% block body %}
+        {% if not object_list %}
+        No friends at the moment!
+        {% else %}
+        here's your friendships:
+        <ul>
+            {% for f in object_list  %}
+            <li>{{ f }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endblock %}

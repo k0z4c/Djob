@@ -14,14 +14,69 @@ from django.views import generic
 
 from django.contrib import messages
 from notifications.signals import notify
+from .models import Friendship, FriendshipRequest
+
+class IndexView(generic.TemplateView):
+    template_name = 'friendship/index.html'
+    pass
+class FriendshipListView(generic.list.ListView):
+    model = Friendship
+
+    def get_queryset(self):
+        qs = self.request.user.contacts.all()
+        ordering = self.get_ordering()
+        if ordering:
+            if isinstance(ordering, six.string_types):
+                ordering = (ordering,)
+            qs = qs.order_by(*ordering)
+        return qs
+
+class FriendshipRequestReceivedListView(generic.list.ListView):
+    model = FriendshipRequest
+    template_name = 'friendship/friendships_received.html'
+
+    def get_queryset(self):
+        qs = self.request.user.requests_received.all()
+        ordering = self.get_ordering()
+        if ordering:
+            if isinstance(ordering, six.string_types):
+                ordering = (ordering,)
+            qs = qs.order_by(*ordering)
+        return qs
+
+class FriendshipRequestSentListView(generic.list.ListView):
+    model = FriendshipRequest
+    template_name = 'friendship/friendship_sent.html'
+
+    def get_queryset(self):
+        qs = self.request.user.requests_sent.all()
+        ordering = self.get_ordering()
+        if ordering:
+            if isinstance(ordering, six.string_types):
+                ordering = (ordering,)
+            qs = qs.order_by(*ordering)
+        return qs
+
+class FriendshipRequestDetail(generic.detail.DetailView):
+    model = FriendshipRequest
+
+def accept_request(request, pk):
+    friendship_request = FriendshipRequest.objects.get(pk=pk)
+    friendship_request.accept()
+    messages.success(request, 'Request Accepted!')
+    return HttpResponseRedirect(request, reverse('friendship:requests_received', args=(pk,)))
+
+def reject_request(request, pk):
+    friendship_request = FriendshipRequest.objects.get(pk)
+    friendship_request.reject()
+    messages.success(request, 'Request Rejected!')
+    return HttpResponseRedirect(request, reverse('friendship:requests_received', args=(pk,)))
+
+
 
 # @login_required
 def add_friendship_request(request):
-    ''' user can make a request to others
-    only if it isnt a friend or has a suspended
-    request
-    # this https://github.com/django-notifications/django-notifications
-    '''
+
     if request.method == 'POST':
         to_email = request.POST.get('email')
         to = get_object_or_404(User, email=to_email)
@@ -36,15 +91,6 @@ def add_friendship_request(request):
         return HttpResponseRedirect(reverse('account:profile_detail', args=[to_email]))
     # error message
     return HttpResponse('boh!')
-
-def accept_request(request):
-    # by = User.objects.get(email=request.POST['by'])
-    # print(by)
-    # friendship_request = FriendshipRequest.objects.get(by=by, to=request.user)
-    # friendship_request.accept_request()
-    #
-    # return HttpResponse('friendship accepted!')
-    pass
 
 class addFriendshipRequestView(generic.View):
     def post(self):

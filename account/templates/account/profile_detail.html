@@ -24,7 +24,7 @@
             {% elif hang_request %}
                 <p>request sended</p>
             {% else %}
-            <form class="" id="myForm"action="{% url 'friendship:add_request' %}" method="post">
+            <form class="" id="myForm" action="{% url 'friendship:add_request' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="email" value="{{profile.user.email}}"/>
                 <a onclick="document.getElementById('myForm').submit()">send request</a>
@@ -36,7 +36,6 @@
             {{ user.email}}
             <a href="{% url 'account:profile_edit' user.email %}">edit</a>
         you are the owner of the page
-        {% else %}
 
         {% endif %}
         <section>
@@ -56,5 +55,6 @@
             {% else %}
             No friends
             {% endif %}
+            manage friendships: <a href="{% url 'friendship:index' %}">here</a>
         </section>
     {% endblock %}
