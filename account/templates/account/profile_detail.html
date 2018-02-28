@@ -24,13 +24,9 @@
             {% elif friend %}
             <p>you are friend</p>
             {% elif hang_request %}
-                <p>request sended</p>
+                <button disabled>request sended</button >
             {% else %}
-            <form class="" id="myForm" action="{% url 'friendship:add_request' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="email" value="{{profile.user.email}}"/>
-                <a onclick="document.getElementById('myForm').submit()">send request</a>
-            </form>
+                {% include "friendship/_add_friend_button.html" %}
             {% endif %}
             {% endif %}
         </header>
@@ -47,16 +43,6 @@
             </section>
         </section>
         <section>
-            {% if friends %}
-            friends:
-            <ul>
-            {% for friend in friends %}
-                <p>{{friend}}</p>
-            {% endfor %}
-            </ul>
-            {% else %}
-            No friends
-            {% endif %}
-            manage friendships: <a href="{% url 'friendship:index' %}">here</a>
+            {% include "friendship/_list_friends.html" %}
         </section>
     {% endblock %}

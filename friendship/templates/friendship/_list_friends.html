@@ -1,0 +1,11 @@
+{% if friends %}
+    friends:
+    <ul>
+        {% for friend in friends %}
+        <p>{{friend}}</p>
+        {% endfor %}
+    </ul>
+{% else %}
+    No friends
+{% endif %}
+manage friendships: <a href="{% url 'friendship:index' %}">here</a>
