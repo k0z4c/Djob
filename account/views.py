@@ -44,22 +44,18 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
         return self.request.user.email == self.kwargs.get('email')
 
     def get_context_data(self, **kwargs):
-        user_visited = User.objects.get(email=self.kwargs['email'])
-        print("get_context_exe")
         if self._is_owner():
             kwargs.update({
                 'owner': True,
                 'friends': list(self.request.user.contacts.all()),
             })
-            print('is_owner')
         else:
+            user_visited = User.objects.get(email=self.kwargs['email'])
             if Friendship.objects.are_friends(user_visited, self.request.user):
                 kwargs.update({'friend': True})
-            elif FriendshipRequest.objects.filter(
-                Q(by=self.request.user, to=user_visited) |
-                Q(by=user_visited, to=self.request.user)
-                ).exists():
+            elif FriendshipRequest.objects.check_request(user_visited, self.request.user):
                 kwargs.update({'hang_request': True})
+            print(FriendshipRequest.objects.check_request(user_visited, self.request.user))
             kwargs.update({
             'friends': list(user_visited.contacts.all())
             })

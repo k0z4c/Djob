@@ -9,6 +9,10 @@ class FriendshipRequestManager(models.Manager):
             raise FriendshipRequestExists
         request = self.create(by=by, to=to)
 
+    def check_request(self, by, to):
+        q = Q(by=by, to=to) | Q(by=to, to=by)
+        return self.filter(q).exists()
+
 class FriendshipManager(models.Manager):
     def are_friends(self, us1, us2):
         qs = self.filter(
