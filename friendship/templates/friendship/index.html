@@ -1,15 +1,12 @@
 {% extends "base.html" %}
     {% block body %}
-        welcome to the index page
-        here you can manage your friendships/requests
-        <br>
-        click <a href="{% url 'friendship:show_friendships' %}">here</a>
-        to show a list of your friendships and manage them.
-        <br>
-        click <a href="{% url 'friendship:requests_received' %}">here</a>
-        to show the requests received and handle them.
-        <br>
-        click <a href="{% url 'friendship:requests_sent' %}">here</a>
-        to show the requests you've sent and delete them.
-        <br>
+        <h1>Welcome to the friendship page.</h1>
+        <p>here you can manage your friendships/requests</p>
+
+        <p>click <a href="{% url 'friendship:show_friendships' %}">here</a>
+        to show a list of your friendships and manage them.</p>
+        <p>click <a href="{% url 'friendship:requests_received' %}">here</a>
+        to show the requests received and handle them.</p>
+        <p>click <a href="{% url 'friendship:requests_sent' %}">here</a>
+        to show the requests you've sent and delete them.</p>
     {% endblock %}

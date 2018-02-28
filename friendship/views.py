@@ -18,7 +18,7 @@ from .models import Friendship, FriendshipRequest
 
 class IndexView(generic.TemplateView):
     template_name = 'friendship/index.html'
-    pass
+
 class FriendshipListView(generic.list.ListView):
     model = Friendship
 

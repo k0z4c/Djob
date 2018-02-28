@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {%load notifications_tags %}
     {% block body %}
-        <head>
+        <header>
             <div class="">
                 {% live_notify_badge %}
                 {% live_notify_list %}
@@ -31,7 +31,7 @@
             </form>
             {% endif %}
             {% endif %}
-        </head>
+        </header>
         {% if owner %}
             {{ user.email}}
             <a href="{% url 'account:profile_edit' user.email %}">edit</a>
