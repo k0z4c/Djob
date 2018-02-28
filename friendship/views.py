@@ -64,7 +64,7 @@ def accept_request(request, pk):
     friendship_request = FriendshipRequest.objects.get(pk=pk)
     friendship_request.accept()
     messages.success(request, 'Request Accepted!')
-    return HttpResponseRedirect(request, reverse('friendship:requests_received', args=(pk,)))
+    return HttpResponseRedirect(reverse('friendship:requests_received'))
 
 def reject_request(request, pk):
     friendship_request = FriendshipRequest.objects.get(pk)
