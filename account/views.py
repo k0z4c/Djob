@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 
 from authentication.forms import UserEditForm
 from guardian.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from friendship.models import FriendshipRequest
+from friendship.models import FriendshipRequest, Friendship
 from django.db.models import Q
 def index(request):
     '''
@@ -47,19 +47,22 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
         user_visited = User.objects.get(email=self.kwargs['email'])
         print("get_context_exe")
         if self._is_owner():
-            kwargs.update({'owner': True})
+            kwargs.update({
+                'owner': True,
+                'friends': list(self.request.user.contacts.all()),
+            })
             print('is_owner')
-        elif user_visited in self.request.user.contacts.all():
-            kwargs.update({'friend': True})
-        elif FriendshipRequest.objects.filter(
-            Q(by=self.request.user, to=user_visited) |
-            Q(by=user_visited, to=self.request.user)
-            ).exists():
-            kwargs.update({'hang_request': True})
-        # else they are not friend
-        kwargs.update({
-            'friends': list(self.request.user.contacts.all())
-        })
+        else:
+            if Friendship.objects.are_friends(user_visited, self.request.user):
+                kwargs.update({'friend': True})
+            elif FriendshipRequest.objects.filter(
+                Q(by=self.request.user, to=user_visited) |
+                Q(by=user_visited, to=self.request.user)
+                ).exists():
+                kwargs.update({'hang_request': True})
+            kwargs.update({
+            'friends': list(user_visited.contacts.all())
+            })
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 
 class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.TemplateResponseMixin, generic.base.View):

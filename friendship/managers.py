@@ -12,9 +12,9 @@ class FriendshipRequestManager(models.Manager):
 class FriendshipManager(models.Manager):
     def are_friends(self, us1, us2):
         qs = self.filter(
-            Q(by=us1.email) & Q(to=us2.email)
+            Q(by=us1) & Q(to=us2)
             |
-            Q(by=us2.email) & Q(to=us1.email)
+            Q(by=us2) & Q(to=us1)
         )
         return qs.exists()
 

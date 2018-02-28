@@ -21,6 +21,8 @@
             {% if owner %}
             <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
             <a href="{% url 'authentication:logout' %}">logout</a>
+            {% elif friend %}
+            <p>you are friend</p>
             {% elif hang_request %}
                 <p>request sended</p>
             {% else %}
