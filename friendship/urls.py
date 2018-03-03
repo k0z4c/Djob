@@ -29,9 +29,9 @@ urlpatterns = [
         name='requests_sent'
     ),
     url(
-        r'^(?P<pk>[0-9]+)/detail/$',
-        views.FriendshipRequestDetail.as_view(),
-        name='request_detail'
+        r'^ajax/remove_friendship/(?P<email>(\w)+@(\w)+\.(\w)+)/$',
+        views.remove_friendship,
+        name='remove_friendship',
     ),
     url(
         r'^(?P<pk>[0-9]+)/accept/$',
