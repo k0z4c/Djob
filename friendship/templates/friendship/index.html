@@ -3,6 +3,7 @@
         <h1>Welcome to the friendship page.</h1>
         <p>here you can manage your friendships/requests</p>
 
+        <p>your profile <a href="{% url 'account:profile_detail' request.user.email %}">here</a></a></p>
         <p>click <a href="{% url 'friendship:show_friendships' %}">here</a>
         to show a list of your friendships and manage them.</p>
         <p>click <a href="{% url 'friendship:requests_received' %}">here</a>
