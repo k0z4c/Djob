@@ -29,7 +29,7 @@ urlpatterns = [
         name='requests_sent'
     ),
     url(
-        r'^ajax/remove_friendship/(?P<email>(\w)+@(\w)+\.(\w)+)/$',
+        r'^ajax/remove_friendship/$',
         views.remove_friendship,
         name='remove_friendship',
     ),

@@ -28,3 +28,11 @@ class FriendshipManager(models.Manager):
 
         self.create(by=us1, to=us2)
         self.create(by=us2, to=us1)
+
+    def remove_friendship(self, us1_id, us2_id):
+        qs = Q(by=us1_id, to=us2_id) | Q(by=us2_id, to=us1_id)
+        tpl = self.filter(qs)
+        print('removing ')
+        print(tpl)
+        for i in tpl:
+            i.delete()

@@ -21,7 +21,7 @@ class IndexView(generic.TemplateView):
 
 class FriendshipListView(generic.list.ListView):
     model = Friendship
-
+    context_object_name = 'friendships'
     def get_queryset(self):
         qs = self.request.user.contacts.all()
         ordering = self.get_ordering()
@@ -57,8 +57,8 @@ class FriendshipRequestSentListView(generic.list.ListView):
             qs = qs.order_by(*ordering)
         return qs
 
-class FriendshipRequestDetail(generic.detail.DetailView):
-    model = FriendshipRequest
+# class FriendshipRequestDetail(generic.detail.DetailView):
+#     model = FriendshipRequest
 
 def accept_request(request, pk):
     friendship_request = FriendshipRequest.objects.get(pk=pk)
@@ -95,3 +95,11 @@ def add_friendship_request(request):
 class addFriendshipRequestView(generic.View):
     def post(self):
         pass
+
+from django.http import JsonResponse
+def remove_friendship(request):
+    to_user_id = request.POST.get('data', None)
+    Friendship.objects.remove_friendship(request.user.id, to_user_id)
+    print('removed?')
+    response = { 'msg': 'received!'}
+    return JsonResponse(response)

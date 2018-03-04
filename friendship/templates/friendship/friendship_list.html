@@ -1,13 +1,29 @@
 {% extends "base.html" %}
+    {% load staticfiles %}
     {% block body %}
-        {% if not object_list %}
+        {% if not friendships %}
         No friends at the moment!
         {% else %}
         here's your friendships:
         <ul>
-            {% for f in object_list  %}
-            <li>{{ f }}</li>
+            {% for f in friendships  %}
+            <li>
+                {{ f }}
+                <button
+                    id="" class="remove-button"
+                    type="button"
+                    data-friendship="{{f.to.id}}"
+                    data-remove-url="{% url 'friendship:remove_friendship' %}"
+                    onclick='myFunction(this)'>
+                    remove
+                </button>
+            </li>
             {% endfor %}
         </ul>
         {% endif %}
+
+        {% block javascript %}
+            <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+            <script src="{% static 'friendship/js/app.js' %}"></script>
+        {% endblock %}
     {% endblock %}
