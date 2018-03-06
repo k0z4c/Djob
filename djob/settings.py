@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
-    'notifications',
     'guardian',
+    'notifications',
     'account.apps.AccountConfig',
     'friendship',
 ]
