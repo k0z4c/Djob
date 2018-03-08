@@ -9,6 +9,8 @@
                 </button>
                 {% live_notify_list list_class="dropdown-menu" %}
             </div>
+    {% block content %}
+        <div>
             {% if messages %}
             <ul class="messages">
             {% for message in messages %}
@@ -30,6 +32,7 @@
             {% endif %}
             {% endif %}
         </header>
+        </div>
         {% if owner %}
             {{ user.email}}
             <a href="{% url 'account:profile_edit' user.email %}">edit</a>

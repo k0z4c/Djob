@@ -14,10 +14,8 @@
         {% block head %}{% endblock %}
     </head>
     <body>
-        <div class="container-fluid">
-        {% block body %}{% endblock %}
-
-        </div>
+        <div id="heading">{% block heading %}{% endblock %}</div>
+        <div id="content">{% block content %}{% endblock %}</div>
 
         <!-- Bootstrap & JQuery js-->
         <script
