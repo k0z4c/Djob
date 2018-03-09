@@ -6,6 +6,7 @@
     {% endblock %}
     
     {% block content %}
+    <div class="container">
         <div>
             {% if messages %}
             <ul class="messages">
@@ -43,4 +44,5 @@
         <section>
             {% include "friendship/_list_friends.html" %}
         </section>
+    </div>
     {% endblock %}
