@@ -10,6 +10,7 @@ class FriendshipRequest(models.Model):
     by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='requests_sent')
     to = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='requests_received')
 
+    read = models.BooleanField(default=False)
     objects = managers.FriendshipRequestManager()
     date = models.DateTimeField(default=timezone.now)
 
