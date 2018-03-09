@@ -103,3 +103,15 @@ def remove_friendship(request):
     print('removed?')
     response = { 'msg': 'received!'}
     return JsonResponse(response)
+
+def friendship_notifications_count(request):
+    # fetch unread requests 
+     unread_requests = FriendshipRequest.objects.filter(
+                        to=request.user.id,
+                        read=False
+                        ).count()
+
+     from django.http import JsonResponse
+     response = { 'unread_notifications': unread_requests }
+     return JsonResponse(response)
+
