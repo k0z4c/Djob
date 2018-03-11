@@ -16,6 +16,8 @@ from django.contrib import messages
 from notifications.signals import notify
 from .models import Friendship, FriendshipRequest
 
+from django.http import JsonResponse
+
 class IndexView(generic.TemplateView):
     template_name = 'friendship/index.html'
 
@@ -90,13 +92,12 @@ def add_friendship_request(request):
         notify.send(request.user, recipient=to, verb='has sent you a request.')
         return HttpResponseRedirect(reverse('account:profile_detail', args=[to_email]))
     # error message
-    return HttpResponse('boh!')
+    return HttpResponse('test!')
 
 class addFriendshipRequestView(generic.View):
     def post(self):
         pass
 
-from django.http import JsonResponse
 def remove_friendship(request):
     to_user_id = request.POST.get('data', None)
     Friendship.objects.remove_friendship(request.user.id, to_user_id)
@@ -106,12 +107,11 @@ def remove_friendship(request):
 
 def friendship_notifications_count(request):
     # fetch unread requests 
-     unread_requests = FriendshipRequest.objects.filter(
+    unread_requests = FriendshipRequest.objects.filter(
                         to=request.user.id,
                         read=False
                         ).count()
 
-     from django.http import JsonResponse
-     response = { 'unread_notifications': unread_requests }
-     return JsonResponse(response)
+    response = { 'unread_notifications': unread_requests }
+    return JsonResponse(response)
 

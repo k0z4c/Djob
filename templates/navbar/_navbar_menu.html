@@ -24,6 +24,7 @@
     <li class="nav-item">
       <a class="nav-link" href="">
         <img class="navbar-icon-svg" src="{% static 'svg/organization.svg' %}">
+        <span id="friendship-badge" class="badge badge-primary" data-url="{% url 'friendship:friendship_notifications_count' %}"></span>
       </a>
     </li>
     <li class="nav-item">
@@ -38,3 +39,4 @@
     </li>
   </ul>
 </div>
+
