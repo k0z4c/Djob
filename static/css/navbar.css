@@ -10,8 +10,49 @@
     color: green;
 }
 
-.navbar-icon-svg {
+/*.navbar-icon-svg {
     width: 50px;
     height: 20px;
+}*/
+
+#navbarSupportedContent {
+    padding-right: 300px;
 }
 
+.img-fluid { 
+    width: 15%;  
+}
+
+.dropdown-item { 
+    font-size: 85%;
+}
+
+ul.notification-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notify-badge{
+    position:absolute;
+    background: red;
+    border-radius: 50%;
+}
+.dropdown-toggle::after {
+    display:none;
+}
+
+.mybadge::after {
+    content:attr(data-badge);
+    position:absolute;
+    top:-10px;
+    right:-10px;
+    font-size:.7em;
+    background:green;
+    color:white;
+    width:18px;height:18px;
+    text-align:center;
+    line-height:18px;
+    border-radius:50%;
+    box-shadow:0 0 1px #333;
+}
