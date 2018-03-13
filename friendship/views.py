@@ -122,7 +122,7 @@ def friendship_notifications_list(request):
         read=False,
         ).order_by('-date')[:3]
 
-    data = { k: [v.by.email, v.date, v.by.get_absolute_url()] for k, v in enumerate(unread_requests)}
+    data = { k: [v.by.email, v.date, v.by.get_absolute_url(), v.by.profile.img.url ] for k, v in enumerate(unread_requests)}
     print(data)
     return JsonResponse(data)
 

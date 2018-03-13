@@ -26,8 +26,9 @@ function fetchFriendshipList(){
     success: function(data){
       notifications = '';
       for (let k of Object.keys(data)){
-        notifications += '<li class="dropdown-item">' + 
-          `<a href=\"${data[k][2]}\"> ${data[k][0]} ${formatDate(data[k][1])} </a>` +
+        notifications += '<li class="px-auto dropdown-item">' + 
+          `<img class="img-thumbnail rounded img-fluid" src=${data[k][3]}/>` + 
+          `<a href=\"${data[k][2]}\"> ${data[k][0]} | ${formatDate(data[k][1])} </a>` +
           '</li>';
       }
       $('#friendship-request-list').html(notifications);
