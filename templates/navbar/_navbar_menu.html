@@ -25,8 +25,12 @@
         <img class="navbar-icon-svg" src="{% static 'svg/organization.svg' %}">
       </a>
       <div class="dropdown-menu">
+          <ul id="friendship-request-list" data-url="{% url 'friendship:friendship_notifications_list' %}">
+            
+          </ul>
+        </span>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">see all your requests</a>
+        <a class="dropdown-item" data-url="{% url 'friendship:friendship_notifications_list' %}" href="#">see all your requests</a>
       </div>
       <span id="friendship-badge" class="badge badge-primary" data-url="{% url 'friendship:friendship_notifications_count' %}"></span>
     </li>

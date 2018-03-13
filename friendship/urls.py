@@ -38,6 +38,11 @@ urlpatterns = [
         views.friendship_notifications_count,
         name='friendship_notifications_count'
     ),
+     url(
+        r'^ajax/unread_friendship_list/$',
+        views.friendship_notifications_list,
+        name='friendship_notifications_list'
+    ),
     url(
         r'^(?P<pk>[0-9]+)/accept/$',
         views.accept_request,
