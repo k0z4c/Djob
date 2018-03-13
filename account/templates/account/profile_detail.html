@@ -12,7 +12,7 @@
             </ul>
             {% endif %}
             {% if profile.img %}
-            <img src="{{profile.img.url}}" alt="">
+            <img class="img-fluid rounded"src="{{profile.img.url}}" alt="">
             {% if owner %}
             <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
             <a href="{% url 'authentication:logout' %}">logout</a>

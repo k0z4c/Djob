@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-  <form class="form-inline my-2 my-lg-0">
+  <form class="form-inline mx-auto my-2 my-lg-0">
     <input class="form-control mr-sm-2" type="text" placeholder="Search">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
   </form>
@@ -23,16 +23,16 @@
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
         <img class="navbar-icon-svg" src="{% static 'svg/organization.svg' %}">
+        <span id="friendship-badge" class="badge badge-primary" data-url="{% url 'friendship:friendship_notifications_count' %}">
+      </span>
       </a>
       <div class="dropdown-menu">
-          <ul id="friendship-request-list" data-url="{% url 'friendship:friendship_notifications_list' %}">
+          <ul class="notification-list" id="friendship-request-list" data-url="{% url 'friendship:friendship_notifications_list' %}">
             
           </ul>
-        </span>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" data-url="{% url 'friendship:friendship_notifications_list' %}" href="#">see all your requests</a>
       </div>
-      <span id="friendship-badge" class="badge badge-primary" data-url="{% url 'friendship:friendship_notifications_count' %}"></span>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'account:profile_edit' request.user.email %}">
