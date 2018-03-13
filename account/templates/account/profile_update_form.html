@@ -1,9 +1,11 @@
-{% extends "base.html" %}
+{% extends "navbar/navbar_page.html" %}
     {% block content %}
+    <div class="container">
     <form class="" action="" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         {{f1.as_p}}
         {{f2.as_p}}
         <input type="submit" name="" value="submit">
     </form>
+    </div>
     {% endblock %}
