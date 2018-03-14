@@ -9,14 +9,11 @@ class ProfileEditForm(forms.ModelForm):
         model = Profile
         fields = ['description', 'img']
 
-    # def clean_img(self):
-    #     from io import BytesIO
-    #     from PIL import Image
-    #     from copy import copy
-    #
-    #     cleaned_data = copy(self.cleaned_data['img']) # django.core.files.uploadefile.InMemoryUploadedFile
-    #     # bytesio object
-    #     img = Image.open(cleaned_data)
-    #     cleaned_data.file = BytesIO(img.tobytes())
-    #     print('returning')
-    #     return cleaned_data
+    def save(self, commit=True):
+        if commit: self._replace_avatar_image()
+        super(forms.ModelForm, self).save(commit)
+
+    def _replace_avatar_image(self):
+        profile = Profile.objects.get(user=self.instance.user)
+        Profile.objects.check_and_delete_avatar_image(profile)
+

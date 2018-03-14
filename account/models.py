@@ -11,11 +11,18 @@ def manage_upload(instance, filename):
     print("[*] manage_upload  called")
     opts = {
         'user_id': instance.user.id,
-        'datetime': timezone.now(),
         'file': filename,
-
         }
-    return '{user_id}/{datetime:%Y/%m/%d}/{file}'.format(**opts)
+    return '{user_id}/{file}'.format(**opts)
+
+
+class ProfileManager(models.Manager):
+    def check_and_delete_avatar_image(self, profile):
+        p = self.get(pk=profile.id)
+        import os
+        if p.img:
+            os.remove(p.img.path)
+
 
 
 class Profile(models.Model):
@@ -37,6 +44,7 @@ class Profile(models.Model):
     actual_job = models.CharField(max_length=200, default='', blank=True)
     phone_number = models.CharField(max_length=100, default='', blank=True)
 
+    objects = ProfileManager()
     def get_absolute_url(self):
         return reverse(
             'account:profile_detail',
@@ -50,4 +58,3 @@ class Profile(models.Model):
             return '/static/svg/octoface.svg'
         else:
             return self.img.url
-
