@@ -31,7 +31,6 @@ class Profile(models.Model):
     img = AvatarImageField(
         default_width=200,
         default_height=200,
-        default='defaultprofile.png',
         upload_to=manage_upload,
         )
     description = models.TextField(max_length=200, default='', blank=True)
@@ -45,3 +44,10 @@ class Profile(models.Model):
                 'email': self.user.email
                 }
             )
+
+    def get_image(self):
+        if not self.img:
+            return '/static/svg/octoface.svg'
+        else:
+            return self.img.url
+

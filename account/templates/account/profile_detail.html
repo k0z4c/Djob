@@ -11,8 +11,7 @@
             {% endfor %}
             </ul>
             {% endif %}
-            {% if profile.img %}
-            <img class="img-fluid rounded"src="{{profile.img.url}}" alt="">
+            <img class="img-fluid rounded-circle" src="{{profile.get_image}}" alt="">
             {% if owner %}
             <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
             <a href="{% url 'authentication:logout' %}">logout</a>
@@ -22,7 +21,6 @@
                 <button disabled>request sended</button >
             {% else %}
                 {% include "friendship/_add_friend_button.html" %}
-            {% endif %}
             {% endif %}
         </div>
         {% if owner %}
