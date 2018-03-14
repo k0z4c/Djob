@@ -34,9 +34,9 @@ class Profile(models.Model):
         default='defaultprofile.png',
         upload_to=manage_upload,
         )
-    description = models.TextField(max_length=200)
-    actual_job = models.CharField(max_length=200)
-    phone_number = models.CharField(max_length=100)
+    description = models.TextField(max_length=200, default='', blank=True)
+    actual_job = models.CharField(max_length=200, default='', blank=True)
+    phone_number = models.CharField(max_length=100, default='', blank=True)
 
     def get_absolute_url(self):
         return reverse(
