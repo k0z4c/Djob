@@ -17,6 +17,7 @@ from authentication.forms import UserEditForm
 from guardian.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from friendship.models import FriendshipRequest, Friendship
 from django.db.models import Q
+
 def index(request):
     '''
     redirects to profile detail view.
@@ -28,17 +29,18 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
     '''
     Renders the profile requested by URL.
     '''
+
     model = Profile
 
     def get_object(self, queryset=None):
         if self.request.user.email == self.kwargs.get('email'):
             return self.request.user.profile
 
-        pino = get_object_or_404(
+        user = get_object_or_404(
             User,
             email=self.kwargs.get('email')
         )
-        return pino.profile
+        return user.profile
 
     def _is_owner(self):
         return self.request.user.email == self.kwargs.get('email')
@@ -55,7 +57,6 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
                 kwargs.update({'friend': True})
             elif FriendshipRequest.objects.check_request(user_visited, self.request.user):
                 kwargs.update({'hang_request': True})
-            print(FriendshipRequest.objects.check_request(user_visited, self.request.user))
             kwargs.update({
             'friends': list(user_visited.contacts.all())
             })
@@ -66,6 +67,7 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
     *_keys are form's fields which are used to split
     fields in POST request.
     '''
+
     template_name = 'account/profile_update_form.html'
     success_url = 'account:profile_detail'
     user_keys = ['email', 'first_name', 'last_name']

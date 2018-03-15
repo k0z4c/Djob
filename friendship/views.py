@@ -59,9 +59,6 @@ class FriendshipRequestSentListView(generic.list.ListView):
             qs = qs.order_by(*ordering)
         return qs
 
-# class FriendshipRequestDetail(generic.detail.DetailView):
-#     model = FriendshipRequest
-
 def accept_request(request, pk):
     friendship_request = FriendshipRequest.objects.get(pk=pk)
     friendship_request.accept()

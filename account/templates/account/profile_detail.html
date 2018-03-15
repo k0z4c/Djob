@@ -3,18 +3,10 @@
 {%load notifications_tags %}
     {% block content %}
     <div class="container">
-        <div>
-            {% if messages %}
-            <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-            </ul>
-            {% endif %}
+        <div>  
             <img class="img-fluid rounded-circle" src="{{profile.get_image}}" alt="">
             {% if owner %}
             <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
-            <a href="{% url 'authentication:logout' %}">logout</a>
             {% elif friend %}
             <p>you are friend</p>
             {% elif hang_request %}
@@ -23,17 +15,8 @@
                 {% include "friendship/_add_friend_button.html" %}
             {% endif %}
         </div>
-        {% if owner %}
-            {{ user.email}}
-            <a href="{% url 'account:profile_edit' user.email %}">edit</a>
-        you are the owner of the page
-
-        {% endif %}
         <section>
-            this is the profile page of {{profile.user.email}}
-            <section>
                 {{profile.description}}
-            </section>
         </section>
         <section>
             {% include "friendship/_list_friends.html" %}
