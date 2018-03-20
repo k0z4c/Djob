@@ -7,3 +7,12 @@ class SkillFactory(factory.DjangoModelFactory):
         model = Skill
 
     user = factory.SubFactory(UserFactory)
+
+    @factory.post_generation
+    def user(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for user in extracted:
+                user.skill_set.add(self)
