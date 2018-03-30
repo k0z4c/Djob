@@ -4,11 +4,21 @@ from .managers import SkillManager
 
 from django.utils import timezone 
 
+class SkillData(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    skill = models.ForeignKey('Skill')
+
+    date = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = (('user', 'skill'),)
+
+    def __str__(self):
+        return self.skill.codename
+
 class Skill(models.Model):
     serial = models.AutoField(primary_key=True)
-    user = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        )
+    
     codename = models.CharField(
         max_length=20,
         unique=True,
@@ -18,6 +28,10 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.codename
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('skill:create_skill')
 
 class Confirmation(models.Model):
     to = models.ForeignKey(
