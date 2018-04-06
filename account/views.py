@@ -60,7 +60,7 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
             'friends': list(user_visited.contacts.all())
             })
         kwargs.update({
-            'first_skills': self.request.user.skilldata_set.all()[:5]
+            'first_skills': self.request.user.skill_set.all()[:5]
             })
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 

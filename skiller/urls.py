@@ -3,9 +3,9 @@ from . import views
 
 urlpatterns = [
     url(
-        r'^create/$',
-        views.create_skill,
-        name='create_skill',
+        r'^add/$',
+        views.add_skill,
+        name='add_skill',
     ),
     url(
         r'^delete/$',

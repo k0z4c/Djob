@@ -1,18 +1,22 @@
 import factory
-from ..models import Skill
+from ..models import Skill, SkillData
 from authentication.tests.factories import UserFactory
 
+class SkillDataFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = SkillData
+        
 class SkillFactory(factory.DjangoModelFactory):
     class Meta:
         model = Skill
 
     user = factory.SubFactory(UserFactory)
+    data = factory.SubFactory(SkillDataFactory)
+    # @factory.post_generation
+    # def user(self, create, extracted, **kwargs):
+    #     if not create:
+    #         return
 
-    @factory.post_generation
-    def user(self, create, extracted, **kwargs):
-        if not create:
-            return
-
-        if extracted:
-            for user in extracted:
-                user.skill_set.add(self)
+    #     if extracted:
+    #         for user in extracted:
+    #             user.skill_set.add(self)

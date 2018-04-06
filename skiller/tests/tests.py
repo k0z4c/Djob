@@ -1,44 +1,86 @@
 from django.test import TestCase
 
-# Create your tests here.
-
-# TODO: some tests on model 
-from .factories import SkillFactory
-from ..models import Skill, Confirmation
-from ..exceptions import SkillExists
 from authentication.tests.factories import UserFactory 
-
 from django.db import IntegrityError
-class SkillTestCase(TestCase):
-    # manager tests
-    def test_decorate_name(self):
-        bad_codename = "sk i    "
-        user = UserFactory()
+from ..exceptions import DuplicatedSkill
+from ..models import Skill, SkillData 
+from .factories import SkillFactory 
+from django.test import Client
+from django.core.urlresolvers import reverse 
 
-        skill = Skill.manager.create_skill(user=user, name=bad_codename)
-        self.assertEqual(skill.codename, 'sk_i')
 
-    def test_skill_exists_error(self):
-        user = UserFactory()
-        codename = 'this is a codename'
-
-        Skill.manager.create_skill(user=user, name=codename) 
-        with self.assertRaises(SkillExists):
-            Skill.manager.create_skill(user=user, name=codename)
-
-    # integrity tests 
-    def test_same_user_double_confirmation_error(self):
-        user = UserFactory()
-        user_confirming = UserFactory()
-
-        skill = SkillFactory(codename='ski', user=(user,))
-        confirm = Confirmation.objects.create(to=user, by=user_confirming, skill=skill)
+class SkillModelTestCase(TestCase):
+    # models integrity checks 
+    def test_double_skill_association_fail(self):
+        skill = SkillFactory(data__codename='hey')
         with self.assertRaises(IntegrityError):
-            Confirmation.objects.create(to=user, by=user_confirming, skill=skill)
+            SkillFactory(user=skill.user, data__codename='hey')
 
-    def test_double_codename_skill(self):
-        skill = SkillFactory(codename='coder')
-        with self.assertRaises(IntegrityError):
-            SkillFactory(codename='coder')
+    def test_manager_add_skill(self):
+        skill_association = Skill.objects.add_skill(user=UserFactory(), name='hey man')
+
+        # add skill that not exists 
+        skill_data = SkillData.objects.get(codename='hey_man')
+        self.assertEqual(skill_data.codename, 'hey_man')
+
+        with self.assertRaises(DuplicatedSkill):
+            Skill.objects.add_skill(user=skill_association.user, name='hey man')
 
 
+class SkillViewTestCase(TestCase):
+    # views tests
+    def setUp(self):
+        self.client = Client()
+        self.user = UserFactory(email='matt@gmail.com', password='pa55worD')
+        self.client.login(username=self.user.email, password='pa55worD')
+
+
+    def test_get_create_skill(self):
+        response = self.client.get(reverse('skill:add_skill'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form']) 
+
+
+    def test_post_add_skill_redirect(self):
+        response = self.client.post(
+            reverse('skill:add_skill'),
+            {'codename': 'skill'},
+            follow=True,
+            )
+        self.assertRedirects(
+            response,
+            reverse('account:profile_detail',
+                args=(self.user.email,)
+                )
+            )
+
+    def test_post_add_skil_message_success(self):
+        response = self.client.post(
+            reverse('skill:add_skill'),
+            {'codename': 'skill'},
+            follow=True,
+            )
+
+        from django.contrib.messages import SUCCESS
+        queue = list(response.context['messages'])
+        self.assertEqual(len(queue), 1)
+        self.assertEqual(queue[0].level, SUCCESS)
+
+    def test_post_add_skill_message_error_double_skill(self):
+        response = self.client.post(
+                reverse('skill:add_skill'),
+                {'codename': 'skill'},
+                follow=True,
+                )
+
+        response = self.client.post(
+                reverse('skill:add_skill'),
+                {'codename': 'skill'},
+                follow=True,
+                )
+
+        from django.contrib.messages import ERROR
+        queue = list(response.context['messages']) 
+        self.assertEqual(len(queue), 1)
+        self.assertEqual(queue[0].level, ERROR)       
