@@ -10,8 +10,6 @@ from django.core.urlresolvers import reverse
 
 
 class SkillModelTestCase(TestCase):
-    # models integrity checks 
-
     def test_user_add_skill_success(self):
         user = UserFactory()
         data = SkillDataFactory(codename='testing')
@@ -21,6 +19,24 @@ class SkillModelTestCase(TestCase):
         self.assertTrue(user.skill_set.get(user=user, data=data))
         self.assertTrue(data.skill_set.get(user=user, data=data))
 
+
+class SkillManagerTestCase(TestCase):
+    def test_add_skill(self): 
+        user = UserFactory()
+
+        skill_ass = Skill.objects.add(user, name='testing')
+
+        self.assertIsInstance(
+            skill_ass, Skill,
+            msg='The returned value must be an instance of Skill class'
+            )
+        self.assertTrue(
+            SkillData.objects.get(_codename='testing') == skill_ass.data,
+            msg='No SkillData instance allocated',
+            )
+
+        with self.assertRaises(DuplicatedSkill):
+            Skill.objects.add(user, name='testing')
 
 
 class SkillViewTestCase(TestCase):
