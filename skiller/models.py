@@ -54,11 +54,16 @@ class Confirmation(models.Model):
 class SkillData(models.Model):
     serial = models.AutoField(primary_key=True) 
     _codename = models.CharField(
-        'codename',
+        db_column='skill name',
         max_length=20,
         unique=True,
         help_text='codename for the skill',
         )
+
+    description = models.TextField(
+        max_length=400,
+        blank=True,
+        help_text='Describe your eventual experience or let blank')
 
     @property
     def codename(self):
