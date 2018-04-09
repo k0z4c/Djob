@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     url(
         r'^add/$',
-        views.add_skill,
+        views.SkillAddView.as_view(),
         name='add_skill',
     ),
     url(

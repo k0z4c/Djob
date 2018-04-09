@@ -4,6 +4,8 @@ from .managers import SkillManager, ConfirmationManager
 
 from django.utils import timezone 
 
+from .helpers import _decorate_name
+
 class Skill(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -50,18 +52,27 @@ class Confirmation(models.Model):
         unique_together = (('skill', 'to', 'by'),)
 
 class SkillData(models.Model):
-    serial = models.AutoField(primary_key=True)  
-    codename = models.CharField(
+    serial = models.AutoField(primary_key=True) 
+    _codename = models.CharField(
+        'codename',
         max_length=20,
         unique=True,
-        help_text='codename for the skill'
+        help_text='codename for the skill',
         )
+
+    @property
+    def codename(self):
+        return self._codename
+
+    @codename.setter
+    def codename(self, value):
+        self._codename = _decorate_name(value)
 
     def __str__(self):
         return self.codename
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('skill:create_skill')
+        return reverse('skill:add_skill')
 
 

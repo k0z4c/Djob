@@ -14,14 +14,14 @@ class SkillModelTestCase(TestCase):
     def test_double_skill_association_fail(self):
         skill = SkillFactory(data__codename='hey')
         with self.assertRaises(IntegrityError):
-            SkillFactory(user=skill.user, data__codename='hey')
+            SkillFactory(user=skill.user, data___codename='hey')
 
     def test_manager_add_skill(self):
         skill_association = Skill.objects.add_skill(user=UserFactory(), name='hey man')
 
         # add skill that not exists 
-        skill_data = SkillData.objects.get(codename='hey_man')
-        self.assertEqual(skill_data.codename, 'hey_man')
+        skill_data = SkillData.objects.get(_codename='hey_man')
+        self.assertEqual(skill_data._codename, 'hey_man')
 
         with self.assertRaises(DuplicatedSkill):
             Skill.objects.add_skill(user=skill_association.user, name='hey man')
@@ -45,20 +45,21 @@ class SkillViewTestCase(TestCase):
     def test_post_add_skill_redirect(self):
         response = self.client.post(
             reverse('skill:add_skill'),
-            {'codename': 'skill'},
+            {'_codename': 'pippo'},
             follow=True,
             )
+
         self.assertRedirects(
             response,
             reverse('account:profile_detail',
-                args=(self.user.email,)
+                args=((self.user.email,)),
                 )
             )
 
     def test_post_add_skil_message_success(self):
         response = self.client.post(
             reverse('skill:add_skill'),
-            {'codename': 'skill'},
+            {'_codename': 'skill'},
             follow=True,
             )
 
@@ -70,13 +71,13 @@ class SkillViewTestCase(TestCase):
     def test_post_add_skill_message_error_double_skill(self):
         response = self.client.post(
                 reverse('skill:add_skill'),
-                {'codename': 'skill'},
+                {'_codename': 'skill'},
                 follow=True,
                 )
 
         response = self.client.post(
                 reverse('skill:add_skill'),
-                {'codename': 'skill'},
+                {'_codename': 'skill'},
                 follow=True,
                 )
 

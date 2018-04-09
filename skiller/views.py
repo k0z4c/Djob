@@ -1,37 +1,36 @@
-from django.shortcuts import render
 
-from django.views.generic import edit
-from django.views.generic import ListView
+from django.views.generic import ListView, edit
+from django.contrib import messages
+from django.views.generic.edit import ModelFormMixin
+from django.urls import reverse 
 
 from .models import Skill, SkillData
-# from .forms import CreateSkillForm
 from .forms import SkillDataForm
+from .errors import DivErrorList
 
-from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib import messages
-from django.shortcuts import redirect 
+class SkillAddView(edit.CreateView):
+    model = SkillData
+    form_class = SkillDataForm
 
-from .exceptions import DuplicatedSkill
-# Create your views here.
+    @property
+    def success_url(self):
+        return reverse('account:profile_detail', args=((self.request.user.email,)))
 
-def add_skill(request):
-    if request.method == 'GET':
-        form =  SkillDataForm()
-        return render(request, 'skiller/skill_form.html', {'form': form})
-    elif request.method == 'POST':
-        form = SkillDataForm(request.POST)
-        if form.is_valid():
-            try:
-                Skill.objects.add_skill(request.user, form.cleaned_data['codename'])
-            except DuplicatedSkill:
-                messages.error(request, 'You have yet this skill', extra_tags='alert alert-danger')
-            else:
-                messages.success(request, 'success!', extra_tags='alert alert-success')
-        else:
-            messages.error(request, 'The form is not valid', extra_tags='alert alert-danger')
+    def form_valid(self, form):
+        self.object = form.save(self.request.user)
+        messages.success(self.request, 'success!', extra_tags='alert alert-success')
+        return super(ModelFormMixin, self).form_valid(form)
+        
+    def form_invalid(self, form):
+        return super(ModelFormMixin, self).form_invalid(form)
 
-        return redirect('account:profile_detail', request.user.email)
-
+    def get_form_kwargs(self):
+        kwargs = super(SkillAddView, self).get_form_kwargs()
+        kwargs.update({
+            'error_class': DivErrorList,
+            })
+        return kwargs
+  
 class SkillDeleteView(edit.DeleteView):
     pass
 #     model = Skill
