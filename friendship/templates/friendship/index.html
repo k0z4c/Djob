@@ -1,5 +1,6 @@
-{% extends "base_nav.html" %}
-    {% block body %}
+{% extends "navbar/navbar_page.html" %}
+    {% block content %}
+    <div class="container">
         <h1>Welcome to the friendship page.</h1>
         <p>here you can manage your friendships/requests</p>
 
@@ -10,4 +11,5 @@
         to show the requests received and handle them.</p>
         <p>click <a href="{% url 'friendship:requests_sent' %}">here</a>
         to show the requests you've sent and delete them.</p>
+    </div>
     {% endblock %}
