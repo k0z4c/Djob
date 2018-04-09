@@ -1,0 +1,10 @@
+{% extends "navbar/navbar_page.html"%}
+{% block content %}
+    <div class="container">
+        <ul>
+            {% for skill in skills %}
+            <li>{{skill}}</li>
+            {% endfor %}
+        </ul> 
+    </div>
+{% endblock %}
