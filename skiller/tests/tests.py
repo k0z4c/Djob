@@ -10,14 +10,32 @@ from django.core.urlresolvers import reverse
 
 
 class SkillModelTestCase(TestCase):
-    def test_user_add_skill_success(self):
-        user = UserFactory()
-        data = SkillDataFactory(codename='testing')
+    def setUp(self):
+        self.user = UserFactory()
+        self.data = SkillDataFactory(codename='testing')
 
-        Skill.objects.create(user=user, data=data)
-        self.assertTrue(Skill.objects.get(user=user, data=data))
-        self.assertTrue(user.skill_set.get(user=user, data=data))
-        self.assertTrue(data.skill_set.get(user=user, data=data))
+    def test_user_add_skill_success(self):
+        Skill.objects.create(user=self.user, data=self.data)
+        self.assertTrue(Skill.objects.get(user=self.user, data=self.data))
+        self.assertTrue(self.user.skill_set.get(user=self.user, data=self.data))
+        self.assertTrue(self.data.skill_set.get(user=self.user, data=self.data))
+
+    def test_double_skill_error(self):
+        Skill.objects.create(user=self.user, data=self.data)
+        with self.assertRaises(IntegrityError):
+            Skill.objects.create(user=self.user, data=self.data)
+
+    def test_user_can_have_multiple_skills(self):
+        data2 = SkillDataFactory(codename='test')
+
+        Skill.objects.create(user=self.user, data=self.data)
+        Skill.objects.create(user=self.user, data=data2)
+        self.assertEqual(self.user.skill_set.filter().count(), 2)
+
+    def tearDown(self):
+        del self.user
+        del self.data
+
 
 
 class SkillManagerTestCase(TestCase):
@@ -38,6 +56,12 @@ class SkillManagerTestCase(TestCase):
         with self.assertRaises(DuplicatedSkill):
             Skill.objects.add(user, name='testing')
 
+    def test_user_can_have_multiple_skills(self):
+        user = UserFactory()
+        Skill.objects.add(user, name='testing')
+        Skill.objects.add(user, name='test')
+
+        self.assertEqual(user.skill_set.filter().count(), 2)
 
 class SkillViewTestCase(TestCase):
     # views tests
