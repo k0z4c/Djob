@@ -1,5 +1,6 @@
 {% extends "navbar/navbar_page.html"%}
 {% block content %}
+{% load crispy_forms_tags %}
 {% if messages %}
     <div class="container">
     {% for message in messages %}
@@ -8,10 +9,6 @@
     </div>
 {% endif %}
 <div class="container">
-    <form action="" method="post">
-        {% csrf_token %}
-        {{form.as_p}}
-    <input type="submit" value="save">
-    </form>
+    {% crispy form %}
 </div>
 {% endblock %}

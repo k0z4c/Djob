@@ -7,7 +7,7 @@ class DivErrorList(ErrorList):
     def as_divs(self):
         return '<div class="errorlist">{}</div>'.format(
             ''.join(
-                [ '<div class="error">{}</div>'.format(e) for e in self]
+                [ '<div class="error">{}</div>'.format(e) for e in self ]
                 )
             )
    

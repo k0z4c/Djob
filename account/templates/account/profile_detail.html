@@ -5,18 +5,18 @@
     <div class="container">
         <div>
             {% if messages %}
-            <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-            </ul>
+                <div class="messages">
+                {% for message in messages %}
+                    <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+                {% endfor %}
+                </div>
             {% endif %}
             <img class="img-fluid rounded-circle" src="{{profile.get_image}}" alt="">
             {% if owner %}
-            <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
-            <a href="{% url 'authentication:logout' %}">logout</a>
+                <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
+                <a href="{% url 'authentication:logout' %}">logout</a>
             {% elif friend %}
-            <p>you are friend</p>
+                <p>you are friend</p>
             {% elif hang_request %}
                 <button disabled>request sended</button >
             {% else %}
@@ -26,12 +26,13 @@
         {% if owner %}
             {{ user.email}}
             <a href="{% url 'account:profile_edit' user.email %}">edit</a>
-        you are the owner of the page
+            you are the owner of the page
 
         {% endif %}
         <section>
             this is the profile page of {{profile.user.email}}
             <section>
+                <a href="{% url 'skill:add_skill' %}">add some skill</a>
                 {{profile.description}}
                 {% include "skiller/show_skills.html" %}
             </section>

@@ -1,0 +1,25 @@
+{% extends "navbar/navbar_page.html"%}
+{% block content %}
+    <div class="container">
+    {% if not form.data %}
+        <p>You have not skills; <a href="{% url 'skill:add_skill' %}">add</a> one now.</p>
+    {% else %}
+        {% load crispy_forms_tags %}
+            {% crispy form %}
+        {% block javascript %}
+            <script>
+            $('#submit-id-submit').click(function(e){
+                    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                    var checkedOne = Array.prototype.slice.call(checkboxes).some(x => x.checked);
+
+                    if(!checkedOne){
+                        //no triggering the submit 
+                        e.preventDefault();
+                    }
+                }
+            );
+            </script>
+        {% endblock %}
+    {% endif %}
+    </div>
+{% endblock %}
