@@ -4,7 +4,7 @@ from ..models import FriendshipRequest, Friendship
 from authentication.tests.factories import UserFactory
 from django.db import IntegrityError
 
-from .exceptions import FriendshipExists
+from ..exceptions import FriendshipExists
 # Create your tests here.
 
 class FriendshipManagerTestCase(TestCase):

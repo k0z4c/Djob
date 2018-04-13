@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^account/', include('account.urls', namespace='account')),
     url(r'^friendship/', include('friendship.urls', namespace='friendship')),
     url(r'^', include('authentication.urls', namespace='authentication')),
+    url(r'^skill/', include('skiller.urls', namespace='skill')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT, show_indexes=True)

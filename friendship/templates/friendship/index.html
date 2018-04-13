@@ -1,15 +1,15 @@
 {% extends "navbar/navbar_page.html" %}
     {% block content %}
-        <div class="container">
-            <h1>Welcome to the friendship page.</h1>
-            <p>here you can manage your friendships/requests</p>
+    <div class="container">
+        <h1>Welcome to the friendship page.</h1>
+        <p>here you can manage your friendships/requests</p>
 
-            <p>your profile <a href="{% url 'account:profile_detail' request.user.email %}">here</a></a></p>
-            <p>click <a href="{% url 'friendship:show_friendships' %}">here</a>
-            to show a list of your friendships and manage them.</p>
-            <p>click <a href="{% url 'friendship:requests_received' %}">here</a>
-            to show the requests received and handle them.</p>
-            <p>click <a href="{% url 'friendship:requests_sent' %}">here</a>
-            to show the requests you've sent and delete them.</p>
-        </div>
+        <p>your profile <a href="{% url 'account:profile_detail' request.user.email %}">here</a></a></p>
+        <p>click <a href="{% url 'friendship:show_friendships' %}">here</a>
+        to show a list of your friendships and manage them.</p>
+        <p>click <a href="{% url 'friendship:requests_received' %}">here</a>
+        to show the requests received and handle them.</p>
+        <p>click <a href="{% url 'friendship:requests_sent' %}">here</a>
+        to show the requests you've sent and delete them.</p>
+    </div>
     {% endblock %}

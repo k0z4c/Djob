@@ -36,11 +36,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'crispy_forms',
     'authentication',
     'guardian',
     'notifications',
     'account.apps.AccountConfig',
     'friendship',
+    'skiller',
 ]
 
 MIDDLEWARE = [
@@ -148,3 +151,5 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

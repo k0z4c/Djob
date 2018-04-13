@@ -60,6 +60,9 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
             kwargs.update({
             'friends': list(user_visited.contacts.all())
             })
+        kwargs.update({
+            'first_skills': self.request.user.skill_set.all()[:5]
+            })
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 
 class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.TemplateResponseMixin, generic.base.View):
