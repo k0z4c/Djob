@@ -5,6 +5,8 @@ from authentication.tests.factories import UserFactory
 class SkillDataFactory(factory.DjangoModelFactory):
     class Meta:
         model = SkillData
+
+    codename = factory.Faker('first_name')
         
 class SkillFactory(factory.DjangoModelFactory):
     class Meta:
@@ -12,6 +14,7 @@ class SkillFactory(factory.DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     data = factory.SubFactory(SkillDataFactory)
+
     # @factory.post_generation
     # def user(self, create, extracted, **kwargs):
     #     if not create:
