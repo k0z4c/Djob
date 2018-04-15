@@ -1,11 +1,11 @@
 
 from django.views.generic import ListView, edit
 from django.contrib import messages
-from django.views.generic.edit import ModelFormMixin
 from django.urls import reverse, reverse_lazy
 from .errors import DivErrorList
 from django.core.exceptions import ValidationError
 
+from .exceptions import DuplicatedSkill
 from .models import (
     Skill, SkillData
 )
@@ -22,35 +22,51 @@ class SkillAddView(edit.FormView):
     def success_url(self):
         return reverse('account:profile_detail', args=((self.request.user.email,)))
 
-    def form_valid(self, form): 
-        ''' the form is valid so '''
+    def form_valid(self, form):
         codename = form.cleaned_data['codename']
-        skill_data = SkillData(_codename=codename)
-        '''
-            After form validation we have to do 
-            instance validation on SkillData.
-            If no errors, then we add the Skill
-            association.
-        '''
-        try:
-            skill_data.full_clean()
-        except ValidationError as e:
-            codename_errors = e.message_dict['_codename']
-            for error_message in codename_errors:
-                messages.error(
-                    self.request,
-                    message=error_message,
-                    extra_tags='alert alert-danger'
-                )
-                return self.form_invalid(form)
-        else:
-            Skill.objects.add(self.request.user, name=codename)
-            messages.success(
-                self.request,
-                message='Skill added successfully 😎',
-                extra_tags='alert alert-success')
+        skill_data = SkillData(codename=codename)
+        if not (
+            self._validate_input(skill_data) 
+                and 
+            self._check_not_duplicated(skill_data.codename)
+            ): 
+            return self.form_invalid(form)
 
-        return super(SkillAddView, self).form_valid(form)
+        messages.success(
+            self.request,
+            message='skills updated successfully',
+            extra_tags='alert alert-success'
+            )
+        return super(edit.FormView, self).form_valid(form)
+
+    def _validate_input(self, skill_data):
+        try:
+            skill_data.clean_fields()
+        except ValidationError as e:
+            for error_field in e.message_dict:
+                for error in e.message_dict[error_field]:
+                        messages.error(
+                            self.request,
+                            message=error,
+                            extra_tags='alert alert-danger'
+                        )
+            return False
+        return True
+
+    def _check_not_duplicated(self, codename):
+        try:
+            Skill.objects.add(
+                user=self.request.user,
+                name=codename
+                )
+        except DuplicatedSkill:
+            messages.error(
+                self.request,
+                message='duplicated skill',
+                extra_tags='alert alert-danger'
+                )
+            return False
+        return True
 
     def get_form_kwargs(self):
         kwargs = super(SkillAddView, self).get_form_kwargs()
@@ -83,5 +99,4 @@ class SkillDeleteView(edit.FormView):
 class SkillListView(ListView):
     model = Skill
     context_object_name = 'skills'
-
 

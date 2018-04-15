@@ -4,6 +4,8 @@ from .managers import SkillManager, ConfirmationManager
 
 from django.utils import timezone 
 
+from .validators import validate_chars
+
 from .helpers import _decorate_name
 
 class Skill(models.Model):
@@ -57,6 +59,7 @@ class SkillData(models.Model):
         db_column='skill name',
         max_length=20,
         unique=True,
+        validators = [validate_chars,],
         help_text='codename for the skill',
         )
 

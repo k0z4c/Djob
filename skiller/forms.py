@@ -24,13 +24,6 @@ class SkillDataForm(forms.Form):
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
 
-    def save(self, user, commit=True):
-        skilldata = super(SkillDataForm, self).save(commit)
-        Skill.objects.create(user=user, data=skilldata)
-        return skilldata
-
-
-
 class SkillMultipleSelectForm(forms.Form):
 
     data = forms.ModelMultipleChoiceField(
