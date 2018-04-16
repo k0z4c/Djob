@@ -1,11 +1,12 @@
 from django.db import models
-from django.conf import settings 
-from .managers import SkillManager, ConfirmationManager
-
+from django.conf import settings
 from django.utils import timezone 
 
-from .validators import validate_chars
+from .managers import (
+    SkillManager, ConfirmationManager
+    )
 
+from .validators import validate_chars
 from .helpers import _decorate_name
 
 class Skill(models.Model):

@@ -1,7 +1,7 @@
 from django.db import models 
-from .exceptions import SkillExists, CodenameError, DuplicatedSkill 
-from django.db import IntegrityError 
+from django.db import IntegrityError
 
+from .exceptions import DuplicatedSkill 
 from .helpers import _decorate_name
 
 class SkillManager(models.Manager):

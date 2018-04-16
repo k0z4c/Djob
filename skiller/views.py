@@ -2,14 +2,13 @@
 from django.views.generic import ListView, edit
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
-from .errors import DivErrorList
 from django.core.exceptions import ValidationError
 
 from .exceptions import DuplicatedSkill
+from .errors import DivErrorList
 from .models import (
     Skill, SkillData
 )
-
 from .forms import (
     SkillDataForm, SkillMultipleSelectForm
 )
