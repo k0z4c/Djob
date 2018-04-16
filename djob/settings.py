@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'friendship',
     'skiller',
+    'messanger',
 ]
 
 MIDDLEWARE = [
