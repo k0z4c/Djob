@@ -98,14 +98,7 @@ class SkillManagerTestCase(TestCase):
 
         # to continue..
 
-
-# todo
-from ..forms import SkillDataForm
-class SkillFormTestCase(TestCase): 
-    pass
-
-
-class SkillViewTestCase(TestCase):
+class SkillAddViewTestCase(TestCase):
     # views tests
     def setUp(self):
         self.client = Client()
@@ -136,40 +129,65 @@ class SkillViewTestCase(TestCase):
                 )
             )
 
-    def test_post_add_skil_message_success(self):
+    def test_add_skill_success(self):
+        codename = 'testing'
         response = self.client.post(
             reverse('skill:add_skill'),
-            {'codename': 'skill'},
-            follow=True,
+            {'codename': codename, },
+            follow=True
             )
+
+        self.assertTrue(
+            SkillData.objects.filter(_codename=codename).exists(),
+        )
 
         from django.contrib.messages import SUCCESS
         queue = list(response.context['messages'])
         self.assertEqual(len(queue), 1)
         self.assertEqual(queue[0].level, SUCCESS)
 
-    def test_post_add_skill_message_error(self):
-        '''
-            check for duplicated skill error message
-        '''
-        self.client.post(
-            reverse('skill:add_skill'),
-            {'codename': 'skill'},
-            follow=True,
-            )
 
+    def test_codename_invalid_chars(self):
+        codename = '<#testing?01'
         response = self.client.post(
             reverse('skill:add_skill'),
-            {'codename': 'skill'},
-            follow=True,
+            {'codename': codename, },
+            follow=True
             )
-        
+
+        self.assertFalse(
+            SkillData.objects.filter(_codename=codename).exists(),
+        )
+
         from django.contrib.messages import ERROR
         queue = list(response.context['messages'])
         self.assertEqual(len(queue), 1)
         self.assertEqual(queue[0].level, ERROR)
 
 
+    def test_codename_duplicated(self):
+        codename = 'testing'
+        self.client.post(
+            reverse('skill:add_skill'),
+            {'codename': codename, },
+            follow=True
+            )
+        response = self.client.post(
+            reverse('skill:add_skill'),
+            {'codename': codename, },
+            follow=True
+            )
 
+        from django.contrib.messages import ERROR
+        queue = list(response.context['messages'])
+        self.assertEqual(len(queue), 1)
+        self.assertEqual(queue[0].level, ERROR)
 
-       
+### TODO ####
+class SkillDeleteTestCase(TestCase):
+    pass
+
+from ..forms import SkillDataForm
+class SkillFormTestCase(TestCase): 
+    pass
+

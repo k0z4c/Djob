@@ -28,7 +28,7 @@ class SkillAddView(edit.FormView):
         if not (
             self._validate_input(skill_data) 
                 and 
-            self._check_not_duplicated(skill_data.codename)
+            self._insert_if_not_duplicated(skill_data.codename)
             ): 
             return self.form_invalid(form)
 
@@ -53,7 +53,7 @@ class SkillAddView(edit.FormView):
             return False
         return True
 
-    def _check_not_duplicated(self, codename):
+    def _insert_if_not_duplicated(self, codename):
         try:
             Skill.objects.add(
                 user=self.request.user,
