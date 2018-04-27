@@ -1,0 +1,14 @@
+{% extends "navbar/navbar_page.html"%}
+{% block content %}
+{% load crispy_forms_tags %}
+{% if messages %}
+    <div class="container">
+    {% for message in messages %}
+        <p class="{{message.tags}}">{{message}}</p>
+    {% endfor %}
+    </div>
+{% endif %}
+<div class="container">
+    {% crispy form %}
+</div>
+{% endblock %}

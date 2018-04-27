@@ -1,0 +1,54 @@
+{% extends "navbar/navbar_page.html"%}
+{% block content %}
+    <div class="container">
+    {% if not conversation_list %}
+        <p>no conversations :(</p>
+    {% else %}
+        <section>
+            write a <a href="{% url 'messanger:create_message' %}">message</a>
+        </section>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">from</th>
+                    <th scope="col">last message</th>
+                    <th scope="col">read at</th>
+                    <th scope="col">sent at</th>
+                </tr>
+            </thead>
+            {% for conversation in conversation_list %}
+            <tr>
+                <td>
+{% comment %}                    <a href="{{conversation.get_absolute_url}}">
+                    {% if request.user == conversation.user %}
+                        {{conversation.recipient.email}}
+                    {% else %}
+                        {{conversation.user.email}}
+                    {% endif %}
+                    </a> 
+{% endcomment %}
+                    <a href="{{conversation.get_absolute_url}}">
+                    {% for user in conversation.users.all %}
+                        {% if user != request.user %}
+                            {{user}}
+                        {% endif %}
+                    {% endfor %}
+                    </a>
+                </td>
+                <td>
+                    {{conversation.last_message}}
+                </td>
+                <td>
+                    {% if conversation.last_message.read_at %}
+                        {{conversation.last_message.read_at}}
+                    {% else %}
+                        not readed
+                    {% endif %}
+                </td>
+                <td>{{conversation.last_message.sent_at}}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
+    </div>
+{% endblock %}
