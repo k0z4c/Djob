@@ -2,6 +2,8 @@ from django.db import models
 from .exceptions import FriendshipRequestExists
 from django.db.models import Q
 
+from authentication.models import User 
+
 class FriendshipRequestManager(models.Manager):
     def send_request(self, by, to):
         request = self.filter(by=by, to=to)
@@ -14,6 +16,13 @@ class FriendshipRequestManager(models.Manager):
         return self.filter(q).exists()
 
 class FriendshipManager(models.Manager):
+    def get_friends(self, user):
+        '''returns a queryset of User friends'''
+        qs = User.objects.filter(
+            contacts__to=user,
+            )
+        return qs 
+
     def are_friends(self, us1, us2):
         qs = self.filter(
             Q(by=us1) & Q(to=us2)
@@ -23,7 +32,7 @@ class FriendshipManager(models.Manager):
         return qs.exists()
 
     def add_friend(self, us1, us2):
-        if are_friends(us1, us2):
+        if self.are_friends(us1, us2):
             raise FriendshipExists
 
         self.create(by=us1, to=us2)
