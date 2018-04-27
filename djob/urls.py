@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^inbox/notification', include('notifications.urls', namespace='notifications')),
     url(r'^account/', include('account.urls', namespace='account')),
     url(r'^friendship/', include('friendship.urls', namespace='friendship')),
+    url(r'^messanger/', include('messanger.urls', namespace='messanger')),
     url(r'^', include('authentication.urls', namespace='authentication')),
     url(r'^skill/', include('skiller.urls', namespace='skill')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT, show_indexes=True)
