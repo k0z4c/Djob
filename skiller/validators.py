@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 
 def validate_chars(input):
+    # to change defining valid chars 
     import string
     bad_chars = string.digits + string.whitespace + string.punctuation 
     is_bad_char = lambda c: c in bad_chars
