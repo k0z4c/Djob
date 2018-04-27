@@ -1,43 +1,100 @@
 from django.db import models
-from django.utils import timezone 
-from django.db import IntegrityError
-
 from djob import settings 
+from django.urls import reverse 
+from django.db.models import Q
+from django.utils import timezone
 
+class ConversationManager(models.Manager):
+    def get_or_create_conversation(self, user, users):
+        for conversation in user.conversation_set.all():
+            if conversation.users == users:
+                return conversation
 
-class MessageManager(models.Manager):
-    pass
+        conversation = self.create()
+        conversation.users = users
+        return conversation
 
 class Conversation(models.Model):
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
-    is_broadcast = models.BooleanField(default=False)
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_message_date = models.DateTimeField(auto_now=True)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
-class ReadQueue(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    date_read = models.DateTimeField(auto_now_add=True)
+    first_message = models.OneToOneField(
+        'Message',
+        related_name='first_message',
+        null=True
+        )
+    last_message = models.OneToOneField(
+        'Message',
+        related_name='last_message',
+        null=True
+        )
+
+    objects = ConversationManager()
+
+    def get_absolute_url(self):
+        return reverse('messanger:conversation_messages', args=(self.id,))
+
+    def get_unread_messages(self, user):
+        qs = self.messages.filter(read_at__has_key=user.email)
+        return qs
+
+class GroupConversation(Conversation):
+    '''
+    Group concept is more specific than a Conversation.
+    we have a title in a group conversation; it is handled 
+    in a different manner; different maanger maybe also
+    '''
+    pass
+
+from django.contrib.postgres.fields import JSONField
+from django.core.serializers.json import DjangoJSONEncoder
+# https://docs.djangoproject.com/en/1.11/topics/serialization/
+
+class DataJSONField(JSONField):
+    def deserialize_ecma262_datetime(self, value):
+        # https://www.ecma-international.org/ecma-262/5.1/#sec-15.9.1.15
+        # value = 'YYYY-MM-DDTHH:mm:ss.sss[Z|([+|-]HH:mm)]'
+        value = value.replace(':', '')
+        if value.endswith('Z'):
+            value = value.replace('Z', '+0000')
+
+        from datetime import datetime
+        format_ecma262  = '%Y-%m-%dT%H%M%S.%f%z'
+        return datetime.strptime(value, format_ecma262)
+
+    def parse_datetime(self, value):
+        value = { k: self.deserialize_ecma262_datetime(v) for k, v in value.items() }
+        return value
+
+    def from_db_value(self, value, expression, connection, context):
+        if value is None:
+            return value
+        return self.parse_datetime(value)
 
 class Message(models.Model):
-    conversation = models.ForeignKey(Conversation)
-    readed_by = models.ForeignKey(ReadQueue)
 
-    creation_date = models.DateTimeField(auto_now_add=True)
-    content = models.TextField(max_length=200)
+    conversation = models.ForeignKey(
+        Conversation,
+        related_name='messages',
+        null=True
+    )
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL)
 
-    object = MessageManager()
+    read_at = DataJSONField(encoder=DjangoJSONEncoder, default=dict)
+    message = models.TextField(max_length=200)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    # deleted_at = DataJSONField(ecoder=DjangoJSONEncoder, default=dict)
+
+    def read(self, user):
+        self.read_at.update({user.email: timezone.now()})
+
+    def is_read_by(self, user):
+        return self.read_at.get(user.email, '')
+
+    # to remove
+    def is_deleted_by_recipient(self):
+        return bool(self.recipient_deleted_at)
 
     def __str__(self):
-        return self.content
+        return self.message[:100]
 
-    # def read(self, user):
-    #     if user not in self.conversation.members.all():
-    #         raise IntegrityError
-
-    #     self.readed_by.add(user=user)
-    #     self.date_readed = timezone.now()
-
-
-    #     if self.readed_by.filter().count() == self.conversation.members.filter().count():
-    #         self.is_read = True
