@@ -27,4 +27,5 @@ urlpatterns = [
     url(r'^messanger/', include('messanger.urls', namespace='messanger')),
     url(r'^', include('authentication.urls', namespace='authentication')),
     url(r'^skill/', include('skiller.urls', namespace='skill')),
+    url(r'^notifications/', include('marathon.urls', namespace='marathon')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT, show_indexes=True)
