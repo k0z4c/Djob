@@ -18,6 +18,8 @@ from .models import Friendship, FriendshipRequest
 
 from django.http import JsonResponse
 
+from jsonview.decorators import json_view 
+
 class IndexView(generic.TemplateView):
     template_name = 'friendship/index.html'
 
@@ -112,7 +114,7 @@ def friendship_notifications_count(request):
     response = { 'unread_notifications': unread_requests }
     return JsonResponse(response)
 
-
+@json_view
 def friendship_notifications_list(request):
     unread_requests = FriendshipRequest.objects.filter(
         to=request.user.id,
@@ -120,6 +122,5 @@ def friendship_notifications_list(request):
         ).order_by('-date')[:3]
 
     data = { k: [v.by.email, v.date, v.by.get_absolute_url(), v.by.profile.img.url ] for k, v in enumerate(unread_requests)}
-    print(data)
     return JsonResponse(data)
 

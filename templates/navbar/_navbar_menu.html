@@ -6,29 +6,33 @@
   </form>
   <ul class="navbar-nav mr-auto">
     <li class="nav-item active">
-      <a class="nav-link" href="{% url 'account:profile_detail' request.user.email %}">
+      <a class="nav-link" href="#">
         <img class="navbar-icon-svg" src="{% static 'svg/home.svg' %}">
+        <span id="home-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <img class="navbar-icon-svg" src="{% static 'svg/inbox.svg' %}">
+        <span id="inbox-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'messanger:conversations' %}">
-        <img class="navbar-icon-svg" src="{% static 'svg/inbox.svg' %}">
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">
         <img class="navbar-icon-svg" src="{% static 'svg/comment-discussion.svg' request.user.email %}">
+        <span id='messanger-badge' class="badge badge-primary" data-url="{% url 'messanger:ajax_unreaded_count' %}" style="visibility: hidden;"> 
+        </span>
       </a>
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
         <img class="navbar-icon-svg" src="{% static 'svg/organization.svg' %}">
-        <span id="friendship-badge" class="badge badge-primary" data-url="{% url 'friendship:friendship_notifications_count' %}">
+        <span id="friendship-badge" class="badge badge-primary" data-url="{% url 'friendship:friendship_notifications_count' %}" style="visibility: hidden;">0
       </span>
       </a>
       <div class="dropdown-menu">
-          <ul class="notification-list" id="friendship-request-list" data-url="{% url 'friendship:friendship_notifications_list' %}">
-            
+          <ul class="notification-list" id="friendship-request-list" data-url="{% url 'friendship:friendship_notifications_list' %}"> 
           </ul>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" data-url="{% url 'friendship:friendship_notifications_list' %}" href="{% url 'friendship:requests_received' %}">see all your requests</a>
@@ -37,6 +41,7 @@
     <li class="nav-item">
       <a class="nav-link" href="{% url 'account:profile_edit' request.user.email %}">
         <img class="navbar-icon-svg" src="{% static 'svg/gear.svg' %}">
+        <span id="settings-badge" class="badge badge-primary" style="visibility:hidden">0</span>
       </a>
     </li>
     <li class="nav-item">

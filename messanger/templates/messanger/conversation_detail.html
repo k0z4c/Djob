@@ -1,9 +1,0 @@
-{% extends "navbar/navbar_page.html"%}
-{% block content %}
-    <div class="container">
-        {% for message in conversation.messages.all %}
-            <p>{{message.sender}} {{message.message}}</p>
-        {% endfor %}
-    </div>
-    
-{% endblock %}

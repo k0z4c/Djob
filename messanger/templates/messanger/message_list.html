@@ -1,0 +1,64 @@
+{% extends "navbar/navbar_page.html"%}
+{% block content %}
+<div class="container">
+  <section>
+    <div class="d-flex justify-content-between">
+      <button 
+        id="replyButton"
+        type="button"
+        class="btn-lg btn-outline-primary"
+        data-url="{% url 'messanger:conversation_reply' conversation.id %}">
+        Reply
+      </button>
+      {% include 'messanger/_paginator.html' %}
+    </div>
+  </section>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col" style="text-align:center;"><span class ="badge badge-dark">from</span></th>
+        <th scope="col" style="text-align:center;"><span class="badge badge-dark">message</span></th>
+        <th scope="col" style="text-align:center;"><span class="badge badge-dark">sent at</span></th>
+      </tr>
+    </thead>
+    {% for message in message_list %}
+    {# {% for message in conversation.messages.all %} #}
+    <tr>
+      <td style="width: 100px;">
+        <div id="badge" class="d-flex flex-column justify-content-center align-items-center ">
+          <img class="img img-fluid" src="{{message.sender.profile.get_image}}" style="width:100%;"/>
+          <div>
+            <span 
+            id="userEmail"
+            class="badge {% if request.user.email == message.sender.email %} badge-primary {% else %} badge-success {% endif %}">
+              {{message.sender}}
+            </span>
+          </div>
+        </div>
+      </td>
+      <td style="text-align:center;">
+        {{message.message|linebreaks}}
+      </td>
+      <td style="text-align:center;">
+        <span class="badge badge-pill badge-info sentAt">{{message.sent_at}}</span>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
+
+{% block js %}
+  {% load static %}
+  <script type="text/javascript" src="{% static 'messanger/js/main.js' %}"></script>
+  <script type="text/javascript">
+      $().ready(function(){
+        // closure
+        var sentAt = $('.sentAt');
+        localizeDatesJSON(sentAt, 'sent_at');
+
+        data = $('#replyButton').data('url');
+        $('#replyButton').click(function(e){ window.location.href=data; });
+      });
+  </script>
+{% endblock %}}

@@ -4,18 +4,28 @@ from . import views
 urlpatterns = [
     # 'messages/create'
     url(
-        r'^messages/new/$',
-        views.CreateMessageView.as_view(),
+        r'^conversation/new/$',
+        views.StartConversationView.as_view(),
         name='create_message'
     ),
     url(
-        r'^conversations/list/',
+        r'^conversation/(?P<pk>\d+)/reply/$',
+        views.ConversationReplyView.as_view(),
+        name='conversation_reply'
+    ),
+    url(
+        r'^conversations/list/$',
         views.ConversationListView.as_view(),
         name='conversations'
     ),
     url(
-        r'^conversations/(?P<pk>\d+)/messages/',
-        views.ConversationDetailView.as_view(),
+        r'^conversations/(?P<pk>\d+)/messages/$',
+        views.ConversationMessagesListView.as_view(),
         name='conversation_messages'
     ), 
+    url(
+        r'^ajax/conversations/unreaded_messages/$',
+        views.unread_count,
+        name='ajax_unreaded_count'
+    ),
 ]

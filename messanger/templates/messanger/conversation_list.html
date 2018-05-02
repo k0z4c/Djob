@@ -1,54 +1,66 @@
 {% extends "navbar/navbar_page.html"%}
+{% load get_item unread_messages_conversation_counter from myfilters %}
 {% block content %}
     <div class="container">
+    <a href="{% url 'account:profile_detail' request.user.email %}">profile</a>
     {% if not conversation_list %}
-        <p>no conversations :(</p>
+        <p>no conversations :( <a href="{% url 'messanger:create_message' %}">start one</a></p>
     {% else %}
         <section>
             write a <a href="{% url 'messanger:create_message' %}">message</a>
+            {% include 'messanger/_paginator.html' %}
         </section>
-        <table class="table">
+        <table class="table table-hover">
             <thead>
                 <tr>
-                    <th scope="col">from</th>
-                    <th scope="col">last message</th>
-                    <th scope="col">read at</th>
-                    <th scope="col">sent at</th>
+                    <th class="" scope="col" style="text-align: center;">from</th>
+                    <th class="" scope="col" style="text-align: center;">last message</th>
+                    <th class="" scope="col" style="text-align: center;">last read</th>
+                    <th class="" scope="col" style="text-align: center;">sent at</th>
                 </tr>
             </thead>
             {% for conversation in conversation_list %}
-            <tr>
-                <td>
-{% comment %}                    <a href="{{conversation.get_absolute_url}}">
-                    {% if request.user == conversation.user %}
-                        {{conversation.recipient.email}}
-                    {% else %}
-                        {{conversation.user.email}}
-                    {% endif %}
-                    </a> 
-{% endcomment %}
-                    <a href="{{conversation.get_absolute_url}}">
-                    {% for user in conversation.users.all %}
-                        {% if user != request.user %}
-                            {{user}}
-                        {% endif %}
-                    {% endfor %}
-                    </a>
+            <tr class="{% if conversation in conversations_to_read %} alert alert-success {% endif %}" onclick="window.location.href='{{conversation.get_absolute_url}}'">
+                <td style="width: 100px;">
+                    <span class="badge badge-primary" style="border-radius:100%;">{% unread_messages_conversation_counter conversation %}</span>
+                    {# <a href="{{conversation.get_absolute_url}}"> #}
+                        {% for user in conversation.users.all %}
+                            {% if user != request.user %}
+                                <div id="badge" class="d-flex flex-column justify-content-center align-items-center ">
+                                    <img class="img img-fluid " src="{{user.profile.get_image}}" style="width: 100%;"/>
+                                    <div>
+                                        <span id="userEmail" class="badge badge-info">{{user}}</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {# </a> #}
                 </td>
-                <td>
-                    {{conversation.last_message}}
+                <td style="text-align: center;">
+                    {{conversation.last_message|truncatechars:20}}
                 </td>
-                <td>
-                    {% if conversation.last_message.read_at %}
-                        {{conversation.last_message.read_at}}
-                    {% else %}
-                        not readed
+                <td class="readAt" style="visibility: hidden;text-align: center;">
+                    {% if conversation.last_message.last_read %}
+                        {{ conversation.last_message.last_read }}
                     {% endif %}
                 </td>
-                <td>{{conversation.last_message.sent_at}}</td>
+                <td class="sentAt" style='visibility: hidden;text-align: center;'>
+                    {{conversation.last_message.sent_at }}
+                </td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </table>
     {% endif %}
-    </div>
 {% endblock %}
+
+{% block js %}
+    {% load static %}
+    <script type="text/javascript" src="{% static 'messanger/js/main.js'%}"></script>
+    <script type="text/javascript">
+            var sentAt = $('.sentAt');
+            var readAt = $('.readAt');
+            localizeDatesJSON(sentAt, 'sent_at');
+            localizeDatesJSON(readAt, 'last_read');
+    </script>
+{% endblock %}}

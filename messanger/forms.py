@@ -27,3 +27,18 @@ class MessageForm(forms.ModelForm):
     def save(self, commit=True):
         self.instance.sender = self.user
         return super(MessageForm, self).save(commit)
+
+class ReplyForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['message',]
+
+    def __init__(self, user, *args, **kwargs):
+        super(ReplyForm, self).__init__(*args, **kwargs)
+        self.user = user
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+    def save(self, commit=True):
+        self.instance.sender = self.user
+        return super(ReplyForm, self).save(commit)

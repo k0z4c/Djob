@@ -4,15 +4,15 @@ from django.urls import reverse
 from django.db.models import Q
 from django.utils import timezone
 
-class ConversationManager(models.Manager):
-    def get_or_create_conversation(self, user, users):
-        for conversation in user.conversation_set.all():
-            if conversation.users == users:
-                return conversation
+from django.core.serializers.json import DjangoJSONEncoder
 
-        conversation = self.create()
-        conversation.users = users
-        return conversation
+from .managers import (
+    ConversationManager,
+)
+
+from .fields import (
+    DataJSONField, FormattedTextField,
+)
 
 class Conversation(models.Model):
 
@@ -35,41 +35,22 @@ class Conversation(models.Model):
         return reverse('messanger:conversation_messages', args=(self.id,))
 
     def get_unread_messages(self, user):
-        qs = self.messages.filter(read_at__has_key=user.email)
-        return qs
+        qs = ~Q(sender=user) & ~Q(read_at__has_key=user.email)
+        return self.messages.filter(qs)
+
+    def read_messages(self, user):
+        qs = self.get_unread_messages(user)
+        for mess in qs.filter(): 
+            mess.read(user)
 
 class GroupConversation(Conversation):
     '''
     Group concept is more specific than a Conversation.
     we have a title in a group conversation; it is handled 
-    in a different manner; different maanger maybe also
+    in a different manner; different maanger maybe also.
+    future feature 
     '''
     pass
-
-from django.contrib.postgres.fields import JSONField
-from django.core.serializers.json import DjangoJSONEncoder
-# https://docs.djangoproject.com/en/1.11/topics/serialization/
-
-class DataJSONField(JSONField):
-    def deserialize_ecma262_datetime(self, value):
-        # https://www.ecma-international.org/ecma-262/5.1/#sec-15.9.1.15
-        # value = 'YYYY-MM-DDTHH:mm:ss.sss[Z|([+|-]HH:mm)]'
-        value = value.replace(':', '')
-        if value.endswith('Z'):
-            value = value.replace('Z', '+0000')
-
-        from datetime import datetime
-        format_ecma262  = '%Y-%m-%dT%H%M%S.%f%z'
-        return datetime.strptime(value, format_ecma262)
-
-    def parse_datetime(self, value):
-        value = { k: self.deserialize_ecma262_datetime(v) for k, v in value.items() }
-        return value
-
-    def from_db_value(self, value, expression, connection, context):
-        if value is None:
-            return value
-        return self.parse_datetime(value)
 
 class Message(models.Model):
 
@@ -81,19 +62,33 @@ class Message(models.Model):
     sender = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     read_at = DataJSONField(encoder=DjangoJSONEncoder, default=dict)
-    message = models.TextField(max_length=200)
-    sent_at = models.DateTimeField(auto_now_add=True)
-    # deleted_at = DataJSONField(ecoder=DjangoJSONEncoder, default=dict)
+    message = FormattedTextField(max_length=200)
+    _sent_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta: 
+        ordering = ['-_sent_at']
+
+    @property
+    def sent_at(self):
+        from django.core.serializers.json import DjangoJSONEncoder
+        return DjangoJSONEncoder().encode({'sent_at': self._sent_at})
 
     def read(self, user):
         self.read_at.update({user.email: timezone.now()})
+        self.save()
 
     def is_read_by(self, user):
         return self.read_at.get(user.email, '')
 
-    # to remove
-    def is_deleted_by_recipient(self):
-        return bool(self.recipient_deleted_at)
+    def last_user_read(self):
+        return sorted(self.read_at, key=self.read_at.get, reverse=True)[0]
+
+    def last_read(self):
+        if not self.read_at:
+            return DjangoJSONEncoder().encode({})
+        import operator
+        last_read = sorted(self.read_at.items(), key=operator.itemgetter(1), reverse=True)[0][1]
+        return DjangoJSONEncoder().encode({'last_read': last_read})
 
     def __str__(self):
         return self.message[:100]

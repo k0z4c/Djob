@@ -3,7 +3,11 @@ from django.forms.models import model_to_dict
 from .models import Profile
 from authentication.models import User
 
+from crispy_forms.helper import FormHelper
 
+from crispy_forms.layout import (
+    Submit, Layout, Fieldset, Field, HTML, Button, ButtonHolder
+)
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
