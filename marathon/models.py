@@ -1,31 +1,48 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone 
 
 class RequestManager(models.Manager):
   pass
 
 # Create your models here.
-class Request(models.Model):
+class SocialRequest(models.Model):
+  ACCEPTED = 'ACC'
+  REJECTED = 'REJ'
+  PENDING = 'PEN'
+  REQUEST_STATUS_CHOICES = (
+    (ACCEPTED, 'accepted'),
+    (REJECTED, 'rejected'),
+    (PENDING, 'pending'),
+  )
+
   by = models.ForeignKey(
     settings.AUTH_USER_MODEL,
-    related_name='outbox')
+    related_name='marathon_sent')
   
   to = models.ForeignKey(
     settings.AUTH_USER_MODEL,
-    related_name='inbox')
+    related_name='marathon_received')
+
+  status = models.CharField(
+    choices=REQUEST_STATUS_CHOICES,
+    default=PENDING,
+    max_length=3
+    )
+
+  label = models.CharField(unique=True, max_length=20, default='')
+  tile = models.CharField(max_length=70, default='')
+  date = models.DateTimeField(auto_now_add=True)
+  status_date = models.DateTimeField(auto_now=True)
 
   class Meta:
     unique_together = (('by', 'to'),)
 
-  label = models.CharField(max_length=30, default='')
-  message = models.CharField(max_length=70, default='')
-  is_accepted = models.BooleanField(default=False)
-  is_rejected = models.BooleanField(default=False)
-
+  # auto now maybe? 
   def accept(self):
-    self.is_accepted = True
+    self.status = ACCEPTED
     self.save()
 
   def reject(self):
-    self.is_rejected = False
+    self.status = REJECTED
     self.save()
