@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DetailView
 from .models import ProjectPage
 from .forms import CreateProjectPageForm
 from django.http import HttpResponseRedirect
@@ -30,3 +30,6 @@ class ProjectPageListView(ListView):
   @property
   def queryset(self):
     return self.request.user.projectpages.all()
+
+class ProjectPageDetailView(DetailView):
+  model = ProjectPage

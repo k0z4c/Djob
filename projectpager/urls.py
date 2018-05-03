@@ -12,4 +12,9 @@ urlpatterns = [
     views.ProjectPageListView.as_view(),
     name='projectpage_list'
   ),
+  url(
+    r'^(?P<pk>\w+)/detail/$',
+    views.ProjectPageDetailView.as_view(),
+    name='project_page_detail'
+  ),
 ]

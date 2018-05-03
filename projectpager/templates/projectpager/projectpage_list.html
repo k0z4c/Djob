@@ -3,7 +3,11 @@
 <div class="container">
   <ul>
     {% for project in projectpage_list %}
-      <li>{{project}}</li>
+      <li>
+          <a href="{% url 'projectpager:project_page_detail' project %}">
+            {{project}}
+          </a>
+        </li>
     {% endfor %}
   </ul>
 </div>
