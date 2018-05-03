@@ -15,12 +15,7 @@ class ProjectPageCreateView(CreateView):
     return reverse('account:profile_detail', args=[self.request.user,])
 
    def form_valid(self, form):
-      self.object = form.save(commit=False)
-      self.object.owner = self.request.user
-      form.save()
-      self.object.users.add(self.request.user)
-      form.save_m2m()
-
+      self.object = form.save(self.request.user)
       return HttpResponseRedirect(self.get_success_url())
 
 class ProjectPageListView(ListView):

@@ -24,3 +24,15 @@ class CreateProjectPageForm(forms.ModelForm):
     super(CreateProjectPageForm, self).__init__(*args, **kwargs)
     self.helper = FormHelper()
     self.helper.add_input(Submit('submit', 'Submit'))
+
+  def save(self, user, *args, **kwargs):
+    '''
+      we have to save the instance before
+      set manytomanyfield (users)
+    '''
+    self.instance.owner = user
+    project_page = super(CreateProjectPageForm, self).save(*args, **kwargs)
+    if not kwargs.get('commit', ''):
+      project_page.users.add(user)
+      project_page = super(CreateProjectPageForm, self).save(*args, **kwargs)
+    return project_page
