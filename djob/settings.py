@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'friendship',
     'skiller',
     'messanger',
+    'projectpager',
 ]
 
 MIDDLEWARE = [

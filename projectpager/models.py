@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings 
 
+# here we have to instantiated Project page before create an Invite request
 # Create your models here.
 class InviteRequest(models.Model):
   by = models.ForeignKey(
@@ -10,6 +11,8 @@ class InviteRequest(models.Model):
     settings.AUTH_USER_MODEL,
     related_name='invites_received')
 
+  project_page = models.OneToOneField('ProjectPage')
+
   class Meta:
     unique_together = (('by', 'to'),)
 
@@ -18,9 +21,11 @@ class InviteRequest(models.Model):
 class ProjectPage(models.Model):
   users = models.ManyToManyField(
     settings.AUTH_USER_MODEL,
-    through='InviteRequest'
-    )
-  owner = models.OneToOneField(settings.AUTH_USER_MODEL)
+    related_name = 'projectpages')
+
+  owner = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    related_name='+')
 
   name = models.CharField(max_length=50)
   description = models.TextField()
