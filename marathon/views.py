@@ -9,7 +9,9 @@ from django.http import JsonResponse
 
 @json_view
 def unread_count(request):
-  count = request.user.marathon_sended.filter().count()
+  ''''here s the get parameter'''
+  label = request.GET.get('label')
+  count = request.user.inbox.filter(label=label).count()
   data = {
     'unread': count,
   }

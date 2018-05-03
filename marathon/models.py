@@ -8,11 +8,11 @@ class RequestManager(models.Manager):
 class Request(models.Model):
   by = models.ForeignKey(
     settings.AUTH_USER_MODEL,
-    related_name='marathon_sended')
+    related_name='outbox')
   
   to = models.ForeignKey(
     settings.AUTH_USER_MODEL,
-    related_name='marathon_received')
+    related_name='inbox')
 
   class Meta:
     unique_together = (('by', 'to'),)
