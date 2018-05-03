@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 from .models import ProjectPage
 from .forms import CreateProjectPageForm
 from django.http import HttpResponseRedirect
@@ -22,3 +22,11 @@ class ProjectPageCreateView(CreateView):
       form.save_m2m()
 
       return HttpResponseRedirect(self.get_success_url())
+
+class ProjectPageListView(ListView):
+  model = ProjectPage
+
+  '''must list projects that i joined'''
+  @property
+  def queryset(self):
+    return self.request.user.projectpages.all()

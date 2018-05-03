@@ -1,0 +1,10 @@
+{% extends 'navbar/navbar_page.html' %}
+{% block content %}
+<div class="container">
+  <ul>
+    {% for project in projectpage_list %}
+      <li>{{project}}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

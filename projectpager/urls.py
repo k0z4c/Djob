@@ -7,4 +7,9 @@ urlpatterns = [
     views.ProjectPageCreateView.as_view(),
     name='projectpage_create'
   ),
+  url(
+    r'^list/$',
+    views.ProjectPageListView.as_view(),
+    name='projectpage_list'
+  ),
 ]
