@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView
 from .models import ProjectPage
 from .forms import CreateProjectPageForm
 from django.http import HttpResponseRedirect
@@ -33,3 +33,7 @@ class ProjectPageListView(ListView):
 
 class ProjectPageDetailView(DetailView):
   model = ProjectPage
+
+class ProjectPageUpdateView(UpdateView):
+  model = ProjectPage
+  form_class = CreateProjectPageForm

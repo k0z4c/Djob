@@ -17,4 +17,9 @@ urlpatterns = [
     views.ProjectPageDetailView.as_view(),
     name='project_page_detail'
   ),
+  url(
+    r'^(?P<pk>\w+)/update/$',
+    views.ProjectPageUpdateView.as_view(),
+    name='project_page_update',
+  )
 ]
