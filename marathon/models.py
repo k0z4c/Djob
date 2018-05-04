@@ -1,6 +1,10 @@
 from django.db import models
 from django.conf import settings
-from django.utils import timezone 
+from django.utils import timezone
+
+from .signals import(
+  social_request_accepted, social_request_rejected
+)
 
 class RequestManager(models.Manager):
   pass
@@ -43,6 +47,10 @@ class SocialRequest(models.Model):
     self.status = ACCEPTED
     self.save()
 
+    social_request_accepted.send(sender=self.__class__)
+
   def reject(self):
     self.status = REJECTED
     self.save()
+
+    social_request_rejected.send(sender=self.__class__)
