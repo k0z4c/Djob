@@ -4,49 +4,42 @@
 {% load friendship.tags %}
 {% load marathon.counter %}
 
-    {% block content %}
-    <div class="container">
-        <div>
-            {% if messages %}
-                <div class="messages">
-                {% for message in messages %}
-                    <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
-                {% endfor %}
-                </div>
-            {% endif %}
-            <img class="img-fluid rounded-circle" src="{{profile.get_image}}" alt="">
-            {% if owner %}
-                <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
-                <a href="{% url 'authentication:logout' %}">logout</a>
-            {% elif friends %}
-                <p>you are friend</p>
-            {% elif hang_request %}
-                <button disabled>request sended</button >
-            {% else %}
-                {% add_friend_button profile.user %}
-            {% endif %}
-        </div>
-        {% if owner %}
-            {{ user.email}}
-            <a href="{% url 'account:profile_edit' user.email %}">edit</a>
-            you are the owner of the page
-        {% endif %}
-        <section>
-            this is the profile page of {{profile.user.email}}
-            <section>
-                <a href="{% url 'skill:add_skill' %}">add some skill</a>
-                {{profile.description}}
-                {% include "skiller/show_skills.html" %}
-            </section>
-        </section>
-        <section>
-            {# {% include "friendship/_list_friends.html" %} #}
-        </section>
+{% block content %}
+<div id="profile-container" style="border: 10px solid black;" class="d-flex flex-column">
+  <div class="container-fluid " id="profile-content" style="border: 10px solid blue;" class=" d-flex flex-column">
+
+    {% if messages %}
+      <div class="messages">
+      {% for message in messages %}
+        <div {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+      {% endfor %}
+      </div>
+    {% endif %}
+
+    <div id="profile-pic" style="border: 10px solid red; padding-left: 33%;">
+      <img style="border: 10px solid yellow;" width="" height="" class="" src="{{profile.get_image}}" alt=""/>
     </div>
-    {% endblock %}
-    {% block js %}
-        <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-        <script type="text/javascript" src="{% static 'friendship/js/main.js' %}"></script>
-    {% endblock %}
+    {% if owner %}
+      <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
+    {% elif friends %}
+      <p>you are friend</p>
+    {% elif hang_request %}
+      <button disabled>request sended</button >
+    {% else %}
+      {% add_friend_button profile.user %}
+    {% endif %}
+    <section>
+      <a href="{% url 'skill:add_skill' %}">add some skill</a>
+      {% include "skiller/show_skills.html" %}
+    </section>
+    {# {% include "friendship/_list_friends.html" %} #}
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script type="text/javascript" src="{% static 'friendship/js/main.js' %}"></script>
+{% endblock %}
 
 
