@@ -11,6 +11,14 @@
           <th class="" scope="col" style="text-align: center;"></th>
         </tr>
       </thead>
+      <ul class="nav nav-tabs nav-fill ">
+        <li class="nav-item" >
+          <a class="nav-link {% if unread %} active {% endif %}" href="{% url 'account:notifications_unread' user %}">Unreaded</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if not unread %} active {% endif %}" href="{% url 'account:notifications_read' user %}">Readed</a>
+        </li>
+      </ul>
       {% for notification in notification_list %}
       <tr class="notification" data-type="{{notification.verb}}" data-url="{{ notification.target.get_absolute_url }}" data-key="{{notification.target.id}}" class='{% if notification in unreaded_notifications %} alert alert-success {% endif %}'>
         <td style="width:100px;">
