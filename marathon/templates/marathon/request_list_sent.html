@@ -1,0 +1,5 @@
+<ul>
+  {% for request in requests %}
+    <li><a href="{{request.to.get_absolute_url}}">{{ request.to }}</a></li>
+  {% endfor %}
+</ul>

@@ -1,4 +1,0 @@
-<form class="" id="myForm" action="{% url 'friendship:add_request' %}" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="email" value="{{profile.user.email}}"/>
-    <button onclick="document.getElementById('myForm').submit()">send request</button>

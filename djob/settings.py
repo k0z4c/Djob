@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'notifications',
     'account.apps.AccountConfig',
     'marathon',
-    'friendship',
+    'friendship.apps.FriendshipConfig',
     'skiller',
     'messanger',
 ]
@@ -155,3 +155,4 @@ AUTHENTICATION_BACKENDS = (
 )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+NOTIFICATIONS_USE_JSONFIELD = True

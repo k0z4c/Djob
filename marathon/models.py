@@ -1,13 +1,24 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-
+from django.db import IntegrityError
 from .signals import(
   social_request_accepted, social_request_rejected
 )
 
 class RequestManager(models.Manager):
-  pass
+  def send_request(self, label, by, to, ):
+    try:
+      req = self.create(label=label, by=by, to=to)
+      return req
+    except IntegrityError:
+      pass
+
+
+  def check_request(self, by, to):
+    q = Q(by=by, to=to) | Q(by=to, to=by)
+    return self.filter(q).exists()
+
 
 # Create your models here.
 class SocialRequest(models.Model):
@@ -34,23 +45,30 @@ class SocialRequest(models.Model):
     max_length=3
     )
 
-  label = models.CharField(unique=True, max_length=20, default='')
+  label = models.CharField(max_length=20)
   tile = models.CharField(max_length=70, default='')
   date = models.DateTimeField(auto_now_add=True)
   status_date = models.DateTimeField(auto_now=True)
 
-  class Meta:
-    unique_together = (('by', 'to'),)
+  objects = RequestManager()
 
+  class Meta:
+    unique_together = (('by', 'to', 'label'),)
+    
   # auto now maybe? 
   def accept(self):
-    self.status = ACCEPTED
+    self.status = self.ACCEPTED
     self.save()
 
-    social_request_accepted.send(sender=self.__class__)
+    print("sended")
+    print(social_request_accepted.send_robust(sender=self.__class__, instance=self))
 
   def reject(self):
-    self.status = REJECTED
+    self.status = self.REJECTED
     self.save()
 
-    social_request_rejected.send(sender=self.__class__)
+    social_request_rejected.send(sender=self.__class__, instance=self)
+
+  def get_absolute_url(self):
+    from django.urls import reverse
+    return reverse('marathon:manage_request', args=[self.pk,])

@@ -1,0 +1,61 @@
+{% extends "navbar/navbar_page.html" %}
+{% load notifications_tags %}
+  {% block content %}
+  <div class="container">
+    {% include '_paginator.html' %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="" scope="col" style="text-align: center;"></th>
+          <th class="" scope="col" style="text-align: center;"></th>
+          <th class="" scope="col" style="text-align: center;"></th>
+        </tr>
+      </thead>
+      {% for notification in notification_list %}
+      <tr class="notification" data-type="{{notification.verb}}" data-url="{{ notification.target.get_absolute_url }}" data-key="{{notification.target.id}}" class='{% if notification in unreaded_notifications %} alert alert-success {% endif %}'>
+        <td style="width:100px;">
+          <img clas="img img-fluid" src="{{notification.actor.profile.get_image}}" style="width:100%;"/>
+        </td>
+        <td>{{notification.description}}</td>
+
+        {% if notification.verb == 'request' and unread %}
+          {% if notification.target.status == notification.target.PENDING %}
+            <td><button data-url="{{ notification.target.get_absolute_url }}" data-action="accept" class="notification-button btn btn-primary">accept</button></td>
+            <td><button data-url="{{ notification.target.get_absolute_url }}" data-action="reject" class="notification-button btn btn-primary">reject</button></td>
+          {% endif %}
+        {% endif %}
+
+        <td>received {{notification.timesince}} ago..</td>
+      {% endfor %}
+    </table>
+  </div>
+  {% endblock %}
+  {% block js %}
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+  <script type="text/javascript">
+  function csrfSafeMethod(method) {
+  // these HTTP methods do not require CSRF protection
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+  $().ready(function(){
+    $('.notification-button').click(function(){
+      var csrftoken = Cookies.get('csrftoken');
+      $.ajax({
+        type: 'post',
+        url: $(this).data('url'),
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        },
+        data: {'action': $(this).data('action')},
+        success: function(data){
+          console.log(data);
+        }
+      });
+    });
+  });
+  </script>
+  {% endblock %}
+

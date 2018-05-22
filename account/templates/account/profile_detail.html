@@ -1,7 +1,9 @@
 {# {% extends "navbar/navbar_page.html" %} #}
 {% extends "navbar/navbar_page.html" %}
 {% load staticfiles %}
-{%load notifications_tags %}
+{% load friendship.tags %}
+{% load marathon.counter %}
+
     {% block content %}
     <div class="container">
         <div>
@@ -16,19 +18,18 @@
             {% if owner %}
                 <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
                 <a href="{% url 'authentication:logout' %}">logout</a>
-            {% elif friend %}
+            {% elif friends %}
                 <p>you are friend</p>
             {% elif hang_request %}
                 <button disabled>request sended</button >
             {% else %}
-                {% include "friendship/_add_friend_button.html" %}
+                {% add_friend_button profile.user %}
             {% endif %}
         </div>
         {% if owner %}
             {{ user.email}}
             <a href="{% url 'account:profile_edit' user.email %}">edit</a>
             you are the owner of the page
-
         {% endif %}
         <section>
             this is the profile page of {{profile.user.email}}
@@ -39,8 +40,13 @@
             </section>
         </section>
         <section>
-            {% include "friendship/_list_friends.html" %}
+            {# {% include "friendship/_list_friends.html" %} #}
         </section>
     </div>
     {% endblock %}
+    {% block js %}
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+        <script type="text/javascript" src="{% static 'friendship/js/main.js' %}"></script>
+    {% endblock %}
+
 

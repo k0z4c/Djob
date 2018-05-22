@@ -1,3 +1,5 @@
-<span id="{{label}}_unread"class="badge badge-primary" data-url="{% url 'marathon:ajax_unread_counter' %}">
-   {{unread_counter}}
-</span>
+<ul>
+  {% for request in requests %}
+    <li><a href="{{url}}">{{ request.to }}</a></li>
+  {% endfor %}
+</ul>

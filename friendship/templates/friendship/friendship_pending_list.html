@@ -1,0 +1,13 @@
+{% extends 'navbar/navbar_page.html' %}
+{% load staticfiles %}
+{% load marathon.counter %}
+  {% block content %}
+    <div class="container">
+      {% socialrequest_received_pending_list 'friendship' %}
+    </div>
+  {% endblock %}
+
+  {% block js %}
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script src="{% static 'marathon/js/main.js' %}"></script>
+  {% endblock %}

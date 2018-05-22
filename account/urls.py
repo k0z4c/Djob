@@ -12,6 +12,16 @@ some_urls = [
         views.EditAccountView.as_view(),
         name='profile_edit'
         ),
+    url(
+        '^notifications/unread/$',
+        views.UnreadedNotificationsListView.as_view(),
+        name='notifications_unread'
+        ),
+    url(
+        '^notifications/read/$',
+        views.ReadedNotificationsListView.as_view(),
+        name='notifications_read'
+        )
 ]
 
 urlpatterns = [
