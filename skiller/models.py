@@ -37,12 +37,12 @@ class Confirmation(models.Model):
         )
 
     # recursive relationship
-    by = models.OneToOneField(
+    by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='confirmed_to',
         )
 
-    to = models.OneToOneField(
+    to = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='confirmed_by',
         )
