@@ -2,14 +2,16 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.db import IntegrityError
+from django.contrib.postgres.fields import JSONField
+
 from .signals import(
   social_request_accepted, social_request_rejected
 )
 
 class RequestManager(models.Manager):
-  def send_request(self, label, tile, by, to, ):
+  def send_request(self, label, tile, by, to, data={}):
     try:
-      req = self.create(label=label, tile=tile, by=by, to=to)
+      req = self.create(label=label, tile=tile, by=by, to=to, data=data)
       return req
     except IntegrityError:
       pass

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'marathon',
     'friendship.apps.FriendshipConfig',
-    'skiller',
+    'skiller.apps.SkillerConfig',
     'messanger',
 ]
 

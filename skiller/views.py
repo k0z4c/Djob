@@ -115,7 +115,8 @@ class SuggestFormView(edit.FormView):
             by=self.request.user,
             to=to,
             label='skill_suggestion',
-            tile='{} suggests you to add {} to your skills.'.format(self.request.user, form.cleaned_data['codename'])
+            tile='{} suggests you to add {} to your skills.'.format(self.request.user, form.cleaned_data['codename']),
+            data={'codename': form.cleaned_data.get('codename')}
         )
         return super(edit.FormView, self).form_valid(form)
     @property
