@@ -49,7 +49,7 @@ class SocialRequest(models.Model):
   tile = models.CharField(max_length=70, default='')
   date = models.DateTimeField(auto_now_add=True)
   status_date = models.DateTimeField(auto_now=True)
-
+  data = JSONField(default=dict) 
   objects = RequestManager()
 
   class Meta:
