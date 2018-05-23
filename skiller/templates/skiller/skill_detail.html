@@ -1,0 +1,15 @@
+{% extends "navbar/navbar_page.html" %}
+{% block content %}
+  <section>
+    <strong>{{skill.data.codename}}</strong>, is confirmed by:
+  </section>
+  <section>
+  <ul>
+    {% for confirmation in skill.confirmation_set.all %}
+    <li>
+      {{confirmation.by}}
+    </li>
+      {% endfor %}
+  </ul>
+  </section>
+{% endblock %}

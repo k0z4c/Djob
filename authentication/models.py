@@ -60,6 +60,9 @@ class User(AbstractBaseUser, PermissionsMixin, GuardianUserMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def full_name(self):
+        return self.first_name + ' ' + self.last_name
+
     # def is_staff(self):
     #     return False
     #

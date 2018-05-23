@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 
 from authentication.forms import UserEditForm
 from guardian.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from friendship.models import FriendshipRequest, Friendship
+from friendship.models import Friendship
 from django.db.models import Q
 
 def index(request):
@@ -26,42 +26,23 @@ def index(request):
     return redirect(profile, permanent=True)
 
 class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
-    '''
-    Renders the profile requested by URL.
-    '''
-
     model = Profile
-
-    def get_object(self, queryset=None):
-        if self.request.user.email == self.kwargs.get('email'):
-            return self.request.user.profile
-
-        user = get_object_or_404(
-            User,
-            email=self.kwargs.get('email')
-        )
-        return user.profile
+    slug_field = 'user__email'
+    slug_url_kwarg = 'email'
 
     def _is_owner(self):
         return self.request.user.email == self.kwargs.get('email')
 
     def get_context_data(self, **kwargs):
-        if self._is_owner():
-            kwargs.update({
-                'owner': True,
-                'friends': list(self.request.user.contacts.all()),
-            })
-        else:
-            user_visited = User.objects.get(email=self.kwargs['email'])
-            if Friendship.objects.are_friends(user_visited, self.request.user):
-                kwargs.update({'friend': True})
-            elif FriendshipRequest.objects.check_request(user_visited, self.request.user):
-                kwargs.update({'hang_request': True})
-            kwargs.update({
-            'friends': list(user_visited.contacts.all())
-            })
         kwargs.update({
-            'first_skills': self.request.user.skill_set.all()[:5]
+            'owner': self._is_owner,
+            'friends': Friendship.objects.get_friends_names_by_profile(self.object),
+            'first_skills': self.object.skill_set.all()[:5],
+            'are_friends': Friendship.objects.are_friends(
+                self.object,
+                self.model.objects.get(user__email=self.kwargs.get('email')
+                    )
+                )
             })
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 
@@ -104,3 +85,54 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
         f1 = UserEditForm(instance=request.user)
         f2 = ProfileEditForm(instance=request.user.profile)
         return self.render_to_response({'f1': f1, 'f2': f2})
+
+
+from django.core.paginator import Paginator
+class MyPaginator(Paginator):
+  def page(self, number):
+    number = self.validate_number(number)
+    bottom = (number - 1) * self.per_page
+    top = bottom + self.per_page
+    if top + self.orphans >= self.count:
+        top = self.count
+    '''custom behaviour'''
+    object_page_list = self.object_list[bottom:top]
+    for notification in object_page_list: notification.mark_as_read()
+    return self._get_page(object_page_list, number, self)
+
+from django.views.generic import ListView
+from notifications.models import Notification
+# UnreadNotificationsListView
+class UnreadedNotificationsListView(ListView):
+  model = Notification
+  template_name = 'account/notifications.html'
+  paginate_by = 5
+  paginator_class = MyPaginator
+  # context_object_name = 'unreaded_notifications_list'
+
+  @property
+  def queryset(self):
+    return Notification.objects.filter(recipient=self.request.user).unread()
+
+  def get_context_data(self, **kwargs):
+    return super(UnreadedNotificationsListView, self).get_context_data(
+        unread=True,
+        **kwargs
+        )
+
+class ReadedNotificationsListView(ListView):
+    model = Notification
+    template_name = 'account/notifications.html'
+    paginate_by = 5
+    paginator_class = MyPaginator
+    # context_object_name = 'readed_notifications_list'
+
+    @property
+    def queryset(self):
+        return Notification.objects.filter(recipient=self.request.user).read()
+    def get_context_data(self, **kwargs):
+        return super(ReadedNotificationsListView, self).get_context_data(
+            unread=False,
+            **kwargs
+            )
+

@@ -1,0 +1,8 @@
+<ul>
+  {% for request in requests %}
+    <li><a href="{{request.by.get_absolute_url}}">{{ request.by }}</a>
+    <button class="request-button btn btn-primary" data-action="accept" data-label="{{label}}" data-url="{% url 'marathon:accept_request' request.id %}">accept</button>
+    <button class="request-button btn btn-primary" data-action="reject" data-label="{{label}}" data-url="{% url 'marathon:accept_request' request.id %}">reject</button>
+    </li>
+  {% endfor %}
+</ul>

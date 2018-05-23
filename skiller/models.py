@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone 
-
+from account.models import Profile
 from .managers import (
     SkillManager, ConfirmationManager
     )
@@ -10,8 +10,8 @@ from .validators import validate_chars
 from .helpers import _decorate_name
 
 class Skill(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+    profile = models.ForeignKey(
+        Profile,
         on_delete=models.CASCADE
         )
     data = models.ForeignKey(
@@ -24,7 +24,7 @@ class Skill(models.Model):
     objects = SkillManager()
 
     class Meta:
-        unique_together = (('user', 'data'),)
+        unique_together = (('profile', 'data'),)
 
     def __str__(self):
         return self.data.codename
@@ -37,12 +37,12 @@ class Confirmation(models.Model):
         )
 
     # recursive relationship
-    by = models.OneToOneField(
+    by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='confirmed_to',
         )
 
-    to = models.OneToOneField(
+    to = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='confirmed_by',
         )

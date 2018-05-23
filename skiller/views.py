@@ -1,5 +1,5 @@
 
-from django.views.generic import ListView, edit
+from django.views.generic import ListView, edit, DetailView
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django.core.exceptions import ValidationError
@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from .exceptions import DuplicatedSkill
 from .errors import DivErrorList
 from .models import (
-    Skill, SkillData
+    Skill, SkillData, Confirmation
 )
 from .forms import (
     SkillDataForm, SkillMultipleSelectForm
@@ -55,7 +55,7 @@ class SkillAddView(edit.FormView):
     def _insert_if_not_duplicated(self, codename):
         try:
             Skill.objects.add(
-                user=self.request.user,
+                profile=self.request.user.profile,
                 name=codename
                 )
         except DuplicatedSkill:
@@ -99,3 +99,41 @@ class SkillListView(ListView):
     model = Skill
     context_object_name = 'skills'
 
+from marathon.models import SocialRequest
+from authentication.models import User
+class SuggestFormView(edit.FormView):
+    form_class = SkillDataForm
+    template_name = 'skiller/skill_form.html'
+
+    def form_valid(self, form):
+        try:
+            to = User.objects.get(email=self.kwargs.get('email'))
+        except User.DoesNotExist:
+            pass
+
+        SocialRequest.objects.send_request(
+            by=self.request.user,
+            to=to,
+            label='skill_suggestion',
+            tile='{} suggests you to add {} to your skills.'.format(self.request.user, form.cleaned_data['codename']),
+            data={'codename': form.cleaned_data.get('codename')}
+        )
+        return super(edit.FormView, self).form_valid(form)
+    @property
+    def success_url(self):
+        return reverse('account:profile_detail', args=[self.request.user,])
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from jsonview.decorators import json_view
+from authentication.models import User
+@json_view
+def confirm_skill(request, email):
+    skill = get_object_or_404(Skill, pk=request.POST.get('skill_pk'))
+    user = User.objects.get(email=email)
+    skill.confirmation_set.create(by=request.user, to=user, skill=skill)
+    return JsonResponse({})
+
+class SkillDetailView(DetailView):
+    object_context_name = 'skill'
+    model = Skill

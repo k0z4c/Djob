@@ -23,8 +23,6 @@ class ProfileManager(models.Manager):
     if p.img:
       os.remove(p.img.path)
 
-
-
 class Profile(models.Model):
   class Meta:
     permissions = (

@@ -1,37 +1,43 @@
 from django.db import models
+from django.conf import settings 
+from account.models import Profile 
 
-from django.conf import settings
-from django.utils import timezone
+from django.db.models import Q
 
-from . import managers
-# Create your models here.
+class FriendshipManager(models.Manager):
+  def get_friends_names_by_profile(self, profile):
+    friendships = self.get_friends(profile)
+    names = []
+    for f in friendships:
+      if f.by.user.email != profile.user.email:
+        names.append(f.by.user.email)
+      else:
+        names.append(f.to.user.email)
+    return names
 
-class FriendshipRequest(models.Model):
-    by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='requests_sent')
-    to = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='requests_received')
+  def get_friendships_by_profile(self, profile):
+    qs = Q(to=profile) | Q(by=profile)
+    return self.filter(qs)
 
-    read = models.BooleanField(default=False)
-    objects = managers.FriendshipRequestManager()
-    date = models.DateTimeField(default=timezone.now)
+  def get_friends(self, profile):
+    qs = Q(to=profile) | Q(by=profile)
+    return self.filter(qs)
 
-    class Meta:
-        unique_together = [('by', 'to')]
-
-    def accept(self):
-        Friendship.objects.create(by=self.by, to=self.to)
-        Friendship.objects.create(by=self.to, to=self.by)
-
-        self.delete()
+  def are_friends(self, profile1, profile2):
+    self.get_friends(profile1)
+    qs = self.get_friends(profile1).filter(Q(by=profile2) | Q(to=profile2)) 
+    return qs.exists()
 
 class Friendship(models.Model):
+  by = models.ForeignKey(Profile, related_name='+')
+  to = models.ForeignKey(Profile, related_name='+')
 
-    by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='contacts')
-    to = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+')
+  date = models.DateTimeField(auto_now_add=True)
+  objects = FriendshipManager()
 
-    date = models.DateTimeField(default=timezone.now)
-
-    objects = managers.FriendshipManager()
-    class Meta:
-        unique_together = [('by', 'to'), ('to', 'by')]
-    def __str__(self):
-        return self.to.email
+  def save(self, *args, **kwargs):
+    obj = super(Friendship, self).save(*args, **kwargs)
+    # custom_post_save.send(
+      
+    #   )
+    return obj 

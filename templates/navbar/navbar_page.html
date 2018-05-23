@@ -9,11 +9,14 @@
 
 {% block heading %}
 <div class="container">
+
 <nav class="navbar navbar-expand-md navbar-light bg-faded margin-auto">
   <a class="navbar-brand" href="#">
     <div class="brand-logo-svg">
+      <a href="{% url 'account:profile_detail' user.email %}">
         <img id="logo" src="{% static 'svg/globe.svg' %}"/>
         <span id="slogan">&copy;Djob, get a job!</span>
+      </a>
     </div>
   </a>
   <button class="navbar-toggler" onclick="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +29,6 @@
 {% endblock %}
 
 {% block javascript %}
-  <script src="{% static 'js/ajax_menu.js'%}"></script>
-  {% block js %}{% endblock %}
+{% block js %}{% endblock %}
 {% endblock %}
 
