@@ -15,7 +15,7 @@ def generate_notification(sender, created, instance,  **kwargs):
   notify.send(
     instance.by,
     recipient=instance.to,
-    verb=instance.label,
-    description='{} has sended you a friendship request'.format(instance.by),
+    verb='request',
+    description=instance.tile,
     target=instance
     )

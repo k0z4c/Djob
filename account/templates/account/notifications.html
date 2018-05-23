@@ -26,7 +26,7 @@
         </td>
         <td>{{notification.description}}</td>
 
-        {% if notification.verb == 'request' and unread %}
+        {% if notification.verb == 'request' %}
           {% if notification.target.status == notification.target.PENDING %}
             <td><button data-url="{{ notification.target.get_absolute_url }}" data-action="accept" class="notification-button btn btn-primary">accept</button></td>
             <td><button data-url="{{ notification.target.get_absolute_url }}" data-action="reject" class="notification-button btn btn-primary">reject</button></td>

@@ -7,9 +7,9 @@ from .signals import(
 )
 
 class RequestManager(models.Manager):
-  def send_request(self, label, by, to, ):
+  def send_request(self, label, tile, by, to, ):
     try:
-      req = self.create(label=label, by=by, to=to)
+      req = self.create(label=label, tile=tile, by=by, to=to)
       return req
     except IntegrityError:
       pass

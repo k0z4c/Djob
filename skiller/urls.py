@@ -8,6 +8,11 @@ urlpatterns = [
         name='add_skill',
     ),
     url(
+        r'^(?P<email>(\w)+@(\w)+\.(\w)+)/suggest/$',
+        views.SuggestFormView.as_view(),
+        name='suggest_skill'
+    ),
+    url(
         r'^delete/$',
         views.SkillDeleteView.as_view(),
         name='delete_skill',

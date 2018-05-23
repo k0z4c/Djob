@@ -99,3 +99,26 @@ class SkillListView(ListView):
     model = Skill
     context_object_name = 'skills'
 
+from marathon.models import SocialRequest
+from authentication.models import User
+class SuggestFormView(edit.FormView):
+    form_class = SkillDataForm
+    template_name = 'skiller/skill_form.html'
+
+    def form_valid(self, form):
+        try:
+            to = User.objects.get(email=self.kwargs.get('email'))
+        except User.DoesNotExist:
+            pass
+
+        SocialRequest.objects.send_request(
+            by=self.request.user,
+            to=to,
+            label='skill_suggestion',
+            tile='{} suggests you to add {} to your skills.'.format(self.request.user, form.cleaned_data['codename'])
+        )
+        return super(edit.FormView, self).form_valid(form)
+    @property
+    def success_url(self):
+        return reverse('account:profile_detail', args=[self.request.user,])
+

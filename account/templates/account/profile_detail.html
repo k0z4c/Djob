@@ -29,7 +29,11 @@
       {% add_friend_button profile.user %}
     {% endif %}
     <section>
+      {% if owner %}
       <a href="{% url 'skill:add_skill' %}">add some skill</a>
+      {% else %}
+      <a href="{% url 'skill:suggest_skill' profile.user.email %}">suggest skill to {{profile.user.first_name}}</a>
+      {% endif %} 
       {% include "skiller/show_skills.html" %}
     </section>
     {# {% include "friendship/_list_friends.html" %} #}
