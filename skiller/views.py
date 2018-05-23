@@ -1,5 +1,5 @@
 
-from django.views.generic import ListView, edit
+from django.views.generic import ListView, edit, DetailView
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django.core.exceptions import ValidationError
@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from .exceptions import DuplicatedSkill
 from .errors import DivErrorList
 from .models import (
-    Skill, SkillData
+    Skill, SkillData, Confirmation
 )
 from .forms import (
     SkillDataForm, SkillMultipleSelectForm
@@ -123,3 +123,17 @@ class SuggestFormView(edit.FormView):
     def success_url(self):
         return reverse('account:profile_detail', args=[self.request.user,])
 
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from jsonview.decorators import json_view
+from authentication.models import User
+@json_view
+def confirm_skill(request, email):
+    skill = get_object_or_404(Skill, pk=request.POST.get('skill_pk'))
+    user = User.objects.get(email=email)
+    skill.confirmation_set.create(by=request.user, to=user, skill=skill)
+    return JsonResponse({})
+
+class SkillDetailView(DetailView):
+    object_context_name = 'skill'
+    model = Skill

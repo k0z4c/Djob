@@ -1,5 +1,20 @@
 <ul>
     {% for skill in first_skills %}
-        <li>{{skill}}</li>    
+      <li>
+        <a href="{% url 'skill:skill_detail' skill.pk %}">
+        {{skill}}
+        </a>
+        <span class="badge badge-info">
+          {{skill.confirmation_set.all.count }}
+        </span>
+        {% if not owner %}
+        <button
+          data-key="{{skill.pk}}"
+          data-url="{% url 'skill:confirm_skill' profile.user.email %}"
+          class="btn btn-primary confirmation-button"
+          href="#">confirm this skill
+        </button>
+      </li>
+        {% endif %}
     {% endfor %}
 </ul>
