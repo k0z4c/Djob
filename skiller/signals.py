@@ -7,5 +7,5 @@ from .models import Skill
 def add_skill(sender, instance, **kwargs):
   print("skill received, processing")
   if instance.label == 'skill_suggestion':
-    Skill.objects.add(instance.to, instance.data.get('codename'))
+    Skill.objects.add(instance.to.profile, instance.data.get('codename'))
     pass

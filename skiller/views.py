@@ -55,7 +55,7 @@ class SkillAddView(edit.FormView):
     def _insert_if_not_duplicated(self, codename):
         try:
             Skill.objects.add(
-                user=self.request.user,
+                profile=self.request.user.profile,
                 name=codename
                 )
         except DuplicatedSkill:

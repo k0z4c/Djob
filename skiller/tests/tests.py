@@ -58,7 +58,7 @@ class SkillManagerTestCase(TestCase):
     def test_add_skill(self): 
         user = UserFactory()
 
-        skill_ass = Skill.objects.add(user, name='testing')
+        skill_ass = Skill.objects.add(user.profile, name='testing')
 
         self.assertIsInstance(
             skill_ass, Skill,
@@ -70,12 +70,12 @@ class SkillManagerTestCase(TestCase):
             )
 
         with self.assertRaises(DuplicatedSkill):
-            Skill.objects.add(user, name='testing')
+            Skill.objects.add(user.profile, name='testing')
 
     def test_user_can_have_multiple_skills(self):
         user = UserFactory()
-        Skill.objects.add(user, name='testing')
-        Skill.objects.add(user, name='test')
+        Skill.objects.add(user.profile, name='testing')
+        Skill.objects.add(user.profile, name='test')
 
         self.assertEqual(user.skill_set.filter().count(), 2)
 
