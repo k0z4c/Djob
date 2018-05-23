@@ -21,7 +21,7 @@
     </div>
     {% if owner %}
       <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
-    {% elif friends %}
+    {% elif are_friends %}
       <p>you are friend</p>
     {% elif hang_request %}
       <button disabled>request sended</button >
@@ -35,6 +35,10 @@
       <a href="{% url 'skill:suggest_skill' profile.user.email %}">suggest skill to {{profile.user.first_name}}</a>
       {% endif %} 
       {% include "skiller/show_skills.html" %}
+
+      {% for friend in friends %}
+      <p><a href="{% url 'account:profile_detail' friend %}">{{friend}}</a></p>
+      {% endfor %}
     </section>
     {# {% include "friendship/_list_friends.html" %} #}
 </div>

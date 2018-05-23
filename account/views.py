@@ -26,37 +26,23 @@ def index(request):
     return redirect(profile, permanent=True)
 
 class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
-    '''
-    Renders the profile requested by URL.
-    '''
     model = Profile
-
-    def get_object(self, queryset=None):
-        if self.request.user.email == self.kwargs.get('email'):
-            return self.request.user.profile
-
-        user = get_object_or_404(
-            User,
-            email=self.kwargs.get('email')
-        )
-        return user.profile
+    slug_field = 'user__email'
+    slug_url_kwarg = 'email'
 
     def _is_owner(self):
         return self.request.user.email == self.kwargs.get('email')
 
     def get_context_data(self, **kwargs):
-        if self._is_owner():
-            kwargs.update({
-                'owner': True,
-                'friends': Friendship.objects.get_friends(self.request.user),
-            })
-        else:
-            user_visited = User.objects.get(email=self.kwargs['email'])
-            if Friendship.objects.are_friends(self.request.user, user_visited):
-                kwargs.update({'friends': True})
-
         kwargs.update({
-            'first_skills': self.request.user.skill_set.all()[:5]
+            'owner': self._is_owner,
+            'friends': Friendship.objects.get_friends_names_by_profile(self.object),
+            'first_skills': self.object.skill_set.all()[:5],
+            'are_friends': Friendship.objects.are_friends(
+                self.object,
+                self.model.objects.get(user__email=self.kwargs.get('email')
+                    )
+                )
             })
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 

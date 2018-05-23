@@ -10,6 +10,6 @@ def add_friend(sender, instance, **kwargs):
   print(instance.label)
   if instance.label == 'friendship_request':
     try:
-      Friendship.objects.create(by=instance.by, to=instance.to)
+      Friendship.objects.create(by=instance.by.profile, to=instance.to.profile)
     except IntegrityError:
       pass
