@@ -19,21 +19,12 @@ class FriendshipManager(models.Manager):
     qs = Q(to=profile) | Q(by=profile)
     return self.filter(qs)
 
-# returns a qs list of users 
-  # def get_friends(self, user):
-  #   # list of friendships
-  #   qs = Q(by=user.profile) | Q(to=user.profile)
-  #   return self.filter(qs)
-
   def get_friends(self, user):
-    qs = Q(profile__contacts_by__by=user.profile) | Q(profile__contacts_to__to=user.profile)
-    # return apps.get_model(settings.AUTH_USER_MODEL).objects.filter(qs)
-
-    # ?
-    # friendships = self.get_friendships_by_profile(user.profile)
-    # for f in friendships:
-    #   qs += Q(by=f.by.user ) | Q(to=f.to)
-    return apps.get_model(settings.AUTH_USER_MODEL).objects.filter(qs)
+    friendships = self.get_friendships_by_profile(user.profile)
+    qs = Q()
+    for f in friendships:
+      qs = qs | Q(profile__contacts_by__by=f.by ) | Q(profile__contacts_to__to=f.to)
+    return apps.get_model(settings.AUTH_USER_MODEL).objects.filter(qs).exclude(email=user.email)
 
 
   def are_friends(self, profile1, profile2):
