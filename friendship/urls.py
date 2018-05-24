@@ -2,7 +2,7 @@ from django.conf.urls import url
 from . import views
 urlpatterns = [
   url(
-    r'^list/$',
+    r'^(?P<email>(\w)+@(\w)+\.(\w)+)/list/$',
     views.FriendshipListView.as_view(),
     name='list'
   ),

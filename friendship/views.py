@@ -17,7 +17,9 @@ class FriendshipListView(ListView):
 
   @property
   def queryset(self):
-    return self.model.objects.get_friends(self.request.user)
+    return self.model.objects.filter(
+      by__user__email=self.kwargs.get('email')
+      )
 
 ''' send_request'''
 def send_request(request, email):

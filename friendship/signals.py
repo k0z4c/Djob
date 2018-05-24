@@ -4,12 +4,14 @@ from .models import Friendship
 from marathon.models import SocialRequest
 from django.db import IntegrityError
 
-@receiver(social_request_accepted, sender=SocialRequest, weak=False)
+@receiver(social_request_accepted, sender=SocialRequest)
 def add_friend(sender, instance, **kwargs):
   print('signal received')
   print(instance.label)
   if instance.label == 'friendship_request':
     try:
-      Friendship.objects.create(by=instance.by.profile, to=instance.to.profile)
+      Friendship.objects.create_friendship(
+        by=instance.by.profile, to=instance.to.profile
+        )
     except IntegrityError:
       pass

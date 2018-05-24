@@ -36,7 +36,7 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
     def get_context_data(self, **kwargs):
         kwargs.update({
             'owner': self._is_owner,
-            'friends': Friendship.objects.get_friends_names_by_profile(self.object),
+            'friends': self.object.contacts.all(),
             'first_skills': self.object.skill_set.all()[:5],
             'are_friends': Friendship.objects.are_friends(
                 self.object,
