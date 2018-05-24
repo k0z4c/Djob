@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings 
 
+from account.models import Profile
 # here we have to instantiated Project page before create an Invite request
 # Create your models here.
 class InviteRequest(models.Model):
@@ -19,12 +20,12 @@ class InviteRequest(models.Model):
   date = models.DateTimeField(auto_now_add=True)
 
 class ProjectPage(models.Model):
-  users = models.ManyToManyField(
-    settings.AUTH_USER_MODEL,
+  profiles = models.ManyToManyField(
+    Profile,
     related_name = 'projectpages')
 
   owner = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
+    Profile,
     related_name='+')
 
   name = models.CharField(max_length=50)
