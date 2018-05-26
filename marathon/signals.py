@@ -13,8 +13,8 @@ def generate_notification(sender, created, instance,  **kwargs):
   if not created: 
     return
   notify.send(
-    instance.by,
-    recipient=instance.to,
+    instance.by.user,
+    recipient=instance.to.user,
     verb='request',
     description=instance.tile,
     target=instance
