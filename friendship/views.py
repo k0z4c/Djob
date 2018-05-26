@@ -17,7 +17,9 @@ class FriendshipListView(ListView):
 
   @property
   def queryset(self):
-    return self.model.objects.get_friends(self.request.user)
+    return self.model.objects.filter(
+      by__user__email=self.kwargs.get('email')
+      )
 
 ''' send_request'''
 def send_request(request, email):
@@ -28,8 +30,8 @@ def send_request(request, email):
 
   social_request = SocialRequest.objects.send_request(
     label='friendship_request',
-    by=request.user,
-    to=to,
+    by=request.user.profile,
+    to=to.profile,
     tile='{} has sended you a friendship request.'.format(request.user)
   )
   return JsonResponse({'message': 'request sended'})

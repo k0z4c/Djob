@@ -8,6 +8,8 @@ from .signals import(
   social_request_accepted, social_request_rejected
 )
 
+from account.models import Profile
+
 class RequestManager(models.Manager):
   def send_request(self, label, tile, by, to, data={}):
     try:
@@ -34,11 +36,11 @@ class SocialRequest(models.Model):
   )
 
   by = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
+    Profile,
     related_name='marathon_sent')
   
   to = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
+    Profile,
     related_name='marathon_received')
 
   status = models.CharField(
@@ -48,13 +50,14 @@ class SocialRequest(models.Model):
     )
 
   label = models.CharField(max_length=20)
-  tile = models.CharField(max_length=70, default='')
+  tile = models.CharField(max_length=200, default='', blank=True)
   date = models.DateTimeField(auto_now_add=True)
   status_date = models.DateTimeField(auto_now=True)
   data = JSONField(default=dict) 
   objects = RequestManager()
 
   class Meta:
+    app_label = 'marathon'
     unique_together = (('by', 'to', 'label'),)
     
   # auto now maybe? 

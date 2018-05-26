@@ -18,7 +18,7 @@ class MessageForm(forms.ModelForm):
         self.user = user 
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit', 'Submit'))
-        self.fields['recipient'].queryset = Friendship.objects.get_friends(user)
+        self.fields['recipient'].queryset = user.profile.contacts.all()
 
     class Meta:
         model = Message

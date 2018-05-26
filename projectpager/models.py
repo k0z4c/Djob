@@ -1,34 +1,21 @@
 from django.db import models
-from django.conf import settings 
-
-# here we have to instantiated Project page before create an Invite request
-# Create your models here.
-class InviteRequest(models.Model):
-  by = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
-    related_name='invites_sended')
-  to = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
-    related_name='invites_received')
-
-  project_page = models.OneToOneField('ProjectPage')
-
-  class Meta:
-    unique_together = (('by', 'to'),)
-
-  date = models.DateTimeField(auto_now_add=True)
+from account.models import Profile
 
 class ProjectPage(models.Model):
-  users = models.ManyToManyField(
-    settings.AUTH_USER_MODEL,
+  profiles = models.ManyToManyField(
+    Profile,
     related_name = 'projectpages')
 
   owner = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
+    Profile,
     related_name='+')
 
   name = models.CharField(max_length=50)
   description = models.TextField()
 
+  class Meta:
+    permissions = (
+      ('can_post_discussions', 'Can post new discussions to page.'),
+      )
   def __str__(self):
     return self.name

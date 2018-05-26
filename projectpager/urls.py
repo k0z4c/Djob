@@ -3,22 +3,27 @@ from . import views
 
 urlpatterns = [
   url(
-    r'^new/$',
+    r'^projects/create/$',
     views.ProjectPageCreateView.as_view(),
     name='projectpage_create'
   ),
   url(
-    r'^list/$',
+    r'^projects/list/$',
     views.ProjectPageListView.as_view(),
     name='projectpage_list'
   ),
   url(
-    r'^(?P<pk>\w+)/detail/$',
+    r'projects/^(?P<pk>\w+)/detail/$',
     views.ProjectPageDetailView.as_view(),
     name='project_page_detail'
   ),
   url(
-    r'^(?P<pk>\w+)/update/$',
+    r'projects/invite/$',
+    views.InviteRequestFormView.as_view(),
+    name='project_page_invite'
+  ),
+  url(
+    r'^projects/(?P<pk>\w+)/update/$',
     views.ProjectPageUpdateView.as_view(),
     name='project_page_update',
   )
