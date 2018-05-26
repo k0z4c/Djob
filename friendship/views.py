@@ -30,8 +30,8 @@ def send_request(request, email):
 
   social_request = SocialRequest.objects.send_request(
     label='friendship_request',
-    by=request.user,
-    to=to,
+    by=request.user.profile,
+    to=to.profile,
     tile='{} has sended you a friendship request.'.format(request.user)
   )
   return JsonResponse({'message': 'request sended'})
