@@ -40,6 +40,9 @@
       <p><a href="{% url 'account:profile_detail' friend %}">{{friend}}</a></p>
       {% endfor %}
     </section>
+    <section>
+      <a href="{% url 'projectpager:project_page_invite' %}">add contact to a group</a>
+    </section>
     {# {% include "friendship/_list_friends.html" %} #}
 </div>
 </div>
