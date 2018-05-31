@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'skiller.apps.SkillerConfig',
     'messanger',
     'projectpager.apps.ProjectpagerConfig',
+    'searcher.apps.SearcherConfig',
 ]
 
 MIDDLEWARE = [

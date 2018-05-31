@@ -19,3 +19,4 @@ class Friendship(models.Model):
 
   def __str__(self):
     return self.to.user.email
+

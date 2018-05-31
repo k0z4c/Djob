@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^friendship/', include('friendship.urls', namespace='friendship')),
     url(r'^messanger/', include('messanger.urls', namespace='messanger')),
     url(r'^pages/', include('projectpager.urls', namespace='projectpager')),
+    url(r'^search/', include('searcher.urls', namespace='searcher')),
     url(r'^', include('authentication.urls', namespace='authentication')),
     url(r'^skill/', include('skiller.urls', namespace='skill')),
     url(r'^notifications/', include('marathon.urls', namespace='marathon')),
