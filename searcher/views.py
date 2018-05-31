@@ -48,7 +48,8 @@ class SearchView(FormView):
       'email': Q(user__email__istartswith=fields.get('email')) ,
       'first_name': Q(user__first_name__istartswith=fields.get('first_name')),
       'last_name': Q(user__last_name__istartswith=fields.get('last_name')),
-      'skill_serial': Q(skill__data__serial=fields.get('skill_serial')),
+      'skill_serial1': Q(skill__data__serial=fields.get('skill_serial1')),
+      'skill_serial2': Q(skill__data__serial=fields.get('skill_serial2')),
       'project_name': Q(projectpages__name__istartswith=fields.get('project_name'))
     }
     predicate = reduce(Q.__and__, [ lookup_dict.get(k) for k in lookup_dict.keys() if fields.get(k) ])

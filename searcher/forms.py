@@ -13,18 +13,28 @@ class SearchForm(forms.Form):
     self.helper.form_id = 'searchForm'
     self.helper.add_input(Submit('submit', 'Submit'))
     self.fields['skill_serial'].queryset = SkillData.objects.all()
+    self.fields['skill_serial1'].queryset = SkillData.objects.all()
+    self.fields['skill_serial2'].queryset = SkillData.objects.all()
 
   email = forms.CharField(max_length=30, required=False)
   first_name = forms.CharField(max_length=30, required=False)
   last_name = forms.CharField(max_length=30, required=False)
 
-  skill_serial = forms.ModelChoiceField(queryset=None, required=False, empty_label='')
+  skill_serial1 = forms.ModelChoiceField(queryset=None, required=False, empty_label='')
+  skill_serial2 = forms.ModelChoiceField(queryset=None, required=False, empty_label='')
+
   project_name = forms.CharField(max_length=30, required=False)
 
-  def clean_skill_serial(self):
-    value = self.cleaned_data['skill_serial']
+  def clean_skill_serial1(self):
+    value = self.cleaned_data['skill_serial1']
     if value:
-      value = self.cleaned_data['skill_serial'].serial
+      value = self.cleaned_data['skill_serial1'].serial
+    return value
+
+  def clean_skill_serial2(self):
+    value = self.cleaned_data['skill_serial2']
+    if value:
+      value = self.cleaned_data['skill_serial2'].serial
     return value
 
   def clean(self):
