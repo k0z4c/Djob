@@ -22,6 +22,10 @@
   }
 
   $(function(){
+      $('#button-id-formreset').on('click', function(){
+        document.getElementById('searchForm').reset();
+      });
+
       $('#searchForm').on('submit', function(){
         var oneFilled = checkFields($(this))
         if(!oneFilled){

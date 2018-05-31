@@ -1,7 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import (
-    Submit
+    Submit , Button
 )
 from skiller.models import SkillData
 
@@ -12,7 +12,8 @@ class SearchForm(forms.Form):
     self.helper = FormHelper()
     self.helper.form_id = 'searchForm'
     self.helper.add_input(Submit('submit', 'Submit'))
-    self.fields['skill_serial'].queryset = SkillData.objects.all()
+    self.helper.add_input(Button('formReset', 'Reset', css_class='btn btn-primary'))
+
     self.fields['skill_serial1'].queryset = SkillData.objects.all()
     self.fields['skill_serial2'].queryset = SkillData.objects.all()
 
