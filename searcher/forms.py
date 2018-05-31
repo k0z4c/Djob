@@ -10,6 +10,7 @@ class SearchForm(forms.Form):
   def __init__(self, *args, **kwargs):
     super(SearchForm, self).__init__(*args, **kwargs)
     self.helper = FormHelper()
+    self.helper.form_id = 'searchForm'
     self.helper.add_input(Submit('submit', 'Submit'))
     self.fields['skill_serial'].queryset = SkillData.objects.all()
 
@@ -17,7 +18,7 @@ class SearchForm(forms.Form):
   first_name = forms.CharField(max_length=30, required=False)
   last_name = forms.CharField(max_length=30, required=False)
 
-  skill_serial = forms.ModelChoiceField(queryset=None, required=False)
+  skill_serial = forms.ModelChoiceField(queryset=None, required=False, empty_label='')
   project_name = forms.CharField(max_length=30, required=False)
 
   def clean_skill_serial(self):

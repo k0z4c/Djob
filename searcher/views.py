@@ -22,7 +22,7 @@ class ResultsView(TemplateView):
 
   def get_context_data(self, **kwargs):
     context = {
-      'profiles': serializers.deserialize('json',self.request.session['results'])
+      'profiles': serializers.deserialize('json',self.request.session['results']),
       'friends': self.request.user.profile.get_user_friends(),
     }
     return super(ResultsView, self).get_context_data(**context)

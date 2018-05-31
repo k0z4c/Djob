@@ -3,6 +3,33 @@
 {% load crispy_forms_tags %}
 
 <div class="container">
-  {% crispy form%}
+  {% crispy form %}
 </div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  function checkFields(form){
+    var inputs = form.find(':input').not("[type='submit'], [type=hidden]");
+    var filled = inputs.filter(function(){
+      return $.trim($(this).val()).length > 0;
+    });
+    console.log(filled)
+    if(filled.length === 0){
+      return false;
+    }
+    return true;   
+  }
+
+  $(function(){
+      $('#searchForm').on('submit', function(){
+        var oneFilled = checkFields($(this))
+        if(!oneFilled){
+          alert('You should fill at least one field!');
+          return false;
+        }
+        return true;
+      });
+  });
+</script>
 {% endblock %}
