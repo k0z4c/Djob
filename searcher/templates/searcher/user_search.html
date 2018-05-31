@@ -1,0 +1,8 @@
+{% include "navbar/navbar_page.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="container">
+  {% crispy form%}
+</div>
+{% endblock %}

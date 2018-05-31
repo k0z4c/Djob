@@ -1,0 +1,8 @@
+{% include "navbar/navbar_page.html" %}
+{% block content %}
+<div class="container">
+{% for profile in profiles %}
+<p>{{profile.object.user.email}}</p>
+{% endfor %}
+</div>
+{% endblock %}
