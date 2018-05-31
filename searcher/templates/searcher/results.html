@@ -1,8 +1,39 @@
 {% include "navbar/navbar_page.html" %}
 {% block content %}
+{% load staticfiles %}
 <div class="container">
-{% for profile in profiles %}
-<p>{{profile.object.user.email}}</p>
-{% endfor %}
+  <table class="table table-hover">
+    <thead>
+      <th scope="col" style="text-align:center;"><span class ="badge badge-primary"></span></th>
+      <th scope="col" style="text-align:center;"><span class="badge badge-primary">user</span></th>
+      <th scope="col" style="text-align:center;"><span class="badge badge-primary">friend</span></th>
+    </thead>
+      {% for profile in profiles %}
+      <tr onclick="window.location.href='{{profile.object.get_absolute_url}}'">
+        <td style="width: 100px;">
+          <div id="badge" class="d-flex flex-column justify-content-center align-items-center">
+            <img class="img img-fluid" src="{{profile.object.get_image}}" style="width:100%;"/>
+          </div>
+        </td>
+        <td>
+          <div id="badge" class="d-flex flex-column justify-content-center align-items-center">
+            <span 
+              id="userEmail">
+                {{profile.object.user.email}}
+            </span>
+          </div>
+        </td>
+        <td>
+          <div class="d-flex flex-column justify-content-center align-items-center">
+          {% if profile.object in friends %}
+            <img src="{% static 'svg/check.svg' %}"/>
+          {% else %}
+            <img src="{% static 'svg/x.svg' %}"/>
+          {% endif %}
+        </div>
+        </td>
+      </tr>
+  {% endfor %}
+  </table>
 </div>
 {% endblock %}

@@ -51,6 +51,9 @@ class Profile(models.Model):
         }
       )
 
+  def get_user_friends(self):
+    return map(lambda x: x.to, self.contacts.all())
+
   def get_image(self):
     if not self.img:
       return '/static/svg/octoface.svg'
