@@ -41,6 +41,7 @@ class Profile(models.Model):
   description = models.TextField(max_length=200, default='', blank=True)
   actual_job = models.CharField(max_length=200, default='', blank=True)
   phone_number = models.CharField(max_length=100, default='', blank=True)
+  num_contacts = models.PositiveIntegerField(default=0)
 
   objects = ProfileManager()
   def get_absolute_url(self):

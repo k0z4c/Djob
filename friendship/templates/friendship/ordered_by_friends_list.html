@@ -1,0 +1,32 @@
+{% extends "navbar/navbar_page.html"%}
+{% block content %}
+<div class="container">
+    <section>
+      <p><em>contacts</em>: <span class="badge badge-info">{{first_level_neighbors_count}}</span></p>
+      <p><em>number of friends of friends</em>: <span class="badge badge-info">{{second_level_neighbors_count}}</span></p>
+    </section>
+  <table class="table table-hover">
+    <thead>
+      <th scope="col" style="text-align:center;"><span class="badge badge-primary"></span></th>      <th scope="col" style="text-align:center;"><span class="badge badge-primary">user</span></th>
+      <th scope="col" style="text-align:center;"><span class="badge badge-primary">friends</span></th>
+    </thead>
+    {% for friendship in contacts_ordered_by_friends_list %}
+    <tr onclick="window.location.href='{{friendship.to.get_absolute_url}}'">
+      <td style="width: 100px;">
+        <div id="badge" class="d-flex flex-column justify-content-center align-items-center">
+            <img class="img img-fluid" src="{{friendship.to.get_image}}" style="width:100%;"/>
+        </div>
+      </td>
+      <td>
+        <div class="d-flex flex-column justify-content-center align-items-center">{{friendship.to.user}}
+        </div>
+      </td>
+      <td>
+        <div class="d-flex flex-column justify-content-center align-items-center">{{friendship.to.num_contacts}}
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
