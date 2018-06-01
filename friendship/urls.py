@@ -7,6 +7,11 @@ urlpatterns = [
     name='list'
   ),
   url(
+    r'^(?P<email>(\w)+@(\w)+\.(\w)+)/network/$',
+    views.NetworkList.as_view(),
+    name='network'
+  ),
+  url(
     r'^(?P<email>(\w)+@(\w)+\.(\w)+)/add',
     views.send_request,
     name='send_request'
