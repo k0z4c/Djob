@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'messanger',
     'projectpager.apps.ProjectpagerConfig',
     'searcher.apps.SearcherConfig',
+    'recommander.apps.RecommanderConfig',
 ]
 
 MIDDLEWARE = [
