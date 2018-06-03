@@ -50,7 +50,8 @@ class ProjectPageListView(ListView):
 
   @property
   def queryset(self):
-    return self.request.user.projectpages.all()
+    user_email = self.kwargs.get('email')
+    return self.model.objects.filter(profiles__user__email=user_email)
 
 class ProjectPageDetailView(DetailView):
   model = ProjectPage
