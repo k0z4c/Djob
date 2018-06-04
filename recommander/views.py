@@ -1,55 +1,57 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
+from account.models import Profile
+from .models import Activity
+import random
 class SuggestView(TemplateView):
     template_name = 'account/suggestions.html'
 
     def get(self, request, *args, **kwargs):
-        import random
-        import math
-        user_profile = self.request.user.profile
-        a_friend = random.choice(user_profile.contacts.all()).to
-        print('friend selected {}'.format(a_friend.user.email))
-        choices = math.ceil(len(user_profile.contacts.all())/4)
-        profiles_sample = [ f.to for f in random.sample(set(a_friend.contacts.exclude(to=user_profile)), choices) ]
-        print('random choices: {}'.format([p.user.email for p in profiles_sample ]))
-        
-        user_contacts_set = set(user_profile.contacts.all())
-        user_projects_set = set(user_profile.projectpages.all())
-        user_skilldata_set = set([ s.data for s in user_profile.skill_set.all()])
+      # collect data; maybe in PredictionPredictionEngine?
+      population = self._collect_data(self.request.user)
+      # now instantce the engine for fitness computation over the sampling set
+      from .engine import PredictionEngine
+      attrs=[('contacts', 'to'), ('skill_set', 'data'), 'projectpages']
+      engine = PredictionEngine(self.request.user.profile, population, attrs=attrs)
+      self.profiles_suggested = [ profile for profile in engine.predict() ]
+      print('suggested:', self.profiles_suggested)
+      return super(SuggestView, self).get(request, *args, **kwargs)
 
-        profiles_scores_list = []
-        for profile in profiles_sample:
-            common_contacts = user_contacts_set & set(profile.contacts.all())
-            common_projects = user_projects_set & set(profile.projectpages.all())
-            common_skills = user_skilldata_set & set([ s.data for s in profile.skill_set.all()])
-            profiles_scores_list.append(
-                (profile.id, len(common_contacts | common_projects))
-            )
+    def _collect_data(self, user):
+      user_profile = user.profile
 
-        profiles_scores_list.sort(key=lambda t: t[1])
-        print(profiles_scores_list)
+      activities_profiles_visited = user_profile.activities.values_list('profile', flat=True)
+      visited_profiles = Profile.objects.filter(pk__in=set(activities_profiles_visited))
 
-        # dic = {}
-        # for profile in profiles_sample:
-        #     print('calculating fitness between {} {}'.format(user_profile.user.email, profile.user.email))
-        #     dic.update({profile.id: self.calculate_fitness(user_profile, profile, attrs=['contacts', 'projectpages', 'skill_set'])})
-        # print(dic)
-        return super(SuggestView, self).get(request, *args, **kwargs)
+      # print("visited = {}".format([s.user for s in visited_profiles]))
+      def random_choice(qs):
+        try:
+          choice = random.choice(qs)
+        except IndexError:
+          choice = None
+        return choice
 
-    def calculate_fitness(self, a, b, attrs, filter=None):
-        '''' filter is a callable that generates a list comprehnsion so a list, filtering data in sets or a tuple like (function, attr)'''
-        score = 0
-        for attr in attrs:
-            a_attr_set = set(getattr(a, attr)).all()
-            b_attr_set = set(getattr(b, attr)).all()
-            score += len(a_attr_set & b_attr_set)
+      a_skill = random_choice(user_profile.skill_set.all())
+      # print("skill selected {}".format(a_skill.data.codename))
+      if a_skill:
+        a_skill = a_skill.data
+      skill_profiles = Profile.objects.filter(skill__data=a_skill).exclude(user=user)
+      # print('skill profiles ={}'.format([ s.user for s in skill_profiles]))
 
-            print("{} {}".format(attr, score))
-        return score
+      a_project = random_choice(user_profile.projectpages.all())
+      project_profiles = Profile.objects.filter(projectpages=a_project).exclude(user=user)
+      # print('project profiles ={}'.format([ s.user for s in project_profiles]))
+
+      population_qs = visited_profiles.union(skill_profiles, project_profiles, visited_profiles)
+      population_qs = population_qs.difference(Profile.objects.filter(contacts__to=user_profile))
+      # print(population_qs)
+      print('population: ', [ p.user.email for p in population_qs ])
+      return population_qs
 
     def get_context_data(self, **kwargs):
-        # kwargs.update({
-        #     'profiles_suggested':
-        #     })
+        kwargs.update({
+            'profiles_suggested': self.profiles_suggested
+            })
+        print(kwargs['profiles_suggested'])
         return super(SuggestView, self).get_context_data(**kwargs)    
