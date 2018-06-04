@@ -10,3 +10,8 @@ def del_all_notifications():
 
 us1 = User.objects.first()
 us2 = User.objects.last()
+
+
+from recommander.engine import PredictionEngine
+engine = PredictionEngine(us1.profile, Profile.objects.all(), [('contacts', 'to'), ('skill_set', 'data'), 'projectpages'])
+engine.predict()
