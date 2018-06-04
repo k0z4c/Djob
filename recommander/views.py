@@ -5,7 +5,7 @@ from account.models import Profile
 from .models import Activity
 import random
 class SuggestView(TemplateView):
-    template_name = 'account/suggestions.html'
+    template_name = 'recommander/suggestions.html'
 
     def get(self, request, *args, **kwargs):
       # collect data; maybe in PredictionPredictionEngine?
