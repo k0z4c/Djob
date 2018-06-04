@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.views import generic
 
 from .models import Profile
-# Create your views here.
 
 from django.shortcuts import get_object_or_404
 from authentication.models import User
@@ -30,6 +29,23 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
     slug_field = 'user__email'
     slug_url_kwarg = 'email'
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        self.are_friends = Friendship.objects.are_friends(
+            self.request.user.profile,
+            self.object
+            )
+        if not (self._is_owner() or self.are_friends):
+            from recommander.models import Activity
+            self.request.user.profile.activities.update_or_create(
+                profile=self.object,
+                activity_type=Activity.USER_VISITED
+                )
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+        
     def _is_owner(self):
         return self.request.user.email == self.kwargs.get('email')
 
@@ -38,11 +54,7 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
             'owner': self._is_owner,
             'friends': self.object.contacts.all(),
             'first_skills': self.object.skill_set.all()[:5],
-            'are_friends': Friendship.objects.are_friends(
-                self.object,
-                self.model.objects.get(user__email=self.kwargs.get('email')
-                    )
-                )
+            'are_friends': self.are_friends
             })
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 
@@ -100,7 +112,7 @@ class MyPaginator(Paginator):
     for notification in object_page_list: notification.mark_as_read()
     return self._get_page(object_page_list, number, self)
 
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from notifications.models import Notification
 # UnreadNotificationsListView
 class UnreadedNotificationsListView(ListView):
