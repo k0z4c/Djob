@@ -62,6 +62,6 @@ class Profile(models.Model):
 
   def get_image(self):
     if not self.img:
-      return '/static/svg/octoface.svg'
+      return '/media/default.svg'
     else:
       return self.img.url
