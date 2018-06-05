@@ -9,10 +9,13 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from guardian.mixins import GuardianUserMixin
 
+from django.core.validators import EmailValidator
+# from django.contrib.auth.validators import EmailValidator
+
 # forms to extend or rewrite: UserCreationForm, UserChangeForm
 class User(AbstractBaseUser, PermissionsMixin, GuardianUserMixin):
 
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(_('email address'), unique=True, validators=[EmailValidator])
     first_name = models.CharField(_('first name'), max_length=30)
     last_name = models.CharField(_('last name'), max_length=30)
 
@@ -57,27 +60,12 @@ class User(AbstractBaseUser, PermissionsMixin, GuardianUserMixin):
     def get_short_name(self):
         return self.first_name
 
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def full_name(self):
         return self.first_name + ' ' + self.last_name
 
-    # def is_staff(self):
-    #     return False
-    #
-    # def is_active(self):
-    #     return True
-    #
-    # def has_perm(self, perm, obj=None):
-    #     return True
-    #
-    # def has_module_perms(self, app_label):
-    #     return True
-
-    @property
-    def is_staff(self):
-        return self.is_admin
-
     def get_absolute_url(self):
         return reverse('account:profile_detail', args=[self.email])
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        send_mail(subject, message, from_email, [self.email], **kwargs)
