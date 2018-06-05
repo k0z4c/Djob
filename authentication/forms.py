@@ -2,12 +2,15 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import password_validation
 from .models import User
 
-# https://docs.djangoproject.com/en/1.11/ref/forms/validation/
-# https://docs.djangoproject.com/en/1.11/ref/validators/#module-django.core.validators
-from django.contrib.auth.forms import AuthenticationForm
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import (
+    Submit
+)
+
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.EmailField(
         max_length=200,
@@ -19,6 +22,11 @@ class UserEditForm(forms.ModelForm):
         fields = ['email', 'first_name', 'last_name']
 
 class UserCreationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(UserCreationForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+
     password1 = forms.CharField(label='password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password Confirmation', widget=forms.PasswordInput)
 
@@ -36,9 +44,7 @@ class UserCreationForm(forms.ModelForm):
 
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError(error_messages['password_mismatch'], code='password_mismatch')
-        # enable password default validators (settings.py)
-        # when modelform initializes, it allocats an instance of the model
-        # this is accessible by the instance attributes
+
         password_validation.validate_password(self.cleaned_data.get('password2'), self.instance)
         return password2
 
@@ -51,8 +57,6 @@ class UserCreationForm(forms.ModelForm):
             user.save()
         return user
 
-# A form used in the admin interface to change a user’s information and permissions.
-# https://docs.djangoproject.com/en/1.8/topics/auth/default/#django.contrib.auth.forms.UserChangeForm
 class UserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField(
         label = _("Password"),
@@ -62,6 +66,7 @@ class UserChangeForm(forms.ModelForm):
             "<a href=\"../password/\">this form</a>."
         )
     )
+    
     class Meta:
         model = User
         fields = '__all__'
