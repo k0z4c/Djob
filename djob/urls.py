@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'^', include('authentication.urls', namespace='authentication')),
     url(r'^skill/', include('skiller.urls', namespace='skill')),
     url(r'^notifications/', include('marathon.urls', namespace='marathon')),
+    url(r'^recommander/', include('recommander.urls', namespace='recomander')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT, show_indexes=True)

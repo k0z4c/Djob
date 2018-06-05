@@ -127,11 +127,13 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from jsonview.decorators import json_view
 from authentication.models import User
+from recommander.models import Activity
 @json_view
 def confirm_skill(request, email):
     skill = get_object_or_404(Skill, pk=request.POST.get('skill_pk'))
     user = User.objects.get(email=email)
     skill.confirmation_set.create(by=request.user, to=user, skill=skill)
+    request.user.profile.activities.create(profile=user.profile, activity_type=Activity.SKILL_CONFIRMED)
     return JsonResponse({})
 
 class SkillDetailView(DetailView):

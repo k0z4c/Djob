@@ -4,7 +4,7 @@
   <ul>
     {% for project in projectpage_list %}
       <li>
-          <a href="{% url 'projectpager:project_page_detail' project.pk %}">
+          <a href="{% url 'projectpager:project_page_detail'  email=user.email pk=project.pk %}">
             {{project}}
           </a>
         </li>

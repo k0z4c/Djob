@@ -1,7 +1,7 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from . import views
 
-urlpatterns = [
+some_urls = [
   url(
     r'^projects/create/$',
     views.ProjectPageCreateView.as_view(),
@@ -13,12 +13,12 @@ urlpatterns = [
     name='projectpage_list'
   ),
   url(
-    r'projects/^(?P<pk>\w+)/detail/$',
+    r'^projects/(?P<pk>\d+)/detail/$',
     views.ProjectPageDetailView.as_view(),
     name='project_page_detail'
   ),
   url(
-    r'projects/invite/$',
+    r'^projects/invite/$',
     views.InviteRequestFormView.as_view(),
     name='project_page_invite'
   ),
@@ -27,4 +27,10 @@ urlpatterns = [
     views.ProjectPageUpdateView.as_view(),
     name='project_page_update',
   )
+] 
+urlpatterns = [
+  url(
+      r'^(?P<email>(\w)+@(\w)+\.(\w)+)/',
+      include(some_urls),
+  ),
 ]

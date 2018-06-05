@@ -7,6 +7,9 @@ from django.conf import settings
 from django.utils import timezone
 from .fields import AvatarImageField
 
+from django.contrib.contenttypes.fields import GenericRelation
+# from recommander.models import Activity
+
 def manage_upload(instance, filename):
   print("[*] manage_upload  called")
   opts = {
@@ -38,6 +41,8 @@ class Profile(models.Model):
     default_height=200,
     upload_to=manage_upload,
     )
+  activities = GenericRelation('recommander.Activity')
+
   description = models.TextField(max_length=200, default='', blank=True)
   actual_job = models.CharField(max_length=200, default='', blank=True)
   phone_number = models.CharField(max_length=100, default='', blank=True)

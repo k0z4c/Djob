@@ -1,0 +1,9 @@
+{% extends "navbar/navbar_page.html"%}
+{% block content %}
+{% if not profiles_suggested %}
+  <p>no suggestion at moment :( try later.</p>
+{% endif %}
+{% for profile in profiles_suggested %}
+  <p><a href="{{profile.get_absolute_url}}">{{profile.user}}</a></p>
+{% endfor %}
+{% endblock %}
