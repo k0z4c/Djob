@@ -1,8 +1,15 @@
 {% extends "base.html" %}
-    {% block content %}
-    <form class="" action="" method="post">
-        {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" name="" value="submit">
-    </form>
-    {% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <section>
+    <h1><b>Djob</b>, get a job!</h1>
+  </section>
+  <section>
+    Welcome to <b>Djob</b> social network.<br>
+    Complete the form below to signup to our awesome site!
+  </section>
+  <section>
+  {% crispy form %}
+  </section>
+</div>
+{% endblock %}

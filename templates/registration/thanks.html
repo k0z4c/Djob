@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block heading %}
+  <h1>Congratulations!</h1>
+{% endblock %}
+{% block content %}
+  <p>Thank you for your <em>registration!</em><br>
+    Now, login to your account.<br>
+    Click <a href="{% url 'authentication:login' %}">here</a>to login </p> 
+{% endblock %}

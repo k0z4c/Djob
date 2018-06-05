@@ -1,21 +1,23 @@
-from django.conf.urls import url, include
 from .import views
+from django.conf.urls import(
+    url, include
+)
 
 urlpatterns = [
     url(
         r'^signup/$',
-        views.signup,
+        views.SignupView.as_view(),
         name='signup'
-    ),
-    url(
-        r'^checkpoint/$',
-        views.checkpoint,
-        name='checkpoint'
     ),
     url(
         r'^login/$',
         views.CustomLoginView.as_view(),
         name='login'
+    ),
+    url(
+        r'^thanks/$',
+        views.ThanksView.as_view(),
+        name='thanks'
     ),
     url(
         r'^',
