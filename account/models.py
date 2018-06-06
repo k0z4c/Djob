@@ -40,6 +40,7 @@ class Profile(models.Model):
     default_width=200,
     default_height=200,
     upload_to=manage_upload,
+    blank=True
     )
   activities = GenericRelation('recommander.Activity')
 
