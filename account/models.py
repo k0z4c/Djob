@@ -57,6 +57,9 @@ class Profile(models.Model):
         }
       )
 
+  def is_friend(self, profile):
+    return profile.contacts.filter(to=self).exists()
+
   def get_user_friends(self):
     return map(lambda x: x.to, self.contacts.all())
 

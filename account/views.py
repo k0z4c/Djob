@@ -32,11 +32,8 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        self.are_friends = Friendship.objects.are_friends(
-            self.request.user.profile,
-            self.object
-            )
-        if not (self._is_owner() or self.are_friends):
+        request_profile = self.request.user.profile
+        if not (self._is_owner() or self.object.is_friend(request_profile)):
             from recommander.models import Activity
             self.request.user.profile.activities.update_or_create(
                 profile=self.object,
@@ -54,7 +51,7 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
             'owner': self._is_owner,
             'friends': self.object.contacts.all(),
             'first_skills': self.object.skill_set.all()[:5],
-            'are_friends': self.are_friends
+            'are_friends': self.object.is_friend(self.request.user.profile)
             })
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 
