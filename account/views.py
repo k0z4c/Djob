@@ -35,7 +35,7 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
         request_profile = self.request.user.profile
         if not (self._is_owner() or self.object.is_friend(request_profile)):
             from recommander.models import Activity
-            self.request.user.profile.activities.update_or_create(
+            request_profile.activities.update_or_create(
                 profile=self.object,
                 activity_type=Activity.USER_VISITED
                 )
@@ -43,9 +43,6 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
         
-    def _is_owner(self):
-        return self.request.user.email == self.kwargs.get('email')
-
     def get_context_data(self, **kwargs):
         kwargs.update({
             'owner': self._is_owner,
@@ -55,12 +52,10 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
             })
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 
-class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.TemplateResponseMixin, generic.base.View):
-    '''
-    *_keys are form's fields which are used to split
-    fields in POST request.
-    '''
+    def _is_owner(self):
+        return self.request.user.email == self.kwargs.get('email')
 
+class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.TemplateResponseMixin, generic.base.View):
     template_name = 'account/profile_update_form.html'
     success_url = 'account:profile_detail'
     user_keys = ['email', 'first_name', 'last_name']
@@ -70,22 +65,17 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
     return_403 = True
 
     @classmethod
-    def check_and_save(cls, f1, f2):
+    def check_and_save_model_forms(cls, f1, f2):
         if f1.is_valid() and f2.is_valid():
             f1.save() and f2.save()
 
-    def get_permission_object(self):
-        obj = Profile.objects.get(user__email=self.kwargs.get('email'))
-        return obj
-
     def post(self, request, *args, **kwargs):
-
         user_data = { k: request.POST[k] for k in self.user_keys }
         profile_data = { k: request.POST[k] for k in self.profile_keys }
 
         f1 = UserEditForm(user_data, instance=request.user)
         f2 = ProfileEditForm(profile_data, request.FILES, instance=request.user.profile)
-        self.check_and_save(f1, f2)
+        self.check_and_save_model_forms(f1, f2)
 
         return HttpResponseRedirect(reverse(self.success_url,
                                             args=[request.user.email]))
@@ -97,14 +87,19 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
         self._handle_crispy_forms(f1, f2)
         return self.render_to_response({'f1': f1, 'f2': f2})
 
+    def get_permission_object(self):
+        obj = Profile.objects.get(user__email=self.kwargs.get('email'))
+        return obj
+
     def _handle_crispy_forms(self, *forms):
         from crispy_forms.layout import Submit
         for form in forms:
             form.helper.form_tag = False
             form.helper.inputs.pop()
 
+
 from django.core.paginator import Paginator
-class MyPaginator(Paginator):
+class NotificationsPaginator(Paginator):
   def page(self, number):
     number = self.validate_number(number)
     bottom = (number - 1) * self.per_page
@@ -123,7 +118,7 @@ class UnreadedNotificationsListView(ListView):
   model = Notification
   template_name = 'account/notifications.html'
   paginate_by = 5
-  paginator_class = MyPaginator
+  paginator_class = NotificationsPaginator
   # context_object_name = 'unreaded_notifications_list'
 
   @property
@@ -139,13 +134,14 @@ class UnreadedNotificationsListView(ListView):
 class ReadedNotificationsListView(ListView):
     model = Notification
     template_name = 'account/notifications.html'
+    paginator_class = NotificationsPaginator
     paginate_by = 5
-    paginator_class = MyPaginator
     # context_object_name = 'readed_notifications_list'
 
     @property
     def queryset(self):
         return Notification.objects.filter(recipient=self.request.user).read()
+
     def get_context_data(self, **kwargs):
         return super(ReadedNotificationsListView, self).get_context_data(
             unread=False,
