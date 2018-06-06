@@ -9,6 +9,11 @@ from crispy_forms.layout import (
     Submit, Layout, Fieldset, Field, HTML, Button, ButtonHolder
 )
 class ProfileEditForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ProfileEditForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.add_input(Submit('submit', 'Submit'))
+
     class Meta:
         model = Profile
         fields = ['description', 'img']

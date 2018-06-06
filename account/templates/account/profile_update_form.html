@@ -1,11 +1,18 @@
 {% extends "navbar/navbar_page.html" %}
+{% load crispy_forms_tags %}
     {% block content %}
     <div class="container">
-    <form class="" action="" enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        {{f1.as_p}}
-        {{f2.as_p}}
-        <input type="submit" name="" value="submit">
-    </form>
+        <section>
+            <h3>Update Profile</h3>
+            <p>Fill or replace fields to update your profile.
+        </section>
+        <section>
+            <form class="" action="" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                {% crispy f1 %}
+                {% crispy f2 %}
+                <input class="btn btn-primary" type="submit" name="" value="Update">
+            </form>
+        </section>
     </div>
     {% endblock %}

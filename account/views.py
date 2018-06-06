@@ -93,8 +93,15 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
     def get(self, request, *args, **kwargs):
         f1 = UserEditForm(instance=request.user)
         f2 = ProfileEditForm(instance=request.user.profile)
+
+        self._handle_crispy_forms(f1, f2)
         return self.render_to_response({'f1': f1, 'f2': f2})
 
+    def _handle_crispy_forms(self, *forms):
+        from crispy_forms.layout import Submit
+        for form in forms:
+            form.helper.form_tag = False
+            form.helper.inputs.pop()
 
 from django.core.paginator import Paginator
 class MyPaginator(Paginator):

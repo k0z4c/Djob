@@ -8,7 +8,7 @@ from .models import User
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import (
-    Submit
+    Submit, Layout, ButtonHolder, Fieldset
 )
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -17,6 +17,11 @@ class CustomAuthenticationForm(AuthenticationForm):
     )
 
 class UserEditForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(UserEditForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.add_input(Submit('submit', 'Submit'))
+
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name']
