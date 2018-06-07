@@ -1,5 +1,5 @@
 <ul>
-    {% for skill in first_skills %}
+    {% for skill in skills %}
       <li>
         <a href="{% url 'skill:skill_detail' skill.pk %}">
         {{skill}}
