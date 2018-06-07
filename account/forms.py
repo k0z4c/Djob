@@ -4,13 +4,19 @@ from .models import Profile
 from authentication.models import User
 
 from crispy_forms.helper import FormHelper
-
 from crispy_forms.layout import (
-    Submit, Layout, Fieldset, Field, HTML, Button, ButtonHolder
+    Submit
 )
+from django.core.files.uploadedfile import UploadedFile
+from django.conf import settings
+
+import os
+from .fields import AvatarImageFieldFile
+
 class ProfileEditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProfileEditForm, self).__init__(*args, **kwargs)
+        self.fields['img'].label = 'Avatar'
         self.helper = FormHelper(self)
         self.helper.add_input(Submit('submit', 'Submit'))
 
@@ -18,11 +24,19 @@ class ProfileEditForm(forms.ModelForm):
         model = Profile
         fields = ['description', 'img']
 
-    def save(self, commit=True):
-        if commit: self._replace_avatar_image()
-        super(forms.ModelForm, self).save(commit)
+    def clean_img(self):
+        file = self.cleaned_data.get('img')
+        if isinstance(file, UploadedFile):
+            file_path = os.path.join(settings.MEDIA_ROOT, str(self.instance.id),  str(file))
+            if os.path.isfile(file_path):
+                return os.path.join(str(self.instance.id), str(file))
+            return self.cleaned_data.get('img')
 
-    def _replace_avatar_image(self):
-        profile = Profile.objects.get(user=self.instance.user)
-        Profile.objects.check_and_delete_avatar_image(profile)
+        elif isinstance(file, AvatarImageFieldFile):
+            return False
 
+        return self.instance.img
+
+    def clean(self):
+        print("clear: ", self.cleaned_data['img'])
+        return self.cleaned_data
