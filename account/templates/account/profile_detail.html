@@ -3,19 +3,14 @@
 {% load staticfiles %}
 {% load friendship.tags %}
 {% load marathon.counter %}
+{% load account.tags %}
 
 {% block content %}
 <div id="profile-container" style="border: 10px solid black;" class="d-flex flex-column">
   <div class="container-fluid " id="profile-content" style="border: 10px solid blue;" class=" d-flex flex-column">
-
-    {% if messages %}
-      <div class="messages">
-      {% for message in messages %}
-        <div {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</div>
-      {% endfor %}
-      </div>
-    {% endif %}
-
+    <section>
+      {% list_messages %}
+    </section>
     <div id="profile-pic" style="border: 10px solid red; padding-left: 33%;">
       <img style="border: 10px solid yellow;" width="" height="" class="" src="{{profile.get_image}}" alt=""/>
     </div>
