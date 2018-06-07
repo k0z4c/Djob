@@ -1,21 +1,17 @@
 from django.shortcuts import render
-
 from django.views import generic
-
 from .models import Profile
-
 from django.shortcuts import get_object_or_404
-from authentication.models import User
 from django.urls import reverse
 from django.shortcuts import redirect
 from .models import Profile
 from .forms import ProfileEditForm
 from django.http import HttpResponseRedirect
-
 from authentication.forms import UserEditForm
-from guardian.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from friendship.models import Friendship
-from django.db.models import Q
+from django.contrib import messages
+from guardian.mixins import (
+    PermissionRequiredMixin, LoginRequiredMixin
+)
 
 def index(request):
     '''
@@ -77,6 +73,7 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
         f2 = ProfileEditForm(profile_data, request.FILES, instance=request.user.profile)
         self.check_and_save_model_forms(f1, f2)
 
+        messages.success(self.request, 'Account details updated', extra_tags='alert alert-success')
         return HttpResponseRedirect(reverse(self.success_url,
                                             args=[request.user.email]))
 
