@@ -38,6 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin, GuardianUserMixin):
             ),
         )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    first_access = models.BooleanField(default=True)
 
     objects = CustomUserManager()
 
