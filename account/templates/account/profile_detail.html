@@ -14,8 +14,8 @@
     <div id="profile-pic" style="border: 10px solid red; padding-left: 33%;">
       <img style="border: 10px solid yellow;" width="" height="" class="" src="{{profile.get_image}}" alt=""/>
     </div>
-    {% if owner %}
-      <h1>Welcome {{profile.user.first_name|capfirst}}!</h1>
+    {% if owner and just_logged_in %}
+      <h2>Welcome {% if not user.first_access %}back{% endif %} {% if user.first_access %}to your fresh new profile page{% endif %} {{profile.user.first_name|capfirst}}!</h2>
     {% elif are_friends %}
       <p>you are friend</p>
     {% elif hang_request %}

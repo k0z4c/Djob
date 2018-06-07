@@ -4,7 +4,11 @@
     <div class="container">
         <section>
             <h3>Update Profile</h3>
-            <p>Fill or replace fields to update your profile.
+            {% if user.first_access %}
+            <p>Fill the fields below to set up your profile!</p>
+            {% else %}
+            <p>Fill or replace fields to update your profile.</p>
+            {% endif %}
         </section>
         <section>
             <form class="" action="" enctype="multipart/form-data" method="post">
