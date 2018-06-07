@@ -22,12 +22,14 @@ class ProfileEditForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['description', 'img']
+        fields = ['actual_job', 'description', 'img']
 
     def clean_img(self):
         file = self.cleaned_data.get('img')
         if isinstance(file, UploadedFile):
-            file_path = os.path.join(settings.MEDIA_ROOT, str(self.instance.id),  str(file))
+            file_path = os.path.join(
+                settings.MEDIA_ROOT, str(self.instance.id),  str(file)
+            )
             if os.path.isfile(file_path):
                 return os.path.join(str(self.instance.id), str(file))
             return self.cleaned_data.get('img')
