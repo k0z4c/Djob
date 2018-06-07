@@ -4,7 +4,7 @@ from django.views.decorators.cache import never_cache
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import views
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 from .forms import (
     UserCreationForm, CustomAuthenticationForm
@@ -18,8 +18,9 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         response = super(CustomLoginView, self).form_valid(form)
+        first_access = self.request.user.first_access
         self.request.session['just_logged_in'] = True
-        return response
+        return response if not first_access else redirect('account:profile_edit', self.request.user)
 
 class CustomLogoutView(LogoutView):
     @method_decorator(never_cache)
