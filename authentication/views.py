@@ -19,7 +19,6 @@ class CustomLoginView(LoginView):
 class CustomLogoutView(LogoutView):
     @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
-        print("checking")
         self._check_first_access()
         return super(CustomLogoutView, self).dispatch(request, *args, **kwargs)
 
