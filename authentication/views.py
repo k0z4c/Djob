@@ -16,6 +16,11 @@ from django.views.generic import (
 class CustomLoginView(LoginView):
     authentication_form = CustomAuthenticationForm
 
+    def form_valid(self, form):
+        response = super(CustomLoginView, self).form_valid(form)
+        self.request.session['just_logged_in'] = True
+        return response
+
 class CustomLogoutView(LogoutView):
     @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):

@@ -44,8 +44,10 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
             'owner': self._is_owner,
             'friends': self.object.contacts.all(),
             'first_skills': self.object.skill_set.all()[:5],
-            'are_friends': self.object.is_friend(self.request.user.profile)
+            'are_friends': self.object.is_friend(self.request.user.profile),
+            'just_logged_in': self.request.session['just_logged_in']
             })
+        self.request.session['just_logged_in'] = False
         return super(ProfileDetailView, self).get_context_data(**kwargs)
 
     def _is_owner(self):
