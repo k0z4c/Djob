@@ -6,7 +6,7 @@ from .managers import (
     SkillManager, ConfirmationManager
     )
 
-from .validators import validate_chars
+from .validators import validate_invalid_chars
 from .helpers import _decorate_name
 
 class Skill(models.Model):
@@ -19,6 +19,10 @@ class Skill(models.Model):
         on_delete=models.CASCADE
         )
 
+    description = models.TextField(
+        max_length=400,
+        blank=True,
+        help_text='Describe your eventual experience or let blank')
     date = models.DateTimeField(default=timezone.now)
 
     objects = SkillManager()
@@ -60,14 +64,9 @@ class SkillData(models.Model):
         db_column='skill name',
         max_length=20,
         unique=True,
-        validators = [validate_chars,],
+        validators = [validate_invalid_chars,],
         help_text='codename for the skill',
         )
-
-    description = models.TextField(
-        max_length=400,
-        blank=True,
-        help_text='Describe your eventual experience or let blank')
 
     @property
     def codename(self):
