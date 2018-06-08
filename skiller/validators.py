@@ -1,14 +1,11 @@
-from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
-def validate_chars(input):
-    # to change defining valid chars 
+def validate_invalid_chars(value):
     import string
-    bad_chars = string.digits + string.whitespace + string.punctuation 
-    is_bad_char = lambda c: c in bad_chars
-    
-    invalid_chars = [ char for char in input if is_bad_char(char) ]
-    if invalid_chars: 
-        raise ValidationError(
-                'Please remove these bad chars: %(invalid)s',
-                params={'invalid': invalid_chars}
-            )
+    import re
+    char_blacklist = string.punctuation
+    regex = re.compile('^[^{}]$'.format(char_blacklist))
+    RegexValidator(
+        regex=regex,
+        message='{} characters are not accepted'.format(char_blacklist),
+    )(value)

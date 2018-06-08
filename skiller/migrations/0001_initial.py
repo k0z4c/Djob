@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
             name='SkillData',
             fields=[
                 ('serial', models.AutoField(primary_key=True, serialize=False)),
-                ('_codename', models.CharField(db_column='skill name', help_text='codename for the skill', max_length=20, unique=True, validators=[skiller.validators.validate_chars])),
+                ('_codename', models.CharField(db_column='skill name', help_text='codename for the skill', max_length=20, unique=True, validators=[skiller.validators.validate_invalid_chars])),
                 ('description', models.TextField(blank=True, help_text='Describe your eventual experience or let blank', max_length=400)),
             ],
         ),

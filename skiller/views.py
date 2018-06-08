@@ -10,66 +10,22 @@ from .models import (
     Skill, SkillData, Confirmation
 )
 from .forms import (
-    SkillDataForm, SkillMultipleSelectForm
+    SkillForm, SkillMultipleSelectForm
 )
 
-class SkillAddView(edit.FormView):
+class SkillAddView(edit.CreateView):
+    model = Skill
+    form_class = SkillForm
     template_name = 'skiller/skill_form.html'
-    form_class = SkillDataForm
 
     @property
     def success_url(self):
         return reverse('account:profile_detail', args=((self.request.user.email,)))
 
-    def form_valid(self, form):
-        codename = form.cleaned_data['codename']
-        skill_data = SkillData(codename=codename)
-        if not (
-            self._validate_input(skill_data) 
-                and 
-            self._insert_if_not_duplicated(skill_data.codename)
-            ): 
-            return self.form_invalid(form)
-
-        messages.success(
-            self.request,
-            message='skills updated successfully',
-            extra_tags='alert alert-success'
-            )
-        return super(edit.FormView, self).form_valid(form)
-
-    def _validate_input(self, skill_data):
-        try:
-            skill_data.clean_fields()
-        except ValidationError as e:
-            for error_field in e.message_dict:
-                for error in e.message_dict[error_field]:
-                        messages.error(
-                            self.request,
-                            message=error,
-                            extra_tags='alert alert-danger'
-                        )
-            return False
-        return True
-
-    def _insert_if_not_duplicated(self, codename):
-        try:
-            Skill.objects.add(
-                profile=self.request.user.profile,
-                name=codename
-                )
-        except DuplicatedSkill:
-            messages.error(
-                self.request,
-                message='duplicated skill',
-                extra_tags='alert alert-danger'
-                )
-            return False
-        return True
-
     def get_form_kwargs(self):
         kwargs = super(SkillAddView, self).get_form_kwargs()
         kwargs.update({
+            'profile': self.request.user.profile,
             'error_class': DivErrorList,
             })
         return kwargs
@@ -102,7 +58,8 @@ class SkillListView(ListView):
 from marathon.models import SocialRequest
 from authentication.models import User
 class SuggestFormView(edit.FormView):
-    form_class = SkillDataForm
+    # form_class = SkillDataForm
+    form_class = SkillForm
     template_name = 'skiller/skill_form.html'
 
     def form_valid(self, form):
