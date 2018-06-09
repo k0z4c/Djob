@@ -70,11 +70,8 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
             f1.save() and f2.save()
 
     def post(self, request, *args, **kwargs):
-        user_data = { k: request.POST[k] for k in self.user_keys }
-        profile_data = { k: request.POST[k] for k in self.profile_keys }
-
-        f1 = UserEditForm(user_data, instance=request.user)
-        f2 = ProfileEditForm(profile_data, request.FILES, instance=request.user.profile)
+        f1 = UserEditForm(self.request.POST, instance=request.user)
+        f2 = ProfileEditForm(self.request.POST, request.FILES, instance=request.user.profile)
         self.check_and_save_model_forms(f1, f2)
 
         messages.success(self.request, 'Account details updated', extra_tags='alert alert-success')
