@@ -10,7 +10,7 @@
 {% block heading %}
 <div class="container">
 
-<nav class="navbar navbar-expand-md navbar-light bg-faded margin-auto">
+<nav class="d-flex flex-row-reverse navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;" >
   <a class="navbar-brand" href="#">
     <div class="brand-logo-svg">
       <a href="{% url 'account:profile_detail' user.email %}">
@@ -22,7 +22,6 @@
   <button class="navbar-toggler" onclick="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-
   {% include "navbar/_navbar_menu.html" %}
 </nav>
 </div>
