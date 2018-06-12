@@ -39,6 +39,3 @@ class ProfileEditForm(forms.ModelForm):
 
         return self.instance.img
 
-    def clean(self):
-        print("clear: ", self.cleaned_data['img'])
-        return self.cleaned_data

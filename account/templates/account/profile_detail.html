@@ -1,57 +1,32 @@
 {# {% extends "navbar/navbar_page.html" %} #}
 {% extends "navbar/navbar_page.html" %}
 {% load staticfiles %}
-{% load friendship.tags %}
 {% load marathon.counter %}
 {% load account.tags %}
 {% load skiller.tags %}
 
 {% block content %}
-<div id="profile-container" style="border: 10px solid black;" class="d-flex flex-column">
-  <div class="container-fluid " id="profile-content" style="border: 10px solid blue;" class=" d-flex flex-column">
+<div id="profile-container" style="border: 10px solid black;" class="d-flex flex-rows">
+  <div class="container-fluid" id="profile-content" style="border: 10px solid blue;" class="d-flex flex-column">
     <section>
       {% list_messages %}
     </section>
-    <div id="profile-pic" style="border: 10px solid red; padding-left: 33%;">
-      <img style="border: 10px solid yellow;" width="" height="" class="" src="{{profile.get_image}}" alt=""/>
-    </div>
+    {% include 'account/_profile_card.html' %}
     {% if owner %}
       {% if just_logged_in %}
       <h2>Welcome {% if not user.first_access %}back{% endif %} {% if user.first_access %}to your fresh new profile page{% endif %} {{profile.user.first_name|capfirst}}!</h2>
       {% endif %}
-    {% elif are_friends %}
-      <p>you are friend</p>
-    {% elif is_request_received or is_request_sended %}
-      <button class="btn btn-primary" disabled>{% if is_request_sended %}request sended{% else %}confirm request{% endif %}</button >
-    {% else %}
-      {% add_friend_button profile.user %}
     {% endif %}
     <section>
-      {% if owner %}
-      <a href="{% url 'skill:add_skill' %}">add some skill</a>
-      {% else %}
-      <a href="{% url 'skill:suggest_skill' profile.user.email %}">suggest skill to {{profile.user.first_name}}</a>
-      {% endif %} 
+      <h4>Skills</h4>
+      {% list_skills profile %}
     </section>
 
-    <section>
-      <h4>Description</h4>
-      {{profile.description}}
-    </section>
-    <section>
-      <h4>Skills</h4>
-      {% if owner %}
-      <a href="{% url 'skill:add_skill' %}">add some skill</a>
-      {% else %}
-      <a href="{% url 'skill:suggest_skill' profile.user.email %}">suggest skill to {{profile.user.first_name}}</a>
-      {% endif %}
-      {% list_skills profile %}
-      {# {% include "skiller/show_skills.html" %} #}
-    </section>
+    {# TODO part #}
     <section>
       <h4>Projects</h4>
       {% for project in profile.projectpages.all %}
-        {{profile.projectpages.all}}
+        <a href="{% url 'projectpager:detail' user.email project.pk %}">{{project}}</a>
       {% endfor %}
     </section>
       <h4>Contacts</h4>
@@ -59,7 +34,7 @@
       <p><a href="{% url 'account:profile_detail' friend %}">{{friend}}</a></p>
       {% endfor %}
     <section>
-      <a href="{% url 'projectpager:project_page_invite' user %}">add contact to a group</a>
+      <a href="{% url 'projectpager:invite' user %}">add contact to a group</a>
     </section>
 </div>
 </div>
