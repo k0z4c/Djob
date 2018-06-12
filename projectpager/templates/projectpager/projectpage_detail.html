@@ -1,6 +1,25 @@
 {% extends "navbar/navbar_page.html"%}
 {% block content %}
 <div class="container">
-  {{projectpage}}
+  <section>
+    <h2>Welcome to <em>{{projectpage.name}}</em> project</h2>
+    {{projectpage.description}}
+  </section>
+  <section>
+    <p><a href="{% url 'projectpager:create_thread' user.email projectpage.pk %}">Post a new thread</a></p>
+    <p>threads:</p>
+    <table class="table">
+      {% for thread in projectpage.threads.all %}
+      <tr>
+        <td>
+          <a href="{% url 'projectpager:thread_detail' user.email projectpage.pk thread.pk %}">{{thread}}</a>
+        </td>
+        <td>
+          posted by {{thread.created_by.user}}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
 </div>
 {% endblock %}

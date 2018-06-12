@@ -19,3 +19,23 @@ class ProjectPage(models.Model):
       )
   def __str__(self):
     return self.name
+
+class Thread(models.Model):
+  project = models.ForeignKey('ProjectPage', related_name='threads')
+  created_by = models.ForeignKey(Profile)
+
+  title = models.CharField(max_length=150)
+  description = models.TextField()
+
+  def __str__(self):
+    return self.title
+
+class Message(models.Model):
+  discussion = models.ForeignKey('Thread', related_name='messages')
+  posted_by = models.ForeignKey(Profile)
+
+  body = models.TextField(default='')
+  date = models.DateTimeField(auto_now=True)
+
+  def __str__(self):
+    return self.body

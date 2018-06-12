@@ -1,0 +1,21 @@
+{% extends "navbar/navbar_page.html" %}
+{% block content %}
+  <h2>{{thread.title}}</h2>
+  <section>
+    {{thread.description}}
+    <p>
+      add a <a href="{% url 'projectpager:thread_create_message' user.email  thread.project thread.pk %}">message</a></p>
+    <table class="table">
+      {% for message in thread.messages.all %}
+      <tr>
+        <td>
+          {{message}}
+        </td>
+        <td>
+          {{message.posted_by.user.email}}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+{% endblock %}
