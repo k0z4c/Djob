@@ -13,7 +13,7 @@ from crispy_forms.layout import (
 )
 
 class SkillForm(forms.ModelForm):
-    skill_name = forms.CharField(max_length=20, validators=[validate_invalid_chars,])
+    skill_name = forms.CharField(max_length=20, validators=[validate_invalid_chars])
 
     def __init__(self, profile, *args, **kwargs):
         super(SkillForm, self).__init__(*args, **kwargs)
@@ -48,7 +48,7 @@ class SkillForm(forms.ModelForm):
             )
         self.instance.data = skill_data
         self.instance.profile = self.profile
-        return super(SkillForm, self).save(commit=False)
+        return super(SkillForm, self).save()
 
 class SkillMultipleSelectForm(forms.Form):
 

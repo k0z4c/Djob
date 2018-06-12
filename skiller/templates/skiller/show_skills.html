@@ -1,14 +1,24 @@
+{% if owner %}
+<a href="{% url 'skill:add_skill' %}">add some skill</a>
+{% else %}
+<a href="{% url 'skill:suggest_skill' profile.user.email %}">suggest skill to {{profile.user.first_name}}</a>
+{% endif %}
 <table class="table">
     {% for skill in skills %}
     <tr>
-      <td style="text-align: center;">
-      <a href="{% url 'skill:skill_detail' skill.pk %}">
-      {{skill}}
-      </a>
-      <span class="badge badge-info">
-        {{skill.confirmation_set.all.count }}
-      </span>
+      <td>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{skill}}
+          <span class="badge badge-info">
+          {{skill.confirmation_set.all.count }}
+          </span>
+          </h5>
+          <p class="card-text">{{skill.description}}</p>
+        </div>
+      </div>
     </td>
+
     <td style="text-align: center;">
       {% if not owner %}
       <button
