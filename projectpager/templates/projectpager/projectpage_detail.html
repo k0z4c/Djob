@@ -1,8 +1,13 @@
 {% extends "navbar/navbar_page.html"%}
+{% load guardian_tags %}
 {% block content %}
 <div class="container">
   <section>
     <h2>Welcome to <em>{{projectpage.name}}</em> project</h2>
+    {% get_obj_perms user for projectpage as "guardian_perms" %}
+    {% if 'can_open_threads' in guardian_perms %}
+      <p><a href="{% url 'projectpager:project_update' user projectpage.pk %}">modify</a> project attributes</p>
+    {% endif %}
     {{projectpage.description}}
   </section>
   <section>

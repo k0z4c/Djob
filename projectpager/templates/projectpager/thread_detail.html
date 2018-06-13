@@ -1,13 +1,19 @@
 {% extends "navbar/navbar_page.html" %}
 {% block content %}
-  <h2>{{thread.title}}</h2>
+  <section>
+    <h2>{{thread.title}}</h2>
+    <p>posted by {{thread.created_by.user}}</p>
+  </section>
   <section>
     {{thread.description}}
     <p>
       add a <a href="{% url 'projectpager:thread_create_message' user.email  thread.project thread.pk %}">message</a></p>
     <table class="table">
       {% for message in thread.messages.all %}
-      <tr>
+      <tr style="text-align: center;">
+        <td style="width:100px;">
+          <img clas="img img-fluid" src="{{thread.created_by.get_image}}" style="width:100%;"/>
+        </td>
         <td>
           {{message}}
         </td>

@@ -51,7 +51,6 @@ class InviteRequestFormView(FormView):
       })
     return kwargs
 
-
 class ProjectPageListView(ListView):
   model = ProjectPage
 
@@ -64,11 +63,15 @@ class ProjectPageDetailView(DetailView):
   model = ProjectPage
   pk_url_kwarg = 'project_pk'
 
-class ProjectPageUpdateView(UpdateView):
+class ProjectPageUpdateView(UserPassesTestMixin, UpdateView):
   model = ProjectPage
   form_class = UpdateProjectPageForm
   pk_url_kwarg = 'project_pk'
 
+  def test_func(self):
+    project_page = self.get_object()
+    return project_page.owner == self.request.user.profile
+    
   @property
   def success_url(self):
     return reverse(
@@ -81,6 +84,10 @@ class ThreadCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
   form_class = ThreadForm
   raise_exception = True
 
+  def test_func(self):
+    project = ProjectPage.objects.get(pk=self.kwargs['project_pk'])
+    return self.request.user.has_perm('can_open_threads', project)
+
   @property
   def success_url(self):
     return reverse(
@@ -88,9 +95,6 @@ class ThreadCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
       args=[self.request.user.email, self.kwargs['project_pk']]
     )
 
-  def test_func(self):
-    project = ProjectPage.objects.get(pk=self.kwargs['project_pk'])
-    return self.request.user.has_perm('can_open_threads', project)
 
   def get_form_kwargs(self):
     kwargs = super(ThreadCreateView, self).get_form_kwargs()
@@ -104,15 +108,19 @@ class ThreadDetailView(DetailView):
   model = Thread
   pk_url_kwarg = 'thread_pk'
 
-class MessageCreateView(CreateView):
+class MessageCreateView(UserPassesTestMixin, CreateView):
   model = Message
   form_class = MessageForm
+
+  def test_func(self):
+    project = ProjectPage.objects.get(pk=self.kwargs['project_pk'])
+    return self.request.user.has_perm('can_open_threads', project)
 
   @property
   def success_url(self):
     return reverse(
       'projectpager:thread_detail',
-      args=[self.request.user.email, self.kwargs['pk'], self.kwargs['thread_pk']]
+      args=[self.request.user.email, self.kwargs['project_pk'], self.kwargs['thread_pk']]
       )
   
   def get_form_kwargs(self):
