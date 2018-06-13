@@ -31,7 +31,7 @@ urlpatterns = [
         name='index',
         ),
     url(
-        r'^(?P<email>(\w)+@(\w)+\.(\w)+)/',
+        r'^(?P<email>([\w\.\+\-])+@(\w)+\.(\w)+)/',
         include(some_urls),
         ),
 ]

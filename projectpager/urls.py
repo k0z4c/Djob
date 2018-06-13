@@ -46,7 +46,7 @@ project_urls = [
 
 urlpatterns = [
   url(
-      r'^(?P<email>(\w)+@(\w)+\.(\w)+)/',
+      r'^(?P<email>([\w\.\+\-])+@(\w)+\.(\w)+)/',
       include(project_urls),
   ),
 ]
