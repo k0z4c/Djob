@@ -10,7 +10,10 @@
     <p>threads:</p>
     <table class="table">
       {% for thread in projectpage.threads.all %}
-      <tr>
+      <tr style="text-align: center;">
+        <td style="width:100px;">
+          <img clas="img img-fluid" src="{{thread.created_by.get_image}}" style="width:100%;"/>
+        </td>
         <td>
           <a href="{% url 'projectpager:thread_detail' user.email projectpage.pk thread.pk %}">{{thread}}</a>
         </td>
