@@ -1,14 +1,14 @@
-from django.db import models
 from django.conf import settings
 from django.utils import timezone
-from django.db import IntegrityError
+from account.models import Profile
 from django.contrib.postgres.fields import JSONField
-
 from .signals import(
   social_request_accepted, social_request_rejected
 )
+from django.db import (
+  models, IntegrityError
+)
 
-from account.models import Profile
 
 class RequestManager(models.Manager):
   def send_request(self, label, tile, by, to, data={}):
@@ -18,13 +18,10 @@ class RequestManager(models.Manager):
     except IntegrityError:
       pass
 
-
   def check_request(self, by, to):
     q = Q(by=by, to=to) | Q(by=to, to=by)
     return self.filter(q).exists()
 
-
-# Create your models here.
 class SocialRequest(models.Model):
   ACCEPTED = 'ACC'
   REJECTED = 'REJ'
@@ -58,9 +55,7 @@ class SocialRequest(models.Model):
 
   class Meta:
     app_label = 'marathon'
-    unique_together = (('by', 'to', 'label'),)
     
-  # auto now maybe? 
   def accept(self):
     self.status = self.ACCEPTED
     self.save()
