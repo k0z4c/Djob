@@ -20,7 +20,7 @@
     </td>
 
     <td style="text-align: center;">
-      {% if not owner %}
+      {% if not owner and are_friends %}
       <button
         data-key="{{skill.pk}}"
         data-url="{% url 'skill:confirm_skill' profile.user.email %}"
@@ -28,7 +28,7 @@
         href="#">confirm this skill
       </button>
       </li>
-        {% endif %}
+      {% endif %}
       </td>
     </tr>
     {% endfor %}

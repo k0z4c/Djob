@@ -5,11 +5,11 @@ function confirm_skill(e){
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
   }
   var csrftoken = Cookies.get('csrftoken');
-  console.log($(this).data('key'));
+  var receiver = $(this)
   $.ajax({
     type: 'post',
-    url: $(this).data('url'),
-    data: {'XCSRFToken': csrftoken, 'skill_pk': $(this).data('key') },
+    url: receiver.data('url'),
+    data: {'XCSRFToken': csrftoken, 'skill_pk': receiver.data('key') },
     beforeSend: function(xhr, settings) {
       if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
         xhr.setRequestHeader("X-CSRFToken", csrftoken);
@@ -17,7 +17,15 @@ function confirm_skill(e){
     },
     dataType: 'json',
     success: function(data){
-      console.log("confirmation received");
+      console.log(data['message']);
+      if(data['status'] === 'success'){
+        console.log("success");
+        $('#confirmation-box').html(`<span style="width: 100%;" class='alert alert-success'>${data['message']}</span>`);
+      }
+      else{
+        $('#confirmation-box').html(`<span style="width: 100%;" class='alert alert-danger'>${data['message']}</span>`);
+      }
+      window.scrollTo(0, 0)
     }
   });
 }

@@ -1,13 +1,16 @@
-
-from django.views.generic import ListView, edit, DetailView
-from django.contrib import messages
 from django.urls import reverse, reverse_lazy
-from django.core.exceptions import ValidationError
-
-from .exceptions import DuplicatedSkill
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from jsonview.decorators import json_view
+from authentication.models import User
+from recommander.models import Activity
+from marathon.models import SocialRequest
 from .errors import DivErrorList
+from django.views.generic import (
+    ListView, edit, DetailView
+)
 from .models import (
-    Skill, SkillData, Confirmation
+    Skill
 )
 from .forms import (
     SkillForm, SkillMultipleSelectForm
@@ -55,10 +58,7 @@ class SkillListView(ListView):
     model = Skill
     context_object_name = 'skills'
 
-from marathon.models import SocialRequest
-from authentication.models import User
 class SuggestFormView(edit.FormView):
-    # form_class = SkillDataForm
     form_class = SkillForm
     template_name = 'skiller/skill_form.html'
 
@@ -80,18 +80,19 @@ class SuggestFormView(edit.FormView):
     def success_url(self):
         return reverse('account:profile_detail', args=[self.request.user,])
 
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from jsonview.decorators import json_view
-from authentication.models import User
-from recommander.models import Activity
 @json_view
 def confirm_skill(request, email):
     skill = get_object_or_404(Skill, pk=request.POST.get('skill_pk'))
     user = User.objects.get(email=email)
-    skill.confirmation_set.create(by=request.user, to=user, skill=skill)
-    request.user.profile.activities.create(profile=user.profile, activity_type=Activity.SKILL_CONFIRMED)
-    return JsonResponse({})
+    response = {}
+    if skill.confirmation_set.filter(by=request.user, to=user, skill=skill).exists():
+        from django.contrib import messages
+        response.update({'status': 'error', 'message': 'You have already confirmed this skill'})
+    else:
+        skill.confirmation_set.create(by=request.user, to=user, skill=skill)
+        request.user.profile.activities.create(profile=user.profile, activity_type=Activity.SKILL_CONFIRMED)
+        response.update({'status': 'success', 'message': 'Skill confirmed successfully'})
+    return JsonResponse(response)
 
 class SkillDetailView(DetailView):
     object_context_name = 'skill'
