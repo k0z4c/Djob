@@ -1,9 +1,18 @@
-from django.shortcuts import render
-from django.views.generic import CreateView, ListView, DetailView, UpdateView, FormView
-from .models import ProjectPage, Thread, Message
-from .forms import CreateProjectPageForm, ThreadForm, MessageForm
-from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.http import HttpResponseRedirect
+from guardian.mixins import LoginRequiredMixin
+from django.shortcuts import render
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.generic import (
+  CreateView, ListView, DetailView, UpdateView, FormView
+)
+from .forms import (
+  CreateProjectPageForm, ThreadForm, MessageForm, InviteForm
+)
+from .models import (
+  ProjectPage, Thread, Message
+)
+
 
 class ProjectPageCreateView(CreateView):
    model = ProjectPage
@@ -20,10 +29,6 @@ class ProjectPageCreateView(CreateView):
       })
     return kwargs
 
-from django.views.generic import CreateView
-from .forms import InviteForm
-from marathon.models import SocialRequest
-
 class InviteRequestFormView(FormView):
   form_class = InviteForm
   template_name = 'projectpager/invite_form.html'
@@ -38,6 +43,7 @@ class InviteRequestFormView(FormView):
 
   def form_invalid(self, form):
     return super(InviteRequestFormView, self).form_invalid(form)
+    
   def get_form_kwargs(self):
     kwargs = super(InviteRequestFormView, self).get_form_kwargs()
     kwargs.update({
@@ -61,19 +67,22 @@ class ProjectPageUpdateView(UpdateView):
   model = ProjectPage
   form_class = CreateProjectPageForm
 
-class ThreadCreateView(CreateView):
+class ThreadCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
   model = Thread
   form_class = ThreadForm
+  raise_exception = True
 
   @property
   def success_url(self):
-    # print(reverse('projectpager:detail', args=[self.request.user.email, self.kwargs.get('pk')]))
-    print(self.object)
     return reverse(
       'projectpager:detail',
       args=[self.request.user.email, self.kwargs['pk']]
     )
-  
+
+  def test_func(self):
+    project = ProjectPage.objects.get(pk=self.kwargs['pk'])
+    return self.request.user.has_perm('can_open_threads', project)
+
   def get_form_kwargs(self):
     kwargs = super(ThreadCreateView, self).get_form_kwargs()
     kwargs.update({

@@ -6,6 +6,11 @@ class ProjectPage(models.Model):
     Profile,
     related_name = 'projectpages')
 
+  class Meta:
+    permissions = (
+      ('can_open_threads', 'Can open a thread'),
+    )
+    
   owner = models.ForeignKey(
     Profile,
     related_name='+')
@@ -13,10 +18,6 @@ class ProjectPage(models.Model):
   name = models.CharField(max_length=50)
   description = models.TextField()
 
-  class Meta:
-    permissions = (
-      ('can_post_discussions', 'Can post new discussions to page.'),
-      )
   def __str__(self):
     return self.name
 

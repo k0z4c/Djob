@@ -49,11 +49,11 @@ class InviteForm(forms.Form):
           label='invite_request',
           tile='{} invites you to join {} group.'.format(
             self.profile.user.email,
-            self.cleaned_data['group'].name
+            self.cleaned_data['project'].name
             ),
           by=self.profile,
           to=friendship.to,
-          data={'project': serializers.serialize('json', [self.cleaned_data['group']])}
+          data={'project': serializers.serialize('json', [self.cleaned_data['project']])}
         )
       )
     return invites
