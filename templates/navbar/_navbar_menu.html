@@ -17,7 +17,7 @@
     </li>
       <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'projectpager:create' user %}">
+      <a class="nav-link" href="{% url 'projectpager:project_create' user %}">
         <img class="navbar-icon-svg" src="{% static 'svg/plus.svg' %}"/>
         <span id="create-project-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
       </a>

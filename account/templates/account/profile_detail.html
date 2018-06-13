@@ -26,7 +26,7 @@
     <section>
       <h4>Projects</h4>
       {% for project in profile.projectpages.all %}
-        <a href="{% url 'projectpager:detail' user.email project.pk %}">{{project}}</a>
+        <a href="{% url 'projectpager:project_detail' user.email project.pk %}">{{project}}</a>
       {% endfor %}
     </section>
       <h4>Contacts</h4>

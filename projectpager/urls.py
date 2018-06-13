@@ -1,21 +1,21 @@
 from django.conf.urls import url, include
 from . import views
 
-some_urls = [
+project_urls = [
   url(
     r'^projects/create/$',
     views.ProjectPageCreateView.as_view(),
-    name='create'
+    name='project_create'
   ),
   url(
     r'^projects/list/$',
     views.ProjectPageListView.as_view(),
-    name='list'
+    name='list_projects'
   ),
   url(
-    r'^projects/(?P<pk>\d+)/detail/$',
+    r'^projects/(?P<project_pk>\d+)/detail/$',
     views.ProjectPageDetailView.as_view(),
-    name='detail'
+    name='project_detail'
   ),
   url(
     r'^projects/invite/$',
@@ -23,29 +23,31 @@ some_urls = [
     name='invite'
   ),
   url(
-    r'^projects/(?P<pk>\w+)/update/$',
+    r'^projects/(?P<project_pk>\w+)/update/$',
     views.ProjectPageUpdateView.as_view(),
-    name='update',
+    name='project_update',
   ),
   url(
-    r'^projects/(?P<pk>\w+)/thread/create/$',
+    r'^projects/(?P<project_pk>\w+)/thread/create/$',
     views.ThreadCreateView.as_view(),
     name='create_thread',
   ),
   url(
-    r'^projects/(?P<pk>\w+)/thread/(?P<thread_pk>\w+)/post/$',
+    r'projects/(?P<project_pk>\w+)/thread/(?P<thread_pk>\w+)/post/$',
     views.MessageCreateView.as_view(),
     name='thread_create_message',
   ),
   url(
-    r'^projects/(?P<pk>\w+)/thread/(?P<thread_pk>\w+)/detail/$',
+    r'^projects/(?P<project_pk>\w+)/thread/(?P<thread_pk>\w+)/detail/$',
     views.ThreadDetailView.as_view(),
     name='thread_detail',
   ),
-] 
+]
+
 urlpatterns = [
   url(
       r'^(?P<email>(\w)+@(\w)+\.(\w)+)/',
-      include(some_urls),
+      include(project_urls),
   ),
 ]
+

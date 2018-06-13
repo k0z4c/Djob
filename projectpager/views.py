@@ -62,6 +62,7 @@ class ProjectPageListView(ListView):
 
 class ProjectPageDetailView(DetailView):
   model = ProjectPage
+  pk_url_kwarg = 'project_pk'
 
 class ProjectPageUpdateView(UpdateView):
   model = ProjectPage
@@ -75,19 +76,19 @@ class ThreadCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
   @property
   def success_url(self):
     return reverse(
-      'projectpager:detail',
-      args=[self.request.user.email, self.kwargs['pk']]
+      'projectpager:project_detail',
+      args=[self.request.user.email, self.kwargs['project_pk']]
     )
 
   def test_func(self):
-    project = ProjectPage.objects.get(pk=self.kwargs['pk'])
+    project = ProjectPage.objects.get(pk=self.kwargs['project_pk'])
     return self.request.user.has_perm('can_open_threads', project)
 
   def get_form_kwargs(self):
     kwargs = super(ThreadCreateView, self).get_form_kwargs()
     kwargs.update({
       'profile': self.request.user.profile,
-      'project': ProjectPage.objects.get(pk=self.kwargs['pk']),
+      'project': ProjectPage.objects.get(pk=self.kwargs['project_pk']),
     })
     return kwargs
 
