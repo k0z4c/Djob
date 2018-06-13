@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import password_validation
+from django.core.exceptions import ValidationError
+
 from .models import User
 
 from crispy_forms.helper import FormHelper
@@ -18,6 +20,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 class UserEditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.editer = kwargs.pop('editer', None)
         super(UserEditForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.add_input(Submit('submit', 'Submit'))
@@ -25,6 +28,17 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name']
+
+    def clean_email(self):
+        print("email cleaning")
+        email_submitted = self.cleaned_data['email']
+        if self._meta.model.objects.filter(email=email_submitted).exclude(email=self.editer).exists():
+            print("validation eror")
+            raise ValidationError(
+                'A user with this email already exists',
+                code='invalid'
+            )
+        return self.cleaned_data['email']
 
 class UserCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

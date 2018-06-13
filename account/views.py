@@ -68,18 +68,21 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
     def check_and_save_model_forms(cls, f1, f2):
         if f1.is_valid() and f2.is_valid():
             f1.save() and f2.save()
+            return True
+        return False
 
     def post(self, request, *args, **kwargs):
-        f1 = UserEditForm(self.request.POST, instance=request.user)
+        f1 = UserEditForm(self.request.POST, instance=request.user, editer=request.user)
         f2 = ProfileEditForm(self.request.POST, request.FILES, instance=request.user.profile)
-        self.check_and_save_model_forms(f1, f2)
+        if not self.check_and_save_model_forms(f1, f2):
+            return self.render_to_response({'f1': f1, 'f2': f2})
 
         messages.success(self.request, 'Account details updated', extra_tags='alert alert-success')
         return HttpResponseRedirect(reverse(self.success_url,
                                             args=[request.user.email]))
 
     def get(self, request, *args, **kwargs):
-        f1 = UserEditForm(instance=request.user)
+        f1 = UserEditForm(instance=request.user, editer=request.user)
         f2 = ProfileEditForm(instance=request.user.profile)
 
         self._handle_crispy_forms(f1, f2)
