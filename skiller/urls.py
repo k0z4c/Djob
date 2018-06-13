@@ -8,12 +8,12 @@ urlpatterns = [
         name='add_skill',
     ),
     url(
-        r'^(?P<email>(\w)+@(\w)+\.(\w)+)/suggest/$',
+        r'^(?P<email>([\w\.\+\-])+@(\w)+\.(\w)+)/suggest/$',
         views.SuggestFormView.as_view(),
         name='suggest_skill'
     ),
     url(
-        r'^ajax/(?P<email>(\w)+@(\w)+\.(\w)+)/confirm/$',
+        r'^ajax/(?P<email>([\w\.\+\-])+@(\w)+\.(\w)+)/confirm/$',
         views.confirm_skill,
         name='confirm_skill'
     ),
