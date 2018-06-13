@@ -1,17 +1,13 @@
-from django.shortcuts import render
+from .models import Friendship
+from functools import reduce
+from django.http import Http404
+from django.http import JsonResponse
+from marathon.models import SocialRequest
+from django.shortcuts import get_object_or_404
+from authentication.models import User 
 from django.views.generic import (
   ListView, TemplateView
 )
-
-from .models import Friendship
-from marathon.models import SocialRequest
-
-from django.http import JsonResponse
-from authentication.models import User 
-
-from notifications.signals import notify
-from django.db.models import Count
-from functools import reduce
 
 class FriendshipListView(ListView):
   model = Friendship
@@ -22,12 +18,10 @@ class FriendshipListView(ListView):
       by__user__email=self.kwargs.get('email')
       )
 
-''' send_request'''
 def send_request(request, email):
-  try:
-    to = User.objects.get(email=email)
-  except User.DoesNotExist:
-    pass
+  to = get_object_or_404(User, email=email)
+  if to == request.user:
+    raise Http404
 
   social_request = SocialRequest.objects.send_request(
     label='friendship_request',
@@ -37,6 +31,7 @@ def send_request(request, email):
   )
   return JsonResponse({'message': 'request sended'})
 
+# questo puo essere eliminato insieme al template
 class FriendshipRequestList(TemplateView):
   template_name = 'friendship/friendship_pending_list.html'
 
