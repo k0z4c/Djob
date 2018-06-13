@@ -8,10 +8,12 @@
     {% if 'can_open_threads' in guardian_perms %}
       <p><a href="{% url 'projectpager:project_update' user projectpage.pk %}">modify</a> project attributes</p>
     {% endif %}
-    {{projectpage.description}}
+    <p>{{projectpage.description}}</p>
   </section>
   <section>
-    <p><a href="{% url 'projectpager:create_thread' user.email projectpage.pk %}">Post a new thread</a></p>
+    {% if 'can_open_threads' in guardian_perms %}
+      <p><a href="{% url 'projectpager:create_thread' user.email projectpage.pk %}">Post a new thread</a></p>
+    {% endif %}
     <p>threads:</p>
     <table class="table">
       {% for thread in projectpage.threads.all %}
