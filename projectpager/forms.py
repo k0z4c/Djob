@@ -59,7 +59,14 @@ class InviteForm(forms.Form):
     return invites
 
 class UpdateProjectPageForm(forms.ModelForm):
-  pass
+  def __init__(self, *args, **kwargs):
+    super(UpdateProjectPageForm, self).__init__(*args, **kwargs)
+    self.helper = FormHelper()
+    self.helper.add_input(Submit('update', 'Update'))
+
+  class Meta:
+    model = ProjectPage
+    fields = ['name', 'description']
 
 class CreateProjectPageForm(forms.ModelForm):
   invite_all_contacts = forms.BooleanField(initial=False, widget=forms.CheckboxInput, required=False)

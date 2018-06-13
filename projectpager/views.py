@@ -7,7 +7,7 @@ from django.views.generic import (
   CreateView, ListView, DetailView, UpdateView, FormView
 )
 from .forms import (
-  CreateProjectPageForm, ThreadForm, MessageForm, InviteForm
+  CreateProjectPageForm, ThreadForm, MessageForm, InviteForm, UpdateProjectPageForm
 )
 from .models import (
   ProjectPage, Thread, Message
@@ -66,8 +66,16 @@ class ProjectPageDetailView(DetailView):
 
 class ProjectPageUpdateView(UpdateView):
   model = ProjectPage
-  form_class = CreateProjectPageForm
+  form_class = UpdateProjectPageForm
+  pk_url_kwarg = 'project_pk'
 
+  @property
+  def success_url(self):
+    return reverse(
+      'projectpager:project_detail',
+      args=[self.request.user.email, self.kwargs['project_pk']]
+    )
+  
 class ThreadCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
   model = Thread
   form_class = ThreadForm
