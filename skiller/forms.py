@@ -3,6 +3,8 @@ from django.forms.widgets import CheckboxSelectMultiple
 from crispy_forms.helper import FormHelper
 from .helpers import _decorate_name
 from django.core.exceptions import ValidationError
+from django.db.models import Q
+from marathon.models import SocialRequest
 from .validators import validate_invalid_chars
 from .models import (
     Skill, SkillData
@@ -17,20 +19,35 @@ class SuggestSkillForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.suggest_to = kwargs.pop('to')
+        self.by = kwargs.pop('by')
         super(SuggestSkillForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.add_input(Submit('suggest', 'Suggest'))
 
     def clean_codename(self):
-        codename = _decorate_name(self.cleaned_data['codename'])
-        print(self.cleaned_data['codename'])
-        if self.suggest_to.skill_set.filter(data___codename=codename).exists():
+        decorated_codename = _decorate_name(self.cleaned_data['codename'])
+        if self.suggest_to.skill_set.filter(data___codename=decorated_codename).exists():
             raise ValidationError(
                 '%(user)s has already this skill!',
                 params={'user': self.suggest_to.user.email},
                 code='invalid'
             )
-        return self.cleaned_data['codename']
+        return decorated_codename
+
+    def clean(self):
+        cleaned_data = super(SuggestSkillForm, self).clean()
+        if cleaned_data.get('codename', None):
+            lookup_fields = Q(
+                label='skill_suggestion',
+                by=self.by,
+                data={'codename': cleaned_data['codename']},
+                status=SocialRequest.PENDING
+            )
+            if self.suggest_to.marathon_received.filter(lookup_fields).exists():
+                raise ValidationError(
+                    'You have already suggested this skill; your request is in pending',
+                    code='invalid'
+                )
 
 class SkillForm(forms.ModelForm):
     skill_name = forms.CharField(max_length=20, validators=[validate_invalid_chars])

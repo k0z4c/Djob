@@ -84,6 +84,8 @@ class SuggestFormView(edit.FormView):
         kwargs = super(SuggestFormView, self).get_form_kwargs()
         kwargs.update({
             'to': User.objects.get(email=self.kwargs.get('email')).profile,
+            'by': self.request.user.profile,
+            'error_class': DivErrorList
         })
         return kwargs
 
