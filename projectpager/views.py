@@ -111,6 +111,7 @@ class ThreadDetailView(DetailView):
 class MessageCreateView(UserPassesTestMixin, CreateView):
   model = Message
   form_class = MessageForm
+  raise_exception = True
 
   def test_func(self):
     project = ProjectPage.objects.get(pk=self.kwargs['project_pk'])
