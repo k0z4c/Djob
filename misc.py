@@ -51,5 +51,7 @@ def print_users(model, attr):
       print(getattr(getattr(i, attr[0]), attr[1]))
     else:
       print(getattr(i, attr))
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+
+def get_profile_request_recv_data(profile):
+  for r in profile.marathon_received.all():
+    if getattr(r, 'data'): print(r.data)
