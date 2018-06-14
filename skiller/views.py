@@ -13,7 +13,7 @@ from .models import (
     Skill
 )
 from .forms import (
-    SkillForm, SkillMultipleSelectForm
+    SkillForm, SkillMultipleSelectForm, SuggestSkillForm
 )
 
 class SkillAddView(edit.CreateView):
@@ -59,8 +59,8 @@ class SkillListView(ListView):
     context_object_name = 'skills'
 
 class SuggestFormView(edit.FormView):
-    form_class = SkillForm
-    template_name = 'skiller/skill_form.html'
+    form_class = SuggestSkillForm
+    template_name = 'skiller/suggest_skill_form.html'
 
     def form_valid(self, form):
         try:
@@ -69,8 +69,8 @@ class SuggestFormView(edit.FormView):
             pass
 
         SocialRequest.objects.send_request(
-            by=self.request.user,
-            to=to,
+            by=self.request.user.profile,
+            to=to.profile,
             label='skill_suggestion',
             tile='{} suggests you to add {} to your skills.'.format(self.request.user, form.cleaned_data['codename']),
             data={'codename': form.cleaned_data.get('codename')}
@@ -79,6 +79,13 @@ class SuggestFormView(edit.FormView):
     @property
     def success_url(self):
         return reverse('account:profile_detail', args=[self.request.user,])
+
+    def get_form_kwargs(self):
+        kwargs = super(SuggestFormView, self).get_form_kwargs()
+        kwargs.update({
+            'to': User.objects.get(email=self.kwargs.get('email')).profile,
+        })
+        return kwargs
 
 @json_view
 def confirm_skill(request, email):

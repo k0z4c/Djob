@@ -12,6 +12,26 @@ from crispy_forms.layout import (
     Submit, Layout, Fieldset, Field, HTML, Button, ButtonHolder
 )
 
+class SuggestSkillForm(forms.Form):
+    codename = forms.CharField(max_length=20,  label='skill to suggest', validators=[validate_invalid_chars])
+
+    def __init__(self, *args, **kwargs):
+        self.suggest_to = kwargs.pop('to')
+        super(SuggestSkillForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.add_input(Submit('suggest', 'Suggest'))
+
+    def clean_codename(self):
+        codename = _decorate_name(self.cleaned_data['codename'])
+        print(self.cleaned_data['codename'])
+        if self.suggest_to.skill_set.filter(data___codename=codename).exists():
+            raise ValidationError(
+                '%(user)s has already this skill!',
+                params={'user': self.suggest_to.user.email},
+                code='invalid'
+            )
+        return self.cleaned_data['codename']
+
 class SkillForm(forms.ModelForm):
     skill_name = forms.CharField(max_length=20, validators=[validate_invalid_chars])
 
