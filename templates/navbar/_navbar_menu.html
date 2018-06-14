@@ -28,6 +28,18 @@
       </a>
     </li> 
     <li class="nav-item">
+      <a class="nav-link" href="{% url 'friendship:network' user %}">
+        <img class="navbar-icon-svg" src="{% static 'svg/bug.svg' %}">
+        <span id="network-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'recommander:suggest' user %}">
+        <img class="navbar-icon-svg" src="{% static 'svg/beaker.svg' %}">
+        <span id="recommander-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
+      </a>
+    </li> 
+    <li class="nav-item">
       <a class="nav-link" href="{% url 'projectpager:project_create' user %}">
         <img class="navbar-icon-svg" src="{% static 'svg/plus.svg' %}"/>
         <span id="create-project-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
