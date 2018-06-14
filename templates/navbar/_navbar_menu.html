@@ -10,6 +10,12 @@
       </a>
     </li>
     <li class="nav-item">
+      <a class="nav-link" href="{% url 'messanger:conversations' %}">
+        <img class="navbar-icon-svg" src="{% static 'svg/comment-discussion.svg' %}">
+        <span id="messanger-badge" class="badge badge-primary" data-url="{% url 'messanger:ajax_unreaded_count' %}" style="visibility:hidden;">0</span>
+      </a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" href="{% url 'account:profile_detail' user %}">
         <img class="navbar-icon-svg" src="{% static 'svg/home.svg' %}">
         <span id="home-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
@@ -18,16 +24,9 @@
     <li class="nav-item">
       <a class="nav-link" href="{% url 'searcher:search' %}">
         <img class="navbar-icon-svg" src="{% static 'svg/search.svg' %}">
-        <span id="home-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
+        <span id="searcher-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
       </a>
     </li> 
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'messanger:conversations' %}">
-        <img class="navbar-icon-svg" src="{% static 'svg/comment-discussion.svg' %}">
-        <span id="home-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
-      </a>
-    </li>
-      <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'projectpager:project_create' user %}">
         <img class="navbar-icon-svg" src="{% static 'svg/plus.svg' %}"/>

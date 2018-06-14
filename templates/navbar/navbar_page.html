@@ -28,6 +28,26 @@
 {% endblock %}
 
 {% block javascript %}
+<script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
+<script>
+  $().ready(function(){
+    function FetchUnreadedMessagesCount(){
+      var target = $('#messanger-badge');
+      $.ajax({
+        url: target.data('url'),
+        datatype: 'json',
+        success: function(data){
+          if(data.unreaded_count !== 0){
+            target.html(data.unreaded_count);
+            target.css('visibility', 'visible');
+          }
+        }
+      });
+      setTimeout(FetchUnreadedMessagesCount, 1500);
+    }
+    setTimeout(FetchUnreadedMessagesCount, 1500);
+  });
+</script>
 {% block js %}{% endblock %}
 {% endblock %}
 

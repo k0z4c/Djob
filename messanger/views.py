@@ -136,7 +136,7 @@ class ConversationMessagesListView(ListView):
 from jsonview.decorators import json_view
 @json_view
 def unread_count(request):
-    unreaded_count = request.user.conversation_set.unread_messages_count(request.user)
+    unreaded_count = request.user.profile.conversation_set.unread_messages_count(request.user.profile)
     data = { 'unreaded_count': unreaded_count }
     return JsonResponse(data)
 
