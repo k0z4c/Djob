@@ -3,6 +3,12 @@
 <div class="container">
   <section>
     <div class="d-flex justify-content-between">
+      <h3>
+        Conversation with 
+        {% for profile in recipients %}
+          {{profile.user}}
+        {% endfor %}
+      </h3>
       <button 
         id="replyButton"
         type="button"

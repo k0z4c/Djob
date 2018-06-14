@@ -126,7 +126,10 @@ class ConversationMessagesListView(ListView):
             return self.kwargs['conversation'].messages.all()
 
     def get_context_data(self, **kwargs):
-        context = {'conversation': self.kwargs['conversation']}
+        context = {
+        'conversation': self.kwargs['conversation'],
+        'recipients': self.kwargs['conversation'].profiles.exclude(user__email=self.request.user.email)
+        }
         return super().get_context_data(**context)
 
 
