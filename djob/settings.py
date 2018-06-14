@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'guardian',
     'notifications',
     'account.apps.AccountConfig',
-    'marathon',
+    'marathon.apps.MarathonConfig',
     'friendship.apps.FriendshipConfig',
     'skiller.apps.SkillerConfig',
     'messanger',

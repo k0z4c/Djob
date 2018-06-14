@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
 from account.models import Profile
@@ -26,10 +27,12 @@ class SocialRequest(models.Model):
   ACCEPTED = 'ACC'
   REJECTED = 'REJ'
   PENDING = 'PEN'
+  DISABLED = 'DIS'
   REQUEST_STATUS_CHOICES = (
     (ACCEPTED, 'accepted'),
     (REJECTED, 'rejected'),
     (PENDING, 'pending'),
+    (DISABLED, 'disabled'),
   )
 
   by = models.ForeignKey(
@@ -55,13 +58,12 @@ class SocialRequest(models.Model):
 
   class Meta:
     app_label = 'marathon'
-    
+
   def accept(self):
     self.status = self.ACCEPTED
     self.save()
 
-    print("sended")
-    print(social_request_accepted.send_robust(sender=self.__class__, instance=self))
+    social_request_accepted.send(sender=self.__class__, instance=self)
 
   def reject(self):
     self.status = self.REJECTED
@@ -70,5 +72,4 @@ class SocialRequest(models.Model):
     social_request_rejected.send(sender=self.__class__, instance=self)
 
   def get_absolute_url(self):
-    from django.urls import reverse
     return reverse('marathon:manage_request', args=[self.pk,])
