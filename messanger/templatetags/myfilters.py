@@ -10,5 +10,5 @@ def get_item(dictionary ,key):
 @register.simple_tag(takes_context=True)
 def unread_messages_conversation_counter(context, conversation):
     user = context['request'].user
-    count = conversation.get_unread_messages(user).count()
+    count = conversation.get_unread_messages(user.profile).count()
     return count if count > 0 else ''

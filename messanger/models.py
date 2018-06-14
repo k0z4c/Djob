@@ -14,9 +14,10 @@ from .fields import (
     DataJSONField, FormattedTextField,
 )
 
+from account.models import Profile
 class Conversation(models.Model):
 
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    profiles = models.ManyToManyField(Profile)
 
     first_message = models.OneToOneField(
         'Message',
@@ -34,14 +35,14 @@ class Conversation(models.Model):
     def get_absolute_url(self):
         return reverse('messanger:conversation_messages', args=(self.id,))
 
-    def get_unread_messages(self, user):
-        qs = ~Q(sender=user) & ~Q(read_at__has_key=user.email)
+    def get_unread_messages(self, profile):
+        qs = ~Q(sender=profile) & ~Q(read_at__has_key=profile.user.email)
         return self.messages.filter(qs)
 
-    def read_messages(self, user):
-        qs = self.get_unread_messages(user)
+    def read_messages(self, profile):
+        qs = self.get_unread_messages(profile)
         for mess in qs.filter(): 
-            mess.read(user)
+            mess.read(profile)
 
 class GroupConversation(Conversation):
     '''
@@ -59,7 +60,7 @@ class Message(models.Model):
         related_name='messages',
         null=True
     )
-    sender = models.ForeignKey(settings.AUTH_USER_MODEL)
+    sender = models.ForeignKey(Profile, related_name='messages_sended')
 
     read_at = DataJSONField(encoder=DjangoJSONEncoder, default=dict)
     message = FormattedTextField(max_length=200)
@@ -73,12 +74,12 @@ class Message(models.Model):
         from django.core.serializers.json import DjangoJSONEncoder
         return DjangoJSONEncoder().encode({'sent_at': self._sent_at})
 
-    def read(self, user):
-        self.read_at.update({user.email: timezone.now()})
+    def read(self, profile):
+        self.read_at.update({profile.user.email: timezone.now()})
         self.save()
 
-    def is_read_by(self, user):
-        return self.read_at.get(user.email, '')
+    def is_read_by(self, profile):
+        return self.read_at.get(profile.user.email, '')
 
     def last_user_read(self):
         return sorted(self.read_at, key=self.read_at.get, reverse=True)[0]

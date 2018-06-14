@@ -26,12 +26,12 @@
     <tr>
       <td style="width: 100px;">
         <div id="badge" class="d-flex flex-column justify-content-center align-items-center ">
-          <img class="img img-fluid" src="{{message.sender.profile.get_image}}" style="width:100%;"/>
+          <img class="img img-fluid" src="{{message.sender.get_image}}" style="width:100%;"/>
           <div>
             <span 
             id="userEmail"
             class="badge {% if request.user.email == message.sender.email %} badge-primary {% else %} badge-success {% endif %}">
-              {{message.sender}}
+              {{message.sender.user}}
             </span>
           </div>
         </div>

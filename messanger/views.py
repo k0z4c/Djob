@@ -28,12 +28,12 @@ class StartConversationView(CreateView):
 
         recipient = form.cleaned_data['recipient']
         conversation = Conversation.objects.get_or_create_conversation(
-            self.request.user,
-            users=[self.request.user._wrapped, recipient]
+            self.request.user.profile,
+            profiles=[self.request.user._wrapped.profile, recipient.to]
         )
         self.object = form.save(commit=False)
         self.object.conversation = conversation
-        self.object.sender = self.request.user
+        self.object.sender = self.request.user.profile
         self.object.save()
 
         conversation.last_message = self.object
@@ -50,7 +50,7 @@ class StartConversationView(CreateView):
     def get_form_kwargs(self):
         kwargs = super(StartConversationView, self).get_form_kwargs()
         kwargs.update({
-                'user': self.request.user,
+                'profile': self.request.user.profile,
             })
         return kwargs
 
@@ -78,12 +78,12 @@ class ConversationReplyView(CreateView):
     def get_form_kwargs(self):
         kwargs = super(ConversationReplyView, self).get_form_kwargs()
         kwargs.update({
-            'user': self.request.user,
+            'profile': self.request.user.profile,
             })
         return kwargs 
 
     def get_context_data(self, **kwargs):
-        conversation = self.request.user.conversation_set.get(pk=self.kwargs['pk'])
+        conversation = self.request.user.profile.conversation_set.get(pk=self.kwargs['pk'])
         context = {'last_message': conversation.last_message }
         return super().get_context_data(**context)
 
@@ -93,10 +93,10 @@ class ConversationListView(ListView):
 
     @property
     def queryset(self):
-        return self.request.user.conversation_set.all()
+        return self.request.user.profile.conversation_set.all()
 
     def get_context_data(self, **kwargs):
-        to_read = self.model.objects.get_conversations_to_read(self.request.user)
+        to_read = self.model.objects.get_conversations_to_read(self.request.user.profile)
         kwargs.update({'conversations_to_read': to_read})
         return super(ConversationListView, self).get_context_data(**kwargs)
 
@@ -122,7 +122,7 @@ class ConversationMessagesListView(ListView):
             from django.http import HttpResponseNotFound
             return HttpResponseNotFound
         else:
-            self.kwargs['conversation'].read_messages(self.request.user)
+            self.kwargs['conversation'].read_messages(self.request.user.profile)
             return self.kwargs['conversation'].messages.all()
 
     def get_context_data(self, **kwargs):

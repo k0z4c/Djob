@@ -24,12 +24,12 @@
                 <td style="width: 100px;">
                     <span class="badge badge-primary" style="border-radius:100%;">{% unread_messages_conversation_counter conversation %}</span>
                     {# <a href="{{conversation.get_absolute_url}}"> #}
-                        {% for user in conversation.users.all %}
-                            {% if user != request.user %}
+                        {% for profile in conversation.profiles.all %}
+                            {% if profile.user != user %}
                                 <div id="badge" class="d-flex flex-column justify-content-center align-items-center ">
-                                    <img class="img img-fluid " src="{{user.profile.get_image}}" style="width: 100%;"/>
+                                    <img class="img img-fluid " src="{{profile.get_image}}" style="width: 100%;"/>
                                     <div>
-                                        <span id="userEmail" class="badge badge-info">{{user}}</span>
+                                        <span id="userEmail" class="badge badge-info">{{profile.user}}</span>
                                     </div>
                                 </div>
                             {% endif %}
