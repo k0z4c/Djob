@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from marathon.models import SocialRequest
 from django.shortcuts import get_object_or_404
 from authentication.models import User 
+from jsonview.decorators import json_view
 from django.views.generic import (
   ListView, TemplateView
 )
@@ -18,6 +19,7 @@ class FriendshipListView(ListView):
       by__user__email=self.kwargs.get('email')
       )
 
+@json_view
 def send_request(request, email):
   to = get_object_or_404(User, email=email)
   if to == request.user:

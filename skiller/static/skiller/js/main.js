@@ -20,7 +20,7 @@ function delete_skill(e){
         receiver.closest('tr').remove();
         $('#messages-box').html(`<span style="width: 100%; text-align: center;" class='alert alert-success'>${data.message}</span>`);
         window.setTimeout(function(){ 
-          $('#messages-box').fadeOut('700', function(){ $(this).remove()})
+          $('#messages-box').fadeOut('700', function(){ $(this).children().remove()})
         }, 1000);
       }
       window.scrollTo(0, 0);
@@ -51,7 +51,7 @@ function confirm_skill(e){
         $('#messages-box').html(`<span style="width: 100%;" class='alert alert-danger'>${data['message']}</span>`);
       }
       window.setTimeout(function(){ 
-        $('#messages-box').fadeOut('700', function(){ $(this).remove()})
+        $('#messages-box').fadeOut('700', function(){ $(this).children().remove()})
       }, 1000);
       window.scrollTo(0, 0);
     }
