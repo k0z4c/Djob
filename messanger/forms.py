@@ -2,7 +2,7 @@ from django import forms
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import (
-    Submit
+    Submit, Layout, Fieldset
 )
 
 from .models import Message, Conversation
@@ -20,6 +20,13 @@ class MessageForm(forms.ModelForm):
         self.helper.add_input(Submit('submit', 'Submit'))
         self.fields['recipient'].queryset = profile.contacts.all()
 
+        self.helper.layout = Layout(
+            Fieldset(
+                'Start a conversation',
+                'recipient',
+                'message',
+            )
+        )
     class Meta:
         model = Message
         fields = ['message',]

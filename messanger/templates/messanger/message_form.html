@@ -3,12 +3,13 @@
 {% load crispy_forms_tags %}
 
 <div class="container">
+    {% if not start_conversation %}
     <section class="d-flex flex-column justify-content-between">
         <span class="text-success">Last message:</span>
         <br>
         <blockquote class="ml-2 blockquote">{{last_message}}</blockquote>
     </section>
-
+    {% endif %}
     {% crispy form %}
 </div>
 {% endblock %}

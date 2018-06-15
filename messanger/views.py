@@ -54,6 +54,13 @@ class StartConversationView(CreateView):
             })
         return kwargs
 
+    def get_context_data(self):
+        kwargs = super(StartConversationView, self).get_context_data()
+        kwargs.update({
+            'start_conversation': True,
+        })
+        return kwargs
+
 class ConversationReplyView(CreateView):
     model = Message
     form_class = ReplyForm
