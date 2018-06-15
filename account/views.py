@@ -46,8 +46,8 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
             'friends': self.object.contacts.all(),
             'are_friends': self.object.is_friend(self.request.user.profile),
             'just_logged_in': self.request.session['just_logged_in'],
-            'is_request_sended': self.request.user.profile.marathon_sent.filter(to=self.object, status=SocialRequest.PENDING),
-            'is_request_received': self.request.user.profile.marathon_received.filter(by=self.object, status=SocialRequest.PENDING),
+            'is_request_sended': self.request.user.profile.marathon_sent.filter(to=self.object, label='friendship_request', status=SocialRequest.PENDING),
+            'is_request_received': self.request.user.profile.marathon_received.filter(by=self.object, label='friendship_request', status=SocialRequest.PENDING),
             })
         self.request.session['just_logged_in'] = False
         return super(ProfileDetailView, self).get_context_data(**kwargs)
