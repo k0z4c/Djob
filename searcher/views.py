@@ -53,7 +53,6 @@ class SearchView(FormView):
       'skill_serial2': Q(skill__data__serial=fields.get('skill_serial2')),
       'project_name': Q(projectpages___name__istartswith=fields.get('project_name'))
     }
-    print(fields.get('project_name'))
     predicate = reduce(Q.__and__, [ lookup_dict.get(k) for k in lookup_dict.keys() if fields.get(k) ])
-    results = Profile.objects.filter(predicate)
+    results = Profile.objects.filter(predicate).exclude(user=self.request.user)
     return results
