@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from django.views.generic import (
-  FormView, TemplateView
+  FormView, ListView
 )
 from django.db.models import Q
 from functools import reduce
@@ -15,15 +15,20 @@ from friendship.models import Friendship
 
 from helpers import _decorate_name
 
-class ResultsView(TemplateView):
+class ResultsView(ListView):
   template_name = 'searcher/results.html'
+  context_object_name = 'profiles'
+  paginate_by = 5
 
   def get(self, *args, **kwargs):
     return super(ResultsView, self).get(*args, **kwargs)
 
+  def get_queryset(self):
+    return list(serializers.deserialize('json',self.request.session['results']))
+
   def get_context_data(self, **kwargs):
     context = {
-      'profiles': serializers.deserialize('json',self.request.session['results']),
+      # 'profiles': serializers.deserialize('json',self.request.session['results']),
       'friends': self.request.user.profile.get_user_friends(),
     }
     return super(ResultsView, self).get_context_data(**context)
