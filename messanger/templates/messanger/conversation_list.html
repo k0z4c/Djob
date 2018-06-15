@@ -2,12 +2,12 @@
 {% load get_item unread_messages_conversation_counter from myfilters %}
 {% block content %}
     <div class="container">
-    <a href="{% url 'account:profile_detail' request.user.email %}">profile</a>
     {% if not conversation_list %}
         <p>no conversations :( <a href="{% url 'messanger:create_message' %}">start one</a></p>
     {% else %}
         <section>
-            write a <a href="{% url 'messanger:create_message' %}">message</a>
+            <h3>Conversations</h3>
+            <p>Open a  new <a href="{% url 'messanger:create_message' %}">conversation</a></p>
             {% include 'messanger/_paginator.html' %}
         </section>
         <table class="table table-hover">
@@ -27,7 +27,7 @@
                         {% for profile in conversation.profiles.all %}
                             {% if profile.user != user %}
                                 <div id="badge" class="d-flex flex-column justify-content-center align-items-center ">
-                                    <img class="img img-fluid " src="{{profile.get_image}}" style="width: 100%;"/>
+                                    <img class="img img-fluid " src="{{profile.get_image}}" style="width: 30%;"/>
                                     <div>
                                         <span id="userEmail" class="badge badge-info">{{profile.user}}</span>
                                     </div>

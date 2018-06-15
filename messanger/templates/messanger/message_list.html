@@ -18,6 +18,7 @@
       </button>
       {% include 'messanger/_paginator.html' %}
     </div>
+    <p>Go back to your <a href="{%  url 'messanger:conversations' %}">conversations</p></a>
   </section>
   <table class="table">
     <thead>
@@ -32,7 +33,7 @@
     <tr>
       <td style="width: 100px;">
         <div id="badge" class="d-flex flex-column justify-content-center align-items-center ">
-          <img class="img img-fluid" src="{{message.sender.get_image}}" style="width:100%;"/>
+          <img class="img img-fluid" src="{{message.sender.get_image}}" style="width:50%;"/>
           <div>
             <span 
             id="userEmail"

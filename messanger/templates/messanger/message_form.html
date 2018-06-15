@@ -5,9 +5,12 @@
 <div class="container">
     {% if not start_conversation %}
     <section class="d-flex flex-column justify-content-between">
-        <span class="text-success">Last message:</span>
-        <br>
-        <blockquote class="ml-2 blockquote">{{last_message}}</blockquote>
+        <span class="text-success"><h5>Last message:</h5></span>
+        <blockquote class="ml-2 blockquote">
+          <p>&ldquo; {{last_message}} &bdquo;</p>
+          <footer class="blockquote-footer"><cite title="sender">{{last_message.sender.user}}</cite></footer>
+
+        </blockquote>
     </section>
     {% endif %}
     {% crispy form %}
