@@ -6,6 +6,8 @@ from authentication.models import User
 from recommander.models import Activity
 from marathon.models import SocialRequest
 from .errors import DivErrorList
+from django.contrib import messages
+from helpers import get_decorated_name
 from django.views.generic import (
     ListView, edit, DetailView
 )
@@ -52,7 +54,12 @@ class SuggestFormView(edit.FormView):
             to=to.profile,
             label='skill_suggestion',
             tile='{} suggests you to add {} to your skills.'.format(self.request.user, form.cleaned_data['codename']),
-            data={'codename': form.cleaned_data.get('codename')}
+            data={'codename': get_decorated_name(form.cleaned_data.get('codename'))}
+        )
+        messages.success(
+            self.request,
+            'skill successfull sended to {}'.format(to),
+            extra_tags='alert alert-success',
         )
         return super(edit.FormView, self).form_valid(form)
     @property
