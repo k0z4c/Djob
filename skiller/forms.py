@@ -15,7 +15,7 @@ from crispy_forms.layout import (
 )
 
 class SuggestSkillForm(forms.Form):
-    codename = forms.CharField(max_length=20,  label='skill to suggest', validators=[validate_invalid_chars])
+    codename = forms.CharField(max_length=20,  label='skill to suggest')
 
     def __init__(self, *args, **kwargs):
         self.suggest_to = kwargs.pop('to')
@@ -50,7 +50,7 @@ class SuggestSkillForm(forms.Form):
                 )
 
 class SkillForm(forms.ModelForm):
-    skill_name = forms.CharField(max_length=20, validators=[validate_invalid_chars])
+    skill_name = forms.CharField(max_length=20)
 
     def __init__(self, profile, *args, **kwargs):
         super(SkillForm, self).__init__(*args, **kwargs)

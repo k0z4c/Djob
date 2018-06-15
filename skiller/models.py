@@ -40,7 +40,6 @@ class Confirmation(models.Model):
         on_delete=models.CASCADE
         )
 
-    # recursive relationship
     by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='confirmed_to',
@@ -64,7 +63,6 @@ class SkillData(models.Model):
         db_column='skill name',
         max_length=20,
         unique=True,
-        validators = [validate_invalid_chars,],
         help_text='codename for the skill',
         )
 
