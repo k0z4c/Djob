@@ -1,7 +1,7 @@
 {% load staticfiles %}
 {% if owner %}
 <a href="{% url 'skill:add_skill' %}">add some skill</a>
-{% else %}
+{% elif are_friends %}
 <a href="{% url 'skill:suggest_skill' profile.user.email %}">suggest skill to {{profile.user.first_name}}</a>
 {% endif %}
 <table class="table">

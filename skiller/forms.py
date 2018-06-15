@@ -74,7 +74,7 @@ class SkillForm(forms.ModelForm):
         if self.profile.skill_set.filter(data___codename=skill_name).exists():
             raise ValidationError(
                 message='You already have %(skill)s in your skills.',
-                params={'skill': self.cleaned_data['skill_name']},
+                params={'skill': self.cleaned_data['skill_name'].lower()},
                 code='invalid'
             )
         return skill_name
