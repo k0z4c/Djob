@@ -13,6 +13,8 @@ from django.shortcuts import redirect
 from django.core import serializers
 from friendship.models import Friendship
 
+from helpers import _decorate_name
+
 class ResultsView(TemplateView):
   template_name = 'searcher/results.html'
 
@@ -49,8 +51,9 @@ class SearchView(FormView):
       'last_name': Q(user__last_name__istartswith=fields.get('last_name')),
       'skill_serial1': Q(skill__data__serial=fields.get('skill_serial1')),
       'skill_serial2': Q(skill__data__serial=fields.get('skill_serial2')),
-      'project_name': Q(projectpages__name__istartswith=fields.get('project_name'))
+      'project_name': Q(projectpages___name__istartswith=fields.get('project_name'))
     }
+    print(fields.get('project_name'))
     predicate = reduce(Q.__and__, [ lookup_dict.get(k) for k in lookup_dict.keys() if fields.get(k) ])
     results = Profile.objects.filter(predicate)
     return results

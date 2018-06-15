@@ -1,5 +1,6 @@
 from django.db import models
 from account.models import Profile
+from helpers import _decorate_name, get_decorated_name
 
 class ProjectPage(models.Model):
   profiles = models.ManyToManyField(
@@ -15,12 +16,21 @@ class ProjectPage(models.Model):
     Profile,
     related_name='+')
 
-  name = models.CharField(max_length=50)
+  _name = models.CharField(max_length=50)
+
   description = models.TextField()
 
   def __str__(self):
-    return self.name
+    return self._name
 
+  @property
+  def name(self):
+      return get_decorated_name(self._name)
+
+  @name.setter
+  def name(self):
+    return _decorate_name(self._name)
+  
 class Thread(models.Model):
   project = models.ForeignKey('ProjectPage', related_name='threads')
   created_by = models.ForeignKey(Profile)

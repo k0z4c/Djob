@@ -4,7 +4,7 @@ from crispy_forms.layout import (
     Submit , Button
 )
 from skiller.models import SkillData
-
+from helpers import _decorate_name
 class SearchForm(forms.Form):
 
   def __init__(self, *args, **kwargs):
@@ -25,6 +25,13 @@ class SearchForm(forms.Form):
   skill_serial2 = forms.ModelChoiceField(queryset=None, required=False, empty_label='')
 
   project_name = forms.CharField(max_length=30, required=False)
+
+  def clean_project_name(self):
+    project_name = self.cleaned_data['project_name']
+    if project_name:
+      project_name = _decorate_name(project_name)
+    print('form', project_name)
+    return project_name
 
   def clean_skill_serial1(self):
     value = self.cleaned_data['skill_serial1']

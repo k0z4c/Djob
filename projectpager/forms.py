@@ -3,6 +3,7 @@ from .models import ProjectPage, Thread, Message
 from django.core import serializers
 from crispy_forms.helper import FormHelper
 from marathon.models import SocialRequest
+from helpers import _decorate_name
 from crispy_forms.layout import (
   Submit,
 )
@@ -66,20 +67,26 @@ class UpdateProjectPageForm(forms.ModelForm):
 
   class Meta:
     model = ProjectPage
-    fields = ['name', 'description']
+    fields = ['_name', 'description']
 
 class CreateProjectPageForm(forms.ModelForm):
   invite_all_contacts = forms.BooleanField(initial=False, widget=forms.CheckboxInput, required=False)
 
   class Meta:
     model = ProjectPage
-    fields = ['name', 'description']
+    fields = ['_name', 'description']
 
   def __init__(self, profile, *args, **kwargs):
     super(CreateProjectPageForm, self).__init__(*args, **kwargs)
     self.profile = profile
     self.helper = FormHelper()
     self.helper.add_input(Submit('submit', 'Submit'))
+
+  def clean__name(self):
+    name = self.cleaned_data['_name']
+    if name:
+      name = _decorate_name(name)
+    return name
 
   def save(self, **kwargs):
     self.instance.owner = self.profile
