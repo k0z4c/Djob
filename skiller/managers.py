@@ -2,7 +2,7 @@ from django.db import models
 from django.db import IntegrityError
 
 from .exceptions import DuplicatedSkill 
-from .helpers import _decorate_name
+from helpers import _decorate_name
 
 class SkillManager(models.Manager):
 

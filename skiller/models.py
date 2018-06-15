@@ -7,7 +7,7 @@ from .managers import (
     )
 
 from .validators import validate_invalid_chars
-from .helpers import _decorate_name
+from helpers import _decorate_name
 
 class Skill(models.Model):
     profile = models.ForeignKey(
