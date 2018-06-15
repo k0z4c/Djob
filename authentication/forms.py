@@ -18,6 +18,11 @@ class CustomAuthenticationForm(AuthenticationForm):
         max_length=200,
     )
 
+    def __init__(self, *args, **kwargs):
+        super(CustomAuthenticationForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.add_input(Submit('login', 'Login'))
+
 class UserEditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.editer = kwargs.pop('editer', None)
@@ -30,10 +35,8 @@ class UserEditForm(forms.ModelForm):
         fields = ['email', 'first_name', 'last_name']
 
     def clean_email(self):
-        print("email cleaning")
         email_submitted = self.cleaned_data['email']
         if self._meta.model.objects.filter(email=email_submitted).exclude(email=self.editer).exists():
-            print("validation eror")
             raise ValidationError(
                 'A user with this email already exists',
                 code='invalid'
@@ -62,7 +65,7 @@ class UserCreationForm(forms.ModelForm):
         password2 = self.cleaned_data.get('password2')
 
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError(error_messages['password_mismatch'], code='password_mismatch')
+            raise forms.ValidationError(self.error_messages['password_mismatch'], code='password_mismatch')
 
         password_validation.validate_password(self.cleaned_data.get('password2'), self.instance)
         return password2
