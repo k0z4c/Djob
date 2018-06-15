@@ -75,6 +75,7 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
         f1 = UserEditForm(self.request.POST, instance=request.user, editer=request.user)
         f2 = ProfileEditForm(self.request.POST, request.FILES, instance=request.user.profile)
         if not self.check_and_save_model_forms(f1, f2):
+            self._handle_crispy_forms(f1, f2)
             return self.render_to_response({'f1': f1, 'f2': f2})
 
         messages.success(self.request, 'Account details updated', extra_tags='alert alert-success')

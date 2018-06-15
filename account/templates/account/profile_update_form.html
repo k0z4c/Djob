@@ -11,6 +11,9 @@
             {% endif %}
         </section>
         <section>
+            {% if f2.img.errors %}
+                <div class="alert alert-danger">{{f2.img.errors.as_text}}</div>
+             {% endif %}
             <form class="" action="" enctype="multipart/form-data" method="post">
                 {% csrf_token %}
                 {% crispy f1 %}
