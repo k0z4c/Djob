@@ -87,33 +87,3 @@ class SkillForm(forms.ModelForm):
         self.instance.profile = self.profile
         return super(SkillForm, self).save()
 
-class SkillMultipleSelectForm(forms.Form):
-
-    data = forms.ModelMultipleChoiceField(
-        label="Your skills",
-        widget=CheckboxSelectMultiple,
-        queryset=None
-        )
-
-
-    def __init__(self, user, *args, **kwargs):
-        super(SkillMultipleSelectForm, self).__init__(*args, **kwargs)
-        self.fields['data'].queryset = user.skill_set.filter()
-        self.helper = FormHelper()
-        self.helper.field_class = 'skills-list'
-        self.helper.form_id = 'form_skill_delete'
-        self.helper.layout = Layout(
-            Fieldset(
-                '/remove skills',
-                HTML("""
-                    <p>Check skills you want to remove.</p>
-                    """),
-                Field('data'),
-                ButtonHolder(
-                    Submit('submit', 'Submit', css_class='btn btn-primary'),
-                    Button('cancel', 'Cancel'),
-
-                    ),
-                ),
-            )
-

@@ -13,7 +13,7 @@ from .models import (
     Skill
 )
 from .forms import (
-    SkillForm, SkillMultipleSelectForm, SuggestSkillForm
+    SkillForm, SuggestSkillForm
 )
 
 class SkillAddView(edit.CreateView):
@@ -33,27 +33,6 @@ class SkillAddView(edit.CreateView):
             })
         return kwargs
 
-class SkillDeleteView(edit.FormView):
-    form_class = SkillMultipleSelectForm
-    template_name = 'skiller/delete_form.html'
-    success_url = reverse_lazy('skill:delete_skill')
-
-    def form_invalid(self, form):
-        return super().form_invalid(form)
-
-    def form_valid(self, form):
-        qs = form.cleaned_data['data']
-        for obj in qs: obj.delete()
-        return super().form_valid(form) 
-
-    def get_form_kwargs(self):
-        kwargs = super(SkillDeleteView, self).get_form_kwargs()
-        kwargs.update({
-            'user': self.request.user,
-            })
-        return kwargs
-
-    
 class SkillListView(ListView):
     model = Skill
     context_object_name = 'skills'
@@ -95,13 +74,18 @@ def confirm_skill(request, email):
     user = User.objects.get(email=email)
     response = {}
     if skill.confirmation_set.filter(by=request.user, to=user, skill=skill).exists():
-        from django.contrib import messages
         response.update({'status': 'error', 'message': 'You have already confirmed this skill'})
     else:
         skill.confirmation_set.create(by=request.user, to=user, skill=skill)
         request.user.profile.activities.create(profile=user.profile, activity_type=Activity.SKILL_CONFIRMED)
         response.update({'status': 'success', 'message': 'Skill confirmed successfully'})
     return JsonResponse(response)
+
+@json_view
+def delete_skill(request, email):
+    skill = get_object_or_404(Skill, pk=request.POST.get('skill_pk'), profile=request.user.profile)
+    skill.delete()
+    return JsonResponse({'status': 'success', 'message': 'Skill successfully removed'})
 
 class SkillDetailView(DetailView):
     object_context_name = 'skill'

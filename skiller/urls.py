@@ -18,14 +18,14 @@ urlpatterns = [
         name='confirm_skill'
     ),
     url(
+        r'^ajax/(?P<email>([\w\.\+\-])+@(\w)+\.(\w)+)/delete/$',
+        views.delete_skill,
+        name='delete_skill'
+    ),
+    url(
         r'^(?P<pk>(\d+))/detail/$',
         views.SkillDetailView.as_view(),
         name='skill_detail'
-    ),
-    url(
-        r'^delete/$',
-        views.SkillDeleteView.as_view(),
-        name='delete_skill',
     ),
     url(
         r'^list/$',

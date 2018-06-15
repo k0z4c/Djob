@@ -1,3 +1,4 @@
+{% load staticfiles %}
 {% if owner %}
 <a href="{% url 'skill:add_skill' %}">add some skill</a>
 {% else %}
@@ -7,28 +8,29 @@
     {% for skill in skills %}
     <tr>
       <td>
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">{{skill}}
-          <span class="badge badge-info">
-          {{skill.confirmation_set.all.count }}
-          </span>
-          </h5>
-          <p class="card-text">{{skill.description}}</p>
+        <div class="card d-flex">
+          <div class="card-body">
+            <h5 class="card-title">
+            {% if owner %}<button class="remove-skill-button" data-url="{% url 'skill:delete_skill' user.email %}" data-id="{{skill.pk}}"><img class="img" src="{% static 'svg/x.svg' %}"></button>{% endif %}
+            {{skill}}
+            <span class="badge badge-info">
+            {{skill.confirmation_set.all.count}}
+            </span>
+            </h5>
+            <p class="card-text">{{skill.description}}</p>
+          </div>
         </div>
-      </div>
-    </td>
-
-    <td style="text-align: center;">
-      {% if not owner and are_friends %}
-      <button
-        data-key="{{skill.pk}}"
-        data-url="{% url 'skill:confirm_skill' profile.user.email %}"
-        class="btn btn-primary confirmation-button"
-        href="#">confirm this skill
-      </button>
-      </li>
-      {% endif %}
+      </td>
+      <td style="text-align: center;">
+        {% if not owner and are_friends %}
+        <button
+          data-key="{{skill.pk}}"
+          data-url="{% url 'skill:confirm_skill' profile.user.email %}"
+          class="btn btn-primary confirmation-button"
+          href="#">confirm this skill
+        </button>
+        </li>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}
