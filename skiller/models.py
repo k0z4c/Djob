@@ -7,7 +7,7 @@ from .managers import (
     )
 
 from .validators import validate_invalid_chars
-from helpers import _decorate_name
+from helpers import _decorate_name, get_decorated_name
 
 class Skill(models.Model):
     profile = models.ForeignKey(
@@ -68,7 +68,7 @@ class SkillData(models.Model):
 
     @property
     def codename(self):
-        return self._codename
+        return get_decorated_name(self._codename)
 
     @codename.setter
     def codename(self, value):
