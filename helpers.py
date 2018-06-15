@@ -6,10 +6,10 @@ class CodenameError(IntegrityError):
 def _decorate_name(name):
   if not isinstance(name, str):
     raise CodenameError
-    words = name.lower().split()
-    codename = '_'.join(words)
+  words = name.lower().split()
+  codename = '_'.join(words)
 
-    return codename
+  return codename
 
 def get_decorated_name(decorated_name):
   words = decorated_name.split('_')
