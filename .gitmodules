@@ -1,3 +1,6 @@
 [submodule "web/django-notifications"]
 	path = web/django-notifications
 	url = https://github.com/django-notifications/django-notifications
+[submodule "web/python-graph"]
+	path = web/python-graph
+	url = https://github.com/Shoobx/python-graph
