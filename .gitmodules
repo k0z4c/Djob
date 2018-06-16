@@ -1,0 +1,3 @@
+[submodule "web/django-notifications"]
+	path = web/django-notifications
+	url = https://github.com/django-notifications/django-notifications

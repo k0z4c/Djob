@@ -1,0 +1,13 @@
+django~=1.11
+psycopg2
+pillow >= 5.0
+factory_boy
+django-guardian
+django-crispy-forms
+django-jsonview
+bpython
+ptpython
+django-extensions
+django-notifications-hq
+
+
