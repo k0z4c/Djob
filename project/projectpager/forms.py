@@ -98,7 +98,7 @@ class CreateProjectPageForm(forms.ModelForm):
           label='invite_request',
           tile='{} invites you to join {} group.'.format(
             self.profile.user.email,
-            self.cleaned_data['name']
+            self.cleaned_data['_name']
             ),
           by=self.profile,
           to=p.to,
