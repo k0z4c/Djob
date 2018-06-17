@@ -25,11 +25,13 @@
 
     {# TODO part #}
     <section>
+      {% if profile.projectpages.all %}
       <h4>Projects</h4>
       {% for project in profile.projectpages.all %}
         <a href="{% url 'projectpager:project_detail' user.email project.pk %}">{{project}}</a>
       {% endfor %}
     </section>
+    {% endif %}
       <h4>Contacts</h4>
       {% for friend in friends %}
       <p><a href="{% url 'account:profile_detail' friend %}">{{friend}}</a></p>
