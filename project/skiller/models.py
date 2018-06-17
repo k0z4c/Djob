@@ -58,10 +58,9 @@ class Confirmation(models.Model):
         unique_together = (('skill', 'to', 'by'),)
 
 class SkillData(models.Model):
-    serial = models.AutoField(primary_key=True) 
     _codename = models.CharField(
         db_column='skill name',
-        max_length=20,
+        max_length=150,
         unique=True,
         help_text='codename for the skill',
         )
