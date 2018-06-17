@@ -1,6 +1,5 @@
 from django.test import TestCase
-
-from authentication.tests.factories import UserFactory 
+from account.tests.factories import ProfileFactory 
 from django.db import IntegrityError
 from ..exceptions import DuplicatedSkill
 from ..models import Skill, SkillData 
@@ -12,33 +11,33 @@ from django.db.models import Q
 
 class SkillModelTestCase(TestCase):
     def setUp(self):
-        self.user = UserFactory()
+        self.profile = ProfileFactory()
         self.data = SkillDataFactory(codename='testing')
 
     def test_user_add_skill_success(self):
-        Skill.objects.create(user=self.user, data=self.data)
-        self.assertTrue(Skill.objects.get(user=self.user, data=self.data))
-        self.assertTrue(self.user.skill_set.get(user=self.user, data=self.data))
-        self.assertTrue(self.data.skill_set.get(user=self.user, data=self.data))
+        Skill.objects.create(profile=self.profile, data=self.data)
+        self.assertTrue(Skill.objects.get(profile=self.profile, data=self.data))
+        self.assertTrue(self.profile.skill_set.get(profile=self.profile, data=self.data))
+        self.assertTrue(self.data.skill_set.get(profile=self.profile, data=self.data))
 
     def test_double_skill_error(self):
-        Skill.objects.create(user=self.user, data=self.data)
+        Skill.objects.create(profile=self.profile, data=self.data)
         with self.assertRaises(IntegrityError):
-            Skill.objects.create(user=self.user, data=self.data)
+            Skill.objects.create(profile=self.profile, data=self.data)
 
     def test_user_can_have_multiple_skills(self):
         data2 = SkillDataFactory(codename='test')
 
-        Skill.objects.create(user=self.user, data=self.data)
-        Skill.objects.create(user=self.user, data=data2)
-        self.assertEqual(self.user.skill_set.filter().count(), 2)
+        Skill.objects.create(profile=self.profile, data=self.data)
+        Skill.objects.create(profile=self.profile, data=data2)
+        self.assertEqual(self.profile.skill_set.filter().count(), 2)
 
     def test_multiple_users_same_skill(self):
-        us1 = UserFactory()
-        us2 = UserFactory()
+        p1 = ProfileFactory()
+        p2 = ProfileFactory()
 
-        Skill.objects.create(user=us1, data=self.data)
-        Skill.objects.create(user=us2, data=self.data)
+        Skill.objects.create(profile=p1, data=self.data)
+        Skill.objects.create(profile=p2, data=self.data)
 
         skill_data = SkillData.objects.filter(_codename=self.data.codename)
         self.assertEqual(skill_data.count(), 1)
@@ -47,18 +46,23 @@ class SkillModelTestCase(TestCase):
         skill_data = skill_data[0]
         self.assertEqual(skill_data.skill_set.count(), 2)
 
+    def test_codename_is_decorated(self):
+        sd = SkillDataFactory(codename='some skill')
+        self.assertTrue(sd._codename, 'some_skill') 
+
+
 
     def tearDown(self):
-        del self.user
+        del self.profile
         del self.data
 
 
 
 class SkillManagerTestCase(TestCase):
     def test_add_skill(self): 
-        user = UserFactory()
+        profile = ProfileFactory()
 
-        skill_ass = Skill.objects.add(user.profile, name='testing')
+        skill_ass = Skill.objects.add(profile, name='testing')
 
         self.assertIsInstance(
             skill_ass, Skill,
@@ -70,25 +74,25 @@ class SkillManagerTestCase(TestCase):
             )
 
         with self.assertRaises(DuplicatedSkill):
-            Skill.objects.add(user.profile, name='testing')
+            Skill.objects.add(profile, name='testing')
 
     def test_user_can_have_multiple_skills(self):
-        user = UserFactory()
-        Skill.objects.add(user.profile, name='testing')
-        Skill.objects.add(user.profile, name='test')
+        profile = ProfileFactory()
+        Skill.objects.add(profile, name='testing')
+        Skill.objects.add(profile, name='test')
 
-        self.assertEqual(user.skill_set.filter().count(), 2)
+        self.assertEqual(profile.skill_set.filter().count(), 2)
 
     def test_multiple_user_same_skill(self):
-        us1 = UserFactory()
-        us2 = UserFactory()
+        profile1 = ProfileFactory()
+        profile2 = ProfileFactory()
 
-        Skill.objects.add(us1, name='testing')
-        Skill.objects.add(us2, name='testing')
+        Skill.objects.add(profile1, name='testing')
+        Skill.objects.add(profile2, name='testing')
 
         self.assertEqual(
             Skill.objects.filter(
-                Q(user=us1) | Q(user=us2)
+                Q(profile=profile1) | Q(profile=profile2)
                 ).count(), 2
             )
 
@@ -96,14 +100,12 @@ class SkillManagerTestCase(TestCase):
             SkillData.objects.filter(_codename='testing').count(), 1
             )
 
-        # to continue..
-
 class SkillAddViewTestCase(TestCase):
     # views tests
     def setUp(self):
         self.client = Client()
-        self.user = UserFactory(email='matt@gmail.com', password='pa55worD')
-        self.client.login(username=self.user.email, password='pa55worD')
+        self.profile = ProfileFactory(user__email='matt@gmail.com', user__password='pa55worD')
+        self.client.login(email=self.profile.user.email, password='pa55worD')
 
 
     def test_get_add_skill(self):
@@ -118,14 +120,14 @@ class SkillAddViewTestCase(TestCase):
     def test_post_add_skill_redirect(self):
         response = self.client.post(
             reverse('skill:add_skill'),
-            {'codename': 'pippo'},
+            {'skill_name': 'pippo'},
             follow=True,
             )
 
         self.assertRedirects(
             response,
             reverse('account:profile_detail',
-                args=((self.user.email,)),
+                args=((self.profile.user.email,)),
                 )
             )
 
@@ -133,7 +135,7 @@ class SkillAddViewTestCase(TestCase):
         codename = 'testing'
         response = self.client.post(
             reverse('skill:add_skill'),
-            {'codename': codename, },
+            {' skill_name': codename, },
             follow=True
             )
 
@@ -147,47 +149,4 @@ class SkillAddViewTestCase(TestCase):
         self.assertEqual(queue[0].level, SUCCESS)
 
 
-    def test_codename_invalid_chars(self):
-        codename = '<#testing?01'
-        response = self.client.post(
-            reverse('skill:add_skill'),
-            {'codename': codename, },
-            follow=True
-            )
-
-        self.assertFalse(
-            SkillData.objects.filter(_codename=codename).exists(),
-        )
-
-        from django.contrib.messages import ERROR
-        queue = list(response.context['messages'])
-        self.assertEqual(len(queue), 1)
-        self.assertEqual(queue[0].level, ERROR)
-
-
-    def test_codename_duplicated(self):
-        codename = 'testing'
-        self.client.post(
-            reverse('skill:add_skill'),
-            {'codename': codename, },
-            follow=True
-            )
-        response = self.client.post(
-            reverse('skill:add_skill'),
-            {'codename': codename, },
-            follow=True
-            )
-
-        from django.contrib.messages import ERROR
-        queue = list(response.context['messages'])
-        self.assertEqual(len(queue), 1)
-        self.assertEqual(queue[0].level, ERROR)
-
-### TODO ####
-class SkillDeleteTestCase(TestCase):
-    pass
-
-from ..forms import SkillDataForm
-class SkillFormTestCase(TestCase): 
-    pass
 

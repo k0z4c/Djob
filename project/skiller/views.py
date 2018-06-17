@@ -27,6 +27,14 @@ class SkillAddView(edit.CreateView):
     def success_url(self):
         return reverse('account:profile_detail', args=((self.request.user.email,)))
 
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            message='skill added successfully',
+            extra_tags='alert alert-success'
+        )
+        return super(SkillAddView, self).form_valid(form)
+
     def get_form_kwargs(self):
         kwargs = super(SkillAddView, self).get_form_kwargs()
         kwargs.update({
