@@ -41,7 +41,8 @@ class NetworkList(ListView):
     model = Friendship
     context_object_name = 'contacts_ordered_by_friends_list'
     template_name = 'friendship/ordered_by_friends_list.html'
-
+    paginate_by = 5
+    
     @property
     def queryset(self):
       user_friendships = self.model.objects.filter(by__user__email=self.kwargs.get('email'))

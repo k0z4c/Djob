@@ -5,6 +5,7 @@
       <p><em>contacts</em>: <span class="badge badge-info">{{first_level_neighbors_count}}</span></p>
       <p><em>number of friends of friends</em>: <span class="badge badge-info">{{second_level_neighbors_count}}</span></p>
     </section>
+  {% include '_paginator.html' %}
   <table class="table table-hover">
     <thead>
       <th scope="col" style="text-align:center;"><span class="badge badge-primary"></span></th>      <th scope="col" style="text-align:center;"><span class="badge badge-primary">user</span></th>
