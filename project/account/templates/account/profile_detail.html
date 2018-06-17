@@ -23,10 +23,13 @@
       {% list_skills profile %}
     </section>
 
-    {# TODO part #}
+    {% if profile.projectpages.all %}
     <section>
-      {% if profile.projectpages.all %}
       <h4>Projects</h4>
+      <p>   
+        <a href="{% url 'projectpager:invite' user %}">add contact to a group
+        </a>
+      </p>
       {% for project in profile.projectpages.all %}
         <a href="{% url 'projectpager:project_detail' user.email project.pk %}">{{project}}</a>
       {% endfor %}
@@ -37,8 +40,6 @@
       <p><a href="{% url 'account:profile_detail' friend %}">{{friend}}</a></p>
       {% endfor %}
     <section>
-      <a href="{% url 'projectpager:invite' user %}">add contact to a group</a>
-    </section>
 </div>
 </div>
 {% endblock %}
