@@ -46,3 +46,7 @@ After that:
   ```bash
   $ docker-compose up
   ```
+
+## Note
+
+This project is not actually intended for deploy.  
