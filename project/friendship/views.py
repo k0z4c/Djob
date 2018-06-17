@@ -49,8 +49,8 @@ class NetworkList(ListView):
       return qs
     
     def get_context_data(self, **kwargs):
-      counting_func = lambda x, y: x.to.num_contacts + y.to.num_contacts
-      second_level_neighbors_count = reduce(counting_func, self.object_list)
+      counting_func = lambda x, y: x + y
+      second_level_neighbors_count = reduce(counting_func, (n.to.num_contacts for n in self.object_list))
 
       kwargs.update({
         'first_level_neighbors_count': self.object_list.count(),
