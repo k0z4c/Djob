@@ -36,13 +36,13 @@ class SearchForm(forms.Form):
   def clean_skill_serial1(self):
     value = self.cleaned_data['skill_serial1']
     if value:
-      value = self.cleaned_data['skill_serial1'].serial
+      value = self.cleaned_data['skill_serial1'].id
     return value
 
   def clean_skill_serial2(self):
     value = self.cleaned_data['skill_serial2']
     if value:
-      value = self.cleaned_data['skill_serial2'].serial
+      value = self.cleaned_data['skill_serial2'].id
     return value
 
   def clean(self):
