@@ -9,8 +9,9 @@ from .forms import ProfileEditForm
 from django.http import HttpResponseRedirect
 from authentication.forms import UserEditForm
 from django.contrib import messages
+from django.contrib.auth.mixins import UserPassesTestMixin
 from guardian.mixins import (
-    PermissionRequiredMixin, LoginRequiredMixin
+    LoginRequiredMixin
 )
 
 from marathon.models import SocialRequest
@@ -55,14 +56,11 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
     def _is_owner(self):
         return self.request.user.email == self.kwargs.get('email')
 
-class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.TemplateResponseMixin, generic.base.View):
+class EditAccountView(LoginRequiredMixin, UserPassesTestMixin, generic.base.TemplateResponseMixin, generic.base.View):
     template_name = 'account/profile_update_form.html'
     success_url = 'account:profile_detail'
     user_keys = ['email', 'first_name', 'last_name']
     profile_keys = ['description']
-
-    permission_required = 'account.can_change_profile'
-    return_403 = True
 
     @classmethod
     def check_and_save_model_forms(cls, f1, f2):
@@ -70,6 +68,9 @@ class EditAccountView(LoginRequiredMixin, PermissionRequiredMixin, generic.base.
             f1.save() and f2.save()
             return True
         return False
+
+    def test_func(self):
+      return self.request.user.email == self.kwargs.get('email')
 
     def post(self, request, *args, **kwargs):
         f1 = UserEditForm(self.request.POST, instance=request.user, editer=request.user)

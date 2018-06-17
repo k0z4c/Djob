@@ -13,10 +13,6 @@ def manage_upload(instance, filename):
   return '{user_id}/{file}'.format(**opts)
 
 class Profile(models.Model):
-  class Meta:
-    permissions = (
-      ('can_change_profile', 'Can edit the profile'),
-    )
   user = models.OneToOneField(
     settings.AUTH_USER_MODEL,
     on_delete=models.CASCADE

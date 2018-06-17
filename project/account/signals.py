@@ -4,7 +4,6 @@ from django.db.models.signals import post_save
 from django.conf import settings
 from django.apps import apps
 
-from guardian.shortcuts import assign_perm
 from .models import Profile
 
 from friendship.models import Friendship
@@ -19,7 +18,6 @@ def create_profile(sender, **kwargs):
         profile = Profile.objects.create(
             user=kwargs.get('instance')
         )
-        assign_perm('can_change_profile', kwargs.get('instance'), profile)
 
 @receiver(post_save, sender=Friendship, dispatch_uid='increment')
 def increment_num_contacts(sender, instance, created, **kwargs):
