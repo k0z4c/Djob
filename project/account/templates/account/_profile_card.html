@@ -1,6 +1,6 @@
 {% load friendship.tags %}
 <div class="card align-items-center" id="profile-pic" >
-  <img style="border: 10px solid yellow;" width="" height="" class="" src="{{profile.get_image}}" alt=""/>
+  <img width="" height="" class="" src="{{profile.get_image}}" alt=""/>
   <div class="card-body" style="text-align: center;">
     <h3 class="card-title">{{profile.user.first_name|capfirst}} {{profile.user.last_name|capfirst}}</h3>
     <h6>{{profile.actual_job}}</h6>
