@@ -1,15 +1,23 @@
 {% extends "navbar/navbar_page.html" %}
 {% block content %}
   <section>
+    <h3>Who confirmed "{{skill.data.codename}}"?</h3>
+  </section>
+  {% if skill.confirmation_set.all %}
+  <section>
     <strong>{{skill.data.codename}}</strong>, is confirmed by:
   </section>
   <section>
   <ul>
     {% for confirmation in skill.confirmation_set.all %}
     <li>
-      {{confirmation.by}}
+      <a href="{{confirmation.by.get_absolute_url}}">{{confirmation.by}
+      </a>
     </li>
       {% endfor %}
   </ul>
+  {% else %}
+  <p>No one has confirmed this skill yet.</p>
+  {% endif %}
   </section>
 {% endblock %}

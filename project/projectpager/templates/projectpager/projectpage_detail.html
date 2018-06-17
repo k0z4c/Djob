@@ -4,9 +4,10 @@
 <div class="container">
   <section>
     <h2>Welcome to <em>{{projectpage.name}}</em> project</h2>
+    <h5>Admin: <a href="{{projectpage.owner.get_absolute_url}}">{{projectpage.owner.user}}</a></h5>
     {% get_obj_perms user for projectpage as "guardian_perms" %}
     {% if projectpage.owner == user.profile %}
-      <p><a href="{% url 'projectpager:project_update' user projectpage.pk %}">modify</a> project attributes</p>
+      <p><b>Hey admin!</b> <a href="{% url 'projectpager:project_update' user projectpage.pk %}">modify</a> project attributes</p>
     {% endif %}
     <p>{{projectpage.description}}</p>
   </section>

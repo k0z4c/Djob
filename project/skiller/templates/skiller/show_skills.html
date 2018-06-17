@@ -14,7 +14,7 @@
             {% if owner %}<button class="remove-skill-button" data-url="{% url 'skill:delete_skill' user.email %}" data-id="{{skill.pk}}"><img class="img" src="{% static 'svg/x.svg' %}"></button>{% endif %}
             {{skill}}
             <span class="badge badge-info">
-            {{skill.confirmation_set.all.count}}
+            <a href="{% url 'skill:skill_detail' skill.pk %}">{{skill.confirmation_set.all.count}}</a>
             </span>
             </h5>
             <p class="card-text">{{skill.description}}</p>
