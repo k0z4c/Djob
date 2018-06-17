@@ -31,8 +31,8 @@ def assign_skills(min, max):
 def create_friendships(min, max):
   for p in Profile.objects.all():
     friendship_to_create_no = random.choice(range(min, max))
-    profiles = random.sample( set(Profiles.objects.all(), friendship_to_create_no))
-
+    profiles = random.sample( set(Profile.objects.all()), friendship_to_create_no)
+    print('profiles selected', profiles)
     try:
       Friendship.objects.bulk_create(
         ( Friendship(by=p, to=other) for other in profiles )
@@ -65,6 +65,7 @@ if __name__ == '__main__':
   # min, max skills to assign to each profile
   assign_skills(3, 7)
   print("[*] create friendships...")
+  create_friendships(4, 7)
   print("[*] ...done")
 
 
