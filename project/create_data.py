@@ -22,7 +22,7 @@ def assign_skills(min, max):
 
     try:
       Skill.objects.bulk_create(
-        Skill(profile=p, data=data) for data in skills_data
+        Skill(profile=p, data=data, description=) for data in skills_data
       )
     except IntegrityError:
       pass
@@ -32,9 +32,10 @@ def create_friendships(min, max):
   for p in Profile.objects.all():
     friendship_to_create_no = random.choice(range(min, max))
     profiles = random.sample( set(Profile.objects.all()), friendship_to_create_no)
+    fake = faker.Faker(providers='faker.providers.lorem')
     try:
       Friendship.objects.bulk_create(
-        ( Friendship(by=p, to=other) for other in profiles )
+        ( Friendship(by=p, to=other, description=fake.sentence(nb_words=20)) for other in profiles )
       )
     except IntegrityError:
       pass
@@ -51,10 +52,9 @@ if __name__ == '__main__':
   from skiller.models import SkillData, Skill
   from account.models import Profile
   from friendship.models import Friendship
-
-
   from django.db import IntegrityError
   import pickle
+  import faker
 
   print("[*] creating profiles..")
   create_profiles(20)
