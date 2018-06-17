@@ -2,7 +2,10 @@ import random
 
 # no post_save, no permissions
 def create_profiles(n):
-  return ProfileFactory.create_batch(n, user__password='password')
+  ProfileFactory.create_batch(n, user__password='password')
+  for p in Profile.objects.all():
+    p.num_contacts = p.contacts.count()
+    p.save()
 
 def load_skill_data(verbose=False):
   with open('skills.data', 'rb') as f:
@@ -20,9 +23,10 @@ def assign_skills(min, max):
     skill_to_assign_number = random.choice(range(min, max))
     skills_data = random.sample( set(SkillData.objects.all()), skill_to_assign_number)
 
+    fake = faker.Faker(providers=['faker.providers.lorem'])
     try:
       Skill.objects.bulk_create(
-        Skill(profile=p, data=data, description=) for data in skills_data
+        Skill(profile=p, data=data, description=fake.sentence(nb_words=20)) for data in skills_data
       )
     except IntegrityError:
       pass
@@ -31,11 +35,10 @@ def assign_skills(min, max):
 def create_friendships(min, max):
   for p in Profile.objects.all():
     friendship_to_create_no = random.choice(range(min, max))
-    profiles = random.sample( set(Profile.objects.all()), friendship_to_create_no)
-    fake = faker.Faker(providers='faker.providers.lorem')
+    profiles = random.sample( set(Profile.objects.all().exclude(pk=p.pk)), friendship_to_create_no)
     try:
       Friendship.objects.bulk_create(
-        ( Friendship(by=p, to=other, description=fake.sentence(nb_words=20)) for other in profiles )
+        ( Friendship(by=p, to=other) for other in profiles )
       )
     except IntegrityError:
       pass
