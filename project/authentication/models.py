@@ -10,7 +10,6 @@ from django.core.mail import send_mail
 from guardian.mixins import GuardianUserMixin
 
 from django.core.validators import EmailValidator
-# from django.contrib.auth.validators import EmailValidator
 
 # forms to extend or rewrite: UserCreationForm, UserChangeForm
 class User(AbstractBaseUser, PermissionsMixin, GuardianUserMixin):
