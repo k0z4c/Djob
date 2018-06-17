@@ -2,6 +2,7 @@ from django.dispatch import receiver
 from notifications.signals import notify
 from django.db.models.signals import post_save 
 from django.db.models.signals import ModelSignal
+from django.conf import settings
 
 social_request_accepted = ModelSignal(providing_args=['instance',])
 social_request_rejected = ModelSignal(providing_args=['instance',])
@@ -21,13 +22,14 @@ def generate_notification(sender, created, instance,  **kwargs):
 @receiver(social_request_rejected, sender='marathon.SocialRequest')
 @receiver(social_request_accepted, sender='marathon.SocialRequest')
 def mark_disabled(sender, instance, **kwargs):
-  same_type_requests = instance.__class__.objects.filter(
-    label=instance.label,
-    status=instance.__class__.PENDING,
-    to=instance.to,
-    data=instance.data,
-  ).exclude(pk=instance.pk)
+  if instance.label in settings['MARK_DISABLED']:
+    same_type_requests = instance.__class__.objects.filter(
+      label=instance.label,
+      status=instance.__class__.PENDING,
+      to=instance.to,
+      data=instance.data,
+    ).exclude(pk=instance.pk)
 
-  same_type_requests.update(
-    status=instance.__class__.DISABLED
-  )
+    same_type_requests.update(
+      status=instance.__class__.DISABLED
+    )
