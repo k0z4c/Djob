@@ -1,9 +1,21 @@
 {% extends "navbar/navbar_page.html"%}
 {% block content %}
+<section>
+  <h3>Profiles Suggested</h3>
+  <p>Suggestions are elaborated from your activities (profiles that you have visited but not friends)<br>and profiles that have some skill in common with you.</p>
+</section>
 {% if not profiles_suggested %}
   <p>no suggestion at moment :( try later.</p>
 {% endif %}
-{% for profile in profiles_suggested %}
-  <p><a href="{{profile.get_absolute_url}}">{{profile.user}}</a></p>
+<table class="table table-hover">
+  {% for profile in profiles_suggested %}
+  <tr onclick="window.location.href='{{profile.get_absolute_url}}'">
+    <td style="width: 100px;">
+      <img class="img img-fluid " src="{{profile.get_image}}" style=""/>
+    </td>
+    <td style="text-align: center;">
+      <p>{{profile.user}}</a>
+    </td>
+  </tr>
 {% endfor %}
 {% endblock %}
