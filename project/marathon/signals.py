@@ -22,7 +22,7 @@ def generate_notification(sender, created, instance,  **kwargs):
 @receiver(social_request_rejected, sender='marathon.SocialRequest')
 @receiver(social_request_accepted, sender='marathon.SocialRequest')
 def mark_disabled(sender, instance, **kwargs):
-  if instance.label in settings['MARK_DISABLED']:
+  if instance.label in settings.MARK_DISABLED:
     same_type_requests = instance.__class__.objects.filter(
       label=instance.label,
       status=instance.__class__.PENDING,

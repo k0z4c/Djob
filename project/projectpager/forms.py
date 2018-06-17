@@ -3,7 +3,7 @@ from .models import ProjectPage, Thread, Message
 from django.core import serializers
 from crispy_forms.helper import FormHelper
 from marathon.models import SocialRequest
-from helpers import _decorate_name
+from helpers import _decorate_name, get_decorated_name
 from crispy_forms.layout import (
   Submit,
 )
@@ -98,7 +98,7 @@ class CreateProjectPageForm(forms.ModelForm):
           label='invite_request',
           tile='{} invites you to join {} group.'.format(
             self.profile.user.email,
-            self.cleaned_data['_name']
+            get_decorated_name(self.cleaned_data['_name'])
             ),
           by=self.profile,
           to=p.to,
