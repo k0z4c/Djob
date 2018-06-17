@@ -10,9 +10,6 @@ from django.http import HttpResponseRedirect
 from authentication.forms import UserEditForm
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
-from guardian.mixins import (
-    LoginRequiredMixin
-)
 
 from marathon.models import SocialRequest
 def index(request):
@@ -22,7 +19,7 @@ def index(request):
     profile = get_object_or_404(Profile, user__email=request.user.email)
     return redirect(profile, permanent=True)
 
-class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
+class ProfileDetailView(generic.detail.DetailView):
     model = Profile
     slug_field = 'user__email'
     slug_url_kwarg = 'email'
@@ -56,7 +53,7 @@ class ProfileDetailView(LoginRequiredMixin, generic.detail.DetailView):
     def _is_owner(self):
         return self.request.user.email == self.kwargs.get('email')
 
-class EditAccountView(LoginRequiredMixin, UserPassesTestMixin, generic.base.TemplateResponseMixin, generic.base.View):
+class EditAccountView(UserPassesTestMixin, generic.base.TemplateResponseMixin, generic.base.View):
     template_name = 'account/profile_update_form.html'
     success_url = 'account:profile_detail'
     user_keys = ['email', 'first_name', 'last_name']

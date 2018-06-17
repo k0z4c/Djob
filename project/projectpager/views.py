@@ -1,6 +1,5 @@
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from guardian.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import (
@@ -79,7 +78,7 @@ class ProjectPageUpdateView(UserPassesTestMixin, UpdateView):
       args=[self.request.user.email, self.kwargs['project_pk']]
     )
   
-class ThreadCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class ThreadCreateView(UserPassesTestMixin, CreateView):
   model = Thread
   form_class = ThreadForm
   raise_exception = True

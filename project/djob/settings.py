@@ -149,11 +149,12 @@ LOGIN_URL = '/login/'
 FILE_UPLOAD_HANDLERS = ["django.core.files.uploadhandler.MemoryFileUploadHandler",
  "django.core.files.uploadhandler.TemporaryFileUploadHandler"]
 
-LOGIN_REQUIRED_URLS = [
-    '/account/.*',
+EXEMPT_URLS = [
+  '/login',
+  '/signup',
+  '/thanks'
 ]
 
-EXEMPT_URLS = []
 # user object permissions disabled
 ANONYMOUS_USER_NAME = None
 
