@@ -40,6 +40,9 @@ def create_friendships(min, max):
       Friendship.objects.bulk_create(
         ( Friendship(by=p, to=other) for other in profiles )
       )
+      Friendship.objects.bulk_create(
+        ( Friendship(by=other, to=p) for other in profiles )
+      )
     except IntegrityError:
       pass
 
