@@ -30,7 +30,6 @@ class SearchForm(forms.Form):
     project_name = self.cleaned_data['project_name']
     if project_name:
       project_name = _decorate_name(project_name)
-    print('form', project_name)
     return project_name
 
   def clean_skill_serial1(self):

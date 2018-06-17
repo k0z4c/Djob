@@ -21,7 +21,6 @@ def create_profile(sender, **kwargs):
 
 @receiver(post_save, sender=Friendship, dispatch_uid='increment')
 def increment_num_contacts(sender, instance, created, **kwargs):
-  print(created)
   if created:
     instance.by.num_contacts = F('num_contacts') + 1
     # instance.to.num_contacts=F('num_contacts') + 1
