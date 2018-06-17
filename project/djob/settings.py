@@ -155,6 +155,10 @@ EXEMPT_URLS = [
   '/thanks'
 ]
 
+MARK_DISABLED = [
+    'invite_request',
+]
+
 # user object permissions disabled
 ANONYMOUS_USER_NAME = None
 
