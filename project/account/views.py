@@ -79,6 +79,7 @@ class EditAccountView(LoginRequiredMixin, UserPassesTestMixin, generic.base.Temp
             self._handle_crispy_forms(f1, f2)
             return self.render_to_response({'f1': f1, 'f2': f2})
 
+        self._check_first_access()
         messages.success(self.request, 'Account details updated', extra_tags='alert alert-success')
         return HttpResponseRedirect(reverse(self.success_url,
                                             args=[request.user.email]))
@@ -100,6 +101,11 @@ class EditAccountView(LoginRequiredMixin, UserPassesTestMixin, generic.base.Temp
             form.helper.form_tag = False
             form.helper.inputs.pop()
 
+    def _check_first_access(self):
+        user = self.request.user
+        if user.first_access:
+            user.first_access = False
+            user.save()
 
 from django.core.paginator import Paginator
 class NotificationsPaginator(Paginator):

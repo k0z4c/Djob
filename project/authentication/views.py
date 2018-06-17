@@ -22,18 +22,6 @@ class CustomLoginView(LoginView):
         self.request.session['just_logged_in'] = True
         return response if not first_access else redirect('account:profile_edit', self.request.user)
 
-class CustomLogoutView(LogoutView):
-    @method_decorator(never_cache)
-    def dispatch(self, request, *args, **kwargs):
-        self._check_first_access()
-        return super(CustomLogoutView, self).dispatch(request, *args, **kwargs)
-
-    def _check_first_access(self):
-        user = self.request.user
-        if user.first_access:
-            user.first_access = False
-            user.save()
-
 class SignupView(CreateView):
     model = settings.AUTH_USER_MODEL
     form_class = UserCreationForm

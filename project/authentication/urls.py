@@ -15,11 +15,6 @@ urlpatterns = [
         name='login'
     ),
     url(
-        r'^logout/$',
-        views.CustomLogoutView.as_view(),
-        name='login'
-    ),
-    url(
         r'^thanks/$',
         views.ThanksView.as_view(),
         name='thanks'
