@@ -12,17 +12,16 @@ Go to Djob directory and pull images from public registry:
     $ cd Djob
     $ docker-compose pull
   ```
-
+Connect to the web service and apply migrations to PostgreSQL:
+  ```bash
+  $ docker-compose run --rm web sh
+  $ ./manage.py migrate
+  $ exit
+  ```
 Launch:
   ```bash
   $ docker-compose up
   ```
-Connect to the web service and apply migrations to PostgreSQL:
-  ```bash
-  $ docker-compose exec web sh
-  $ ./manage.py migrate
-  ```
-
 Open your browser and go to <http://localhost:8001/signup>.
 
 Enjoy :)
