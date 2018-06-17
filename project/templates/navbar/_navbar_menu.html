@@ -3,55 +3,55 @@
 
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
   <ul class="navbar-nav">
-    <li class="nav-item">
+    <li class="nav-item" data-toggle="tooltip" title="notifications">
       <a class="nav-link" href="{% url 'account:notifications_unread' user %}">
         <img class="navbar-icon-svg" src="{% static 'svg/bell.svg' %}">
         <span id="notifications-badge" class="badge badge-primary" data-url="{% url 'notifications:live_unread_notification_count' %}" style="visibility: hidden;"> </span>
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" data-toggle="tooltip" title="conversations">
       <a class="nav-link" href="{% url 'messanger:conversations' %}">
         <img class="navbar-icon-svg" src="{% static 'svg/comment-discussion.svg' %}">
         <span id="messanger-badge" class="badge badge-primary" data-url="{% url 'messanger:ajax_unreaded_count' %}" style="visibility:hidden;">0</span>
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" data-toggle="tooltip" title="home">
       <a class="nav-link" href="{% url 'account:profile_detail' user %}">
         <img class="navbar-icon-svg" src="{% static 'svg/home.svg' %}">
         <span id="home-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" data-toggle="tooltip" title="search">
       <a class="nav-link" href="{% url 'searcher:search' %}">
         <img class="navbar-icon-svg" src="{% static 'svg/search.svg' %}">
         <span id="searcher-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
       </a>
     </li> 
-    <li class="nav-item">
+    <li class="nav-item" data-toggle="tooltip" title="explore network">
       <a class="nav-link" href="{% url 'friendship:network' user %}">
         <img class="navbar-icon-svg" src="{% static 'svg/bug.svg' %}">
         <span id="network-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" data-toggle="tooltip" title="suggestions">
       <a class="nav-link" href="{% url 'recommander:suggest' user %}">
         <img class="navbar-icon-svg" src="{% static 'svg/beaker.svg' %}">
         <span id="recommander-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
       </a>
     </li> 
-    <li class="nav-item">
+    <li class="nav-item" data-toggle="tooltip" title="create a group">
       <a class="nav-link" href="{% url 'projectpager:project_create' user %}">
         <img class="navbar-icon-svg" src="{% static 'svg/plus.svg' %}"/>
         <span id="create-project-badge" class="badge badge-primary" style="visibility:hidden;">0</span>
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" data-toggle="tooltip" title="edit profile">
       <a class="nav-link" href="{% url 'account:profile_edit' request.user.email %}">
         <img class="navbar-icon-svg" src="{% static 'svg/gear.svg' %}">
         <span id="settings-badge" class="badge badge-primary" style="visibility:hidden">0</span>
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" data-toggle="tooltip" title="logout">
       <a class="nav-link" href="{% url 'authentication:logout' %}">
         <img  class="navbar-icon-svg" src="{% static 'svg/sign-out.svg' %}">
       </a>

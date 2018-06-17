@@ -22,4 +22,6 @@ function FetchUnreadedNotificationsCount(target, key){
 $().ready(function(){
   setTimeout(FetchUnreadedNotificationsCount, 1500, $('#notifications-badge'), 'unread_count');
   setTimeout(FetchUnreadedNotificationsCount, 1500, $('#messanger-badge'), 'unreaded_count');
+
+  $('[data-toggle="tooltip"]').tooltip()
 });
