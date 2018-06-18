@@ -3,9 +3,6 @@ import random
 # no post_save, no permissions
 def create_profiles(n):
   ProfileFactory.create_batch(n, user__password='password')
-  for p in Profile.objects.all():
-    p.num_contacts = p.contacts.count()
-    p.save()
 
 def load_skill_data(verbose=False):
   with open('skills.data', 'rb') as f:
@@ -45,6 +42,9 @@ def create_friendships(min, max):
       )
     except IntegrityError:
       pass
+
+  for p in Profile.objects.all():
+    p.num_contacts = p.contacts.count()
 
 
 if __name__ == '__main__':
