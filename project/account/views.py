@@ -142,7 +142,6 @@ class ReadedNotificationsListView(ListView):
     template_name = 'account/notifications.html'
     paginator_class = NotificationsPaginator
     paginate_by = 5
-    # context_object_name = 'readed_notifications_list'
 
     @property
     def queryset(self):
