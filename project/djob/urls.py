@@ -17,9 +17,11 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from authentication.views import CustomLoginView
 # https://docs.djangoproject.com/en/1.11/ref/views/#django.views.static.serve
 
 urlpatterns = [
+    url(r'^$', CustomLoginView.as_view()),
     url(r'^admin/', admin.site.urls),
     url(r'^inbox/notification', include('notifications.urls', namespace='notifications')),
     url(r'^account/', include('account.urls', namespace='account')),
