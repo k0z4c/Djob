@@ -45,6 +45,7 @@ def create_friendships(min, max):
 
   for p in Profile.objects.all():
     p.num_contacts = p.contacts.count()
+    p.save()
 
 
 if __name__ == '__main__':
