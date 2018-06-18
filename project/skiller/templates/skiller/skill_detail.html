@@ -11,7 +11,7 @@
   <ul>
     {% for confirmation in skill.confirmation_set.all %}
     <li>
-      <a href="{{confirmation.by.get_absolute_url}}">{{confirmation.by}
+      <a href="{{confirmation.by.get_absolute_url}}">{{confirmation.by}}
       </a>
     </li>
       {% endfor %}
