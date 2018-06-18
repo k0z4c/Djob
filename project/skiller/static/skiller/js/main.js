@@ -30,7 +30,7 @@ function delete_skill(e){
 
 function confirm_skill(e){
   var csrftoken = Cookies.get('csrftoken');
-  var receiver = $(this)
+  var receiver = $(this);
   $.ajax({
     type: 'post',
     url: receiver.data('url'),
@@ -42,14 +42,16 @@ function confirm_skill(e){
     },
     dataType: 'json',
     success: function(data){
-      console.log(data['message']);
       if(data['status'] === 'success'){
-        console.log("success");
+        var relatedBadge = receiver.parent().prev().find('a');
+        relatedBadge.html(parseInt(relatedBadge.html()) + 1); 
         $('#messages-box').html(`<span style="width: 100%;" class='alert alert-success'>${data['message']}</span>`);
+
       }
       else{
         $('#messages-box').html(`<span style="width: 100%;" class='alert alert-danger'>${data['message']}</span>`);
       }
+
       window.setTimeout(function(){ 
         $('#messages-box').fadeOut('700', function(){ $(this).children().remove()})
       }, 1000);
