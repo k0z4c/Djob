@@ -12,7 +12,7 @@
       {% for message in thread.messages.all %}
       <tr style="text-align: center;">
         <td style="width:100px;">
-          <img clas="img img-fluid" src="{{thread.created_by.get_image}}" style="width:100%;"/>
+          <img clas="img img-fluid" src="{{message.posted_by.get_image}}" style="width:100%;"/>
         </td>
         <td>
           {{message}}

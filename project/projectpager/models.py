@@ -17,7 +17,6 @@ class ProjectPage(models.Model):
     related_name='+')
 
   _name = models.CharField(max_length=50)
-
   description = models.TextField()
 
   @property
@@ -38,6 +37,9 @@ class Thread(models.Model):
   title = models.CharField(max_length=150)
   description = models.TextField()
 
+  def __str__(self):
+    return self.description[:50]
+  
 class Message(models.Model):
   discussion = models.ForeignKey('Thread', related_name='messages')
   posted_by = models.ForeignKey(Profile)

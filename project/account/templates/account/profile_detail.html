@@ -31,7 +31,7 @@
         </a>
       </p>
       {% for project in profile.projectpages.all %}
-        <a href="{% url 'projectpager:project_detail' user.email project.pk %}">{{project}}</a>
+        <a href="{% url 'projectpager:project_detail' user.email project.pk %}">{{project.name}}</a>
       {% endfor %}
     </section>
     {% endif %}

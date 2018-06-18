@@ -1,7 +1,9 @@
 {% extends "navbar/navbar_page.html"%}
 {% load guardian_tags %}
+{% load account.tags %}
 {% block content %}
 <div class="container">
+  {% list_messages %}
   <section>
     <h2>Welcome to <em>{{projectpage.name}}</em> project</h2>
     <h5>Admin: <a href="{{projectpage.owner.get_absolute_url}}">{{projectpage.owner.user}}</a></h5>
@@ -16,8 +18,9 @@
       <p><a href="{% url 'projectpager:create_thread' user.email projectpage.pk %}">Post a new thread</a></p>
     {% endif %}
     <p>threads:</p>
+    {% include '_paginator.html' %}
     <table class="table">
-      {% for thread in projectpage.threads.all %}
+      {% for thread in threads %}
       <tr style="text-align: center;">
         <td style="width:100px;">
           <img clas="img img-fluid" src="{{thread.created_by.get_image}}" style="width:100%;"/>
