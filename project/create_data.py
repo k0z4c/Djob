@@ -74,4 +74,10 @@ if __name__ == '__main__':
   create_friendships(4, 7)
   print("[*] ...done")
 
+  print("[*] Profiles created:")
+  for p in Profile.objects.all():
+    print('[*]', p)
+
+  print("password: password")
+
 
