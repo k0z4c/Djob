@@ -26,16 +26,15 @@ Open your browser and go to <http://localhost:8001/signup>.
 
 Enjoy :)
 
-## Load example data
+## Create example data
 
-Inside web service you should do:
+Enter the following ( with docker services up ):
 ```bash
-$ ./manage loaddata data.json
+  $ docker-compose exec web sh
+  $ python create_data.py
 ```
 ...done.
-You can then login as xaustin@gmail.com with password 'password'.
-
-P.S every user have the same password ('password').
+You can then login with any user displayed with password 'password'.
 
 ## Build images
 
