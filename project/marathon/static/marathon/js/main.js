@@ -16,7 +16,6 @@ function manageRequestAjax(e){
     },
     dataType: 'json',
     success: function(data){
-      console.log(e.target);
       $(e.target).closest('li').remove()
     }
   });

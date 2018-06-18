@@ -15,7 +15,6 @@ function add_friend(e){
     },
     dataType: 'json',
     success: function(data){
-      console.log(data.message);
       $('#messages-box').html(`<span style="text-align: center; width: 100%;" class="alert alert-success">${data.message}</span>`);
       $('#add-friend-button').prop("disabled", true);
       $('#add-friend-button').html(data.message);
