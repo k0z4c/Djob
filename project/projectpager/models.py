@@ -11,6 +11,7 @@ class ProjectPage(models.Model):
     permissions = (
       ('can_open_threads', 'Can open a thread'),
     )
+    unique_together = (('owner', '_name'),)
     
   owner = models.ForeignKey(
     Profile,
@@ -39,7 +40,7 @@ class Thread(models.Model):
 
   def __str__(self):
     return self.description[:50]
-  
+
 class Message(models.Model):
   discussion = models.ForeignKey('Thread', related_name='messages')
   posted_by = models.ForeignKey(Profile)

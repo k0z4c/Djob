@@ -4,6 +4,7 @@ from django.core import serializers
 from crispy_forms.helper import FormHelper
 from marathon.models import SocialRequest
 from helpers import _decorate_name, get_decorated_name
+from django.core.exceptions import ValidationError
 from crispy_forms.layout import (
   Submit,
 )
@@ -83,9 +84,15 @@ class CreateProjectPageForm(forms.ModelForm):
     self.helper.add_input(Submit('submit', 'Submit'))
 
   def clean__name(self):
-    name = self.cleaned_data['_name']
-    if name:
-      name = _decorate_name(name)
+    name = _decorate_name(self.cleaned_data['_name'])
+    if self._meta.model.objects.filter(_name=name, owner=self.profile.pk):
+      raise ValidationError(
+        'You already have a project with this name',
+        code='invalid'
+      )
+    # if name:
+    #   name = _decorate_name(name)
+
     return name
 
   def save(self, **kwargs):
