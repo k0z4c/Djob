@@ -7,11 +7,9 @@ from django.contrib.contenttypes.models import ContentType
 
 class Activity(models.Model):
   USER_VISITED = 'v'
-  SKILL_CONFIRMED = 's'
   
   ACTIVITY_TYPES = (
     (USER_VISITED,'user visited'),
-    (SKILL_CONFIRMED, 'has confirmed skill')
   )
 
   profile = models.ForeignKey(Profile)
