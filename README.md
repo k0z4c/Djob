@@ -26,6 +26,17 @@ Open your browser and go to <http://localhost:8001/signup>.
 
 Enjoy :)
 
+## Load example data
+
+Inside web service you should do:
+```bash
+$ ./manage loaddata data.json
+```
+...done.
+You can then login as xaustin@gmail.com with password 'password'.
+
+P.S every user have the same password ('password').
+
 ## Build images
 
 If you want build directly the images, after you have cloned the repo you have to init git submodules\
