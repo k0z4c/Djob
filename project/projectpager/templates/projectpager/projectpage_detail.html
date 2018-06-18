@@ -14,6 +14,14 @@
     <p>{{projectpage.description}}</p>
   </section>
   <section>
+    <p><b>members:</b></p>
+    <ul>
+      {% for profile in projectpage.profiles.all %}
+      <li><a href="{{profile.get_absolute_url}}">{{profile}}</a></li>
+      {% endfor %}
+    </ul>
+  </section>
+  <section>
     {% if 'can_open_threads' in guardian_perms %}
       <p><a href="{% url 'projectpager:create_thread' user.email projectpage.pk %}">Post a new thread</a></p>
     {% endif %}
