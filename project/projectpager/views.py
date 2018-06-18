@@ -133,27 +133,6 @@ class ThreadCreateView(UserPassesTestMixin, CreateView):
       args=[self.request.user.email, self.object.project.pk]
     )
 
-  def form_valid(self, form):
-      return super(ThreadCreateView, self).form_valid(form)
-
-  def get_success_url(self):
-    for profile in self.object.project.profiles.exclude(pk=self.request.user.profile.pk):
-      notify.send(
-        sender=self.request.user,
-        recipient=profile.user,
-        verb='thread_created',
-        description='{} has created a thread in {}; check it out'.format(
-          self.request.user, self.object.project.name
-        )
-      )
-
-      messages.success(
-        self.request,
-        message='Thread created successfully!',
-        extra_tags='alert alert-success'
-      )
-      return super(ThreadCreateView, self).get_success_url()
-
   def get_form_kwargs(self):
     kwargs = super(ThreadCreateView, self).get_form_kwargs()
     kwargs.update({
