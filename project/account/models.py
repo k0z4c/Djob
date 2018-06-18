@@ -50,3 +50,6 @@ class Profile(models.Model):
     else:
       return self.img.url
 
+  def __str__(self):
+    return self.user.email
+

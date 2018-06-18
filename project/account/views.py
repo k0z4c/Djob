@@ -43,7 +43,7 @@ class ProfileDetailView(generic.detail.DetailView):
             'owner': self._is_owner,
             'friends': self.object.contacts.all(),
             'are_friends': self.object.is_friend(self.request.user.profile),
-            'just_logged_in': self.request.session['just_logged_in'],
+            'just_logged_in': self.request.session.get('just_logged_in', None),
             'is_request_sended': self.request.user.profile.marathon_sent.filter(to=self.object, label='friendship_request', status=SocialRequest.PENDING),
             'is_request_received': self.request.user.profile.marathon_received.filter(by=self.object, label='friendship_request', status=SocialRequest.PENDING),
             })

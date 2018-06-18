@@ -20,9 +20,6 @@ class ProjectPage(models.Model):
 
   description = models.TextField()
 
-  def __str__(self):
-    return self._name
-
   @property
   def name(self):
       return get_decorated_name(self._name)
@@ -31,15 +28,15 @@ class ProjectPage(models.Model):
   def name(self):
     return _decorate_name(self._name)
   
+  def __str__(self):
+    return get_decorated_name(self._name)
+
 class Thread(models.Model):
   project = models.ForeignKey('ProjectPage', related_name='threads')
   created_by = models.ForeignKey(Profile)
 
   title = models.CharField(max_length=150)
   description = models.TextField()
-
-  def __str__(self):
-    return self.title
 
 class Message(models.Model):
   discussion = models.ForeignKey('Thread', related_name='messages')

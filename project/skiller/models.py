@@ -31,7 +31,7 @@ class Skill(models.Model):
         unique_together = (('profile', 'data'),)
 
     def __str__(self):
-        return self.data.codename
+        return str(self.data)
 
 class Confirmation(models.Model):
  
@@ -74,7 +74,7 @@ class SkillData(models.Model):
         self._codename = _decorate_name(value)
 
     def __str__(self):
-        return self.codename
+        return get_decorated_name(self.codename)
 
     def get_absolute_url(self):
         from django.urls import reverse
