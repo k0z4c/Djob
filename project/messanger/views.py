@@ -9,6 +9,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from jsonview.decorators import json_view
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
+
 
 class StartConversationView(CreateView):
     model = Message
@@ -94,7 +96,7 @@ class ConversationReplyView(CreateView):
     def get_context_data(self, **kwargs):
         conversation = self.request.user.profile.conversation_set.get(pk=self.kwargs['pk'])
         context = {'last_message': conversation.last_message }
-        return super().get_context_data(**context)
+        return super(ConversationReplyView, self).get_context_data(**context)
 
 class ConversationListView(ListView):
     model = Conversation
@@ -125,14 +127,9 @@ class ConversationMessagesListView(ListView):
 
     @property
     def queryset(self):
-        try:
-            self.kwargs['conversation'] = Conversation.objects.get(pk=self.kwargs['pk'])
-        except Conversation.DoesNotExist:
-            from django.http import HttpResponseNotFound
-            return HttpResponseNotFound
-        else:
-            self.kwargs['conversation'].read_messages(self.request.user.profile)
-            return self.kwargs['conversation'].messages.all()
+        self.kwargs['conversation'] = get_object_or_404(Conversation, pk=self.kwargs['pk'])
+        self.kwargs['conversation'].read_messages(self.request.user.profile)
+        return self.kwargs['conversation'].messages.all()
 
     def get_context_data(self, **kwargs):
         context = {

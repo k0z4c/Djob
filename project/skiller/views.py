@@ -92,7 +92,6 @@ def confirm_skill(request, email):
         response.update({'status': 'error', 'message': 'You have already confirmed this skill'})
     else:
         skill.confirmation_set.create(by=request.user, to=user, skill=skill)
-        request.user.profile.activities.create(profile=user.profile, activity_type=Activity.SKILL_CONFIRMED)
         response.update({'status': 'success', 'message': 'Skill confirmed successfully'})
     return JsonResponse(response)
 

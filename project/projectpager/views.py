@@ -51,8 +51,9 @@ class InviteRequestFormView(FormView):
   def form_valid(self, form):
     self.object = form.save()
     messages.success(
+      self.request,
       message='invite sended!',
-      extra_class='alert alert-success'
+      extra_tags='alert alert-success'
     )
     return HttpResponseRedirect(self.get_success_url())
 
