@@ -1,6 +1,8 @@
 {% extends "navbar/navbar_page.html"%}
+{% load account.tags %}
 {% block content %}
 <div class="container">
+  {% list_messages %}
   <section>
     <div class="d-flex justify-content-between">
       <h3>

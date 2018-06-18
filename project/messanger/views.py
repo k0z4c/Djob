@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.http import JsonResponse
 from jsonview.decorators import json_view
+from django.contrib import messages
 
 class StartConversationView(CreateView):
     model = Message
@@ -62,6 +63,14 @@ class ConversationReplyView(CreateView):
     @property
     def success_url(self):
         return reverse('messanger:conversation_messages', args=[self.kwargs['pk'],])
+
+    def get_success_url(self):
+        messages.success(
+            self.request,
+            message='message successfully posted',
+            extra_tags='alert alert-success'
+        )
+        return super(ConversationReplyView, self).get_success_url()
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

@@ -1,7 +1,9 @@
 {% extends "navbar/navbar_page.html"%}
 {% load get_item unread_messages_conversation_counter from myfilters %}
+{% load account.tags %}
 {% block content %}
     <div class="container">
+    {% list_messages %}
     {% if not conversation_list %}
         <p>no conversations :( <a href="{% url 'messanger:create_message' %}">start one</a></p>
     {% else %}
